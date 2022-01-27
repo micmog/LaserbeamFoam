@@ -1,0 +1,77 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+7
+(
+    lowerWall
+    {
+        type            wall;
+        inGroups        1(wall);
+        nFaces          0;
+        startFace       1150;
+    }
+    atmosphere
+    {
+        type            patch;
+        nFaces          20;
+        startFace       1150;
+    }
+    rightWall
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          600;
+        startFace       1170;
+    }
+    leftWall
+    {
+        type            empty;
+        inGroups        1(empty);
+        nFaces          600;
+        startFace       1770;
+    }
+    frontAndBack
+    {
+        type            patch;
+        nFaces          30;
+        startFace       2370;
+    }
+    procBoundary0to1
+    {
+        type            processor;
+        inGroups        1(processor);
+        nFaces          20;
+        startFace       2400;
+        matchTolerance  0.0001;
+        transform       unknown;
+        myProcNo        0;
+        neighbProcNo    1;
+    }
+    procBoundary0to2
+    {
+        type            processor;
+        inGroups        1(processor);
+        nFaces          30;
+        startFace       2420;
+        matchTolerance  0.0001;
+        transform       unknown;
+        myProcNo        0;
+        neighbProcNo    2;
+    }
+)
+
+// ************************************************************************* //
