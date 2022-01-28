@@ -130,6 +130,7 @@ vector V2(0, 0.9, 0.1); //ray initial vector at boundary
                 //////////////////////////////////////////////////////////////Catch rays that get through--maybe gump all their energy here
                 if(alpha1[myCellId]>0.5&&mag(n_alpha[myCellId])<0.5){
                     // break;
+                    ErrorTrack[myCellId]=1.0;//
                     V2=DUMMYMAX;Q=DUMMYSCAL;
                 }//////////////////////////////////////////////////////////////Catch rays that get through
 
@@ -166,7 +167,7 @@ vector V2(0, 0.9, 0.1); //ray initial vector at boundary
 
 
 
-countbeams++;
+// countbeams++;
 if (countbeams>=1){break;}
    }
 

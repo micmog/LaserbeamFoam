@@ -736,6 +736,19 @@ volScalarField Dummyalpha
 );
 
 
+volScalarField ErrorTrack
+(
+    IOobject
+    (
+        "ErrorTrack",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("ErrorTrack",dimensionSet(0, 0, 0, -0, 0),0.0)
+);
 
 
 

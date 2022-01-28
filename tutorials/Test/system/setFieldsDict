@@ -78,6 +78,17 @@ fieldValues
 );
 }
 
+cylinderToCell
+{
+p1 	 (-1 	 0.0005 	 4.5e-3);
+p2 	 (51 	 0.0005 	 4.5e-3);
+radius 10e-4;
+fieldValues
+(
+            volScalarFieldValue alpha.phase1 1
+);
+}
+
 
 );
 
