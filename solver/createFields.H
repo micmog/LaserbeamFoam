@@ -193,33 +193,33 @@ volScalarField epsilon1
 
 epsilon1=max(min((Temperature-TSolidus)/(TLiquidus-TSolidus),scalar(1)),scalar(0));
 
-volVectorField nneps1
+volVectorField n_filtered
 (
     IOobject
     (
-        "nneps1",
+        "n_filtered",
         runTime.timeName(),
         mesh,
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
     ),
         mesh,
-         dimensionedVector("nneps1",dimensionSet(0, 0, 0, 0, 0),vector::zero)
+         dimensionedVector("n_filtered",dimensionSet(0, 0, 0, 0, 0),vector::zero)
 );
 
-volVectorField n_alpha
-(
-    IOobject
-    (
-        "n_alpha",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-        mesh,
-         dimensionedVector("n_alpha",dimensionSet(0, 0, 0, 0, 0),vector::zero)
-);
+// volVectorField n_alpha
+// (
+//     IOobject
+//     (
+//         "n_alpha",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//         mesh,
+//          dimensionedVector("n_alpha",dimensionSet(0, 0, 0, 0, 0),vector::zero)
+// );
 
 
      volScalarField epsilon1mask
@@ -676,18 +676,18 @@ volScalarField thermalDamper
 
 
 
-volScalarField Testval
+volScalarField Ray_Number
 (
     IOobject
     (
-        "Testval",
+        "Ray_Number",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
     mesh,
-    dimensionedScalar("Testval",dimensionSet(0, 0, 0, -0, 0),-1.0)
+    dimensionedScalar("Ray_Number",dimensionSet(0, 0, 0, -0, 0),-1.0)
 );
 
 volScalarField Deposition
@@ -721,18 +721,18 @@ Laser_boundary=fvc::average(Laser_boundary);
 
 
 
-volScalarField Dummyalpha
+volScalarField alpha_filtered
 (
     IOobject
     (
-        "Dummyalpha",
+        "alpha_filtered",
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
     mesh,
-    dimensionedScalar("Dummyalpha",dimensionSet(0, 0, 0, -0, 0),0.0)
+    dimensionedScalar("alpha_filtered",dimensionSet(0, 0, 0, -0, 0),0.0)
 );
 
 

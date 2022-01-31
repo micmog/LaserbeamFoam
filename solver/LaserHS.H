@@ -28,7 +28,7 @@ initial_points.clear();//clear the labels
 
 
 Deposition*=0.0;
-Testval*=0.0;
+Ray_Number*=0.0;
 forAll( mesh.C(), celli)
 {
 scalar x_coord = mesh.C()[celli].x();
@@ -37,9 +37,9 @@ scalar z_coord = mesh.C()[celli].z();
 
 // Info<<"x "<<x_coord<<", y "<<y_coord<<", z "<<z_coord<<endl;
 
-if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(a_cond.value(),2.0))
+if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(/*1.1*/a_cond.value(),2.0))
 &&(Laser_boundary[celli]>SMALL)){
-Testval[celli]=1.0;
+Ray_Number[celli]=1.0;
 initial_points.append(mesh.C()[celli]);
 
 }
@@ -77,9 +77,9 @@ Info<<"Beam: "<<i<<endl;
     //         Deposition[celli]=0.0;
     //     }
 
-// vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
+vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
 // vector V2(0, 1, 0); //ray initial vector at boundary
-vector V2(0, 0.9, 0.1); //ray initial vector at boundary
+// vector V2(0, 0.9, 0.1); //ray initial vector at boundary
 
     //    Info<<i<<"\t"<<pointslistGlobal1[i]<<endl;
 
@@ -116,22 +116,27 @@ vector V2(0, 0.9, 0.1); //ray initial vector at boundary
                 if(myCellId!=-1){
 
                     
-                    Testval[myCellId]=i+1;//set test field to beam flavour
+                    Ray_Number[myCellId]=i+1;//set test field to beam flavour
 
-                    if(mag(n_alpha[myCellId])>0.5&&alpha1[myCellId]>0.5){
+                    if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>0.5){
+                        
                             // Q-=1.0;
                         Deposition[myCellId]+=0.5*Q;
-                        Q*=0.5;
+                        Q*=(1.0-0.5);
 
-                            V2=V2-(((((2.0*V2) & n_alpha[myCellId])/(mag(n_alpha[myCellId])*mag(n_alpha[myCellId]))))*n_alpha[myCellId]);//;
+                            V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
 
-                    } else{}
+                    } else{}//
 
                 //////////////////////////////////////////////////////////////Catch rays that get through--maybe gump all their energy here
-                if(alpha1[myCellId]>0.5&&mag(n_alpha[myCellId])<0.5){
+                if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5){
                     // break;
+                    // maybe send ray back if its inside.....
                     ErrorTrack[myCellId]=1.0;//
-                    V2=DUMMYMAX;Q=DUMMYSCAL;
+                    V2=-V2;//DUMMYMAX;
+                    //Q=DUMMYSCAL;
+                    Deposition[myCellId]+=0.5*Q;
+                        Q*=(1.0-0.5);
                 }//////////////////////////////////////////////////////////////Catch rays that get through
 
 

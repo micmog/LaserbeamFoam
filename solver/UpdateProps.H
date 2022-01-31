@@ -10,20 +10,42 @@
 
 
 
-    Dummyalpha=fvc::average(alpha1);
+    alpha_filtered=alpha1;
 
-    volVectorField gradepsilon1=fvc::grad(Dummyalpha);
+    forAll( mesh.C(), celli)
+{
+if(alpha1[celli]>0.99){
+
+alpha_filtered[celli]=1.0;
+
+}
+else{
+
+if(alpha1[celli]<0.01){
+
+alpha_filtered[celli]=0.0;
+
+}
+else{alpha_filtered[celli]=alpha1[celli];}
+
+}
+}
+alpha_filtered.correctBoundaryConditions();
+
+
+
+    volVectorField gradepsilon1=fvc::grad(alpha_filtered);
     gradepsilon1.correctBoundaryConditions();
 
-    nneps1=fvc::grad(Dummyalpha)/((mag(gradepsilon1) + deltaN));
-    nneps1.correctBoundaryConditions();
+    n_filtered=fvc::grad(alpha_filtered)/((mag(gradepsilon1) + deltaN));
+    n_filtered.correctBoundaryConditions();
 
 
-    volVectorField gradalpha1=fvc::grad(alpha1);
-    gradalpha1.correctBoundaryConditions();
+    // volVectorField gradalpha1=fvc::grad(alpha1);
+    // gradalpha1.correctBoundaryConditions();
 
-    n_alpha=fvc::grad(alpha1)/((mag(gradalpha1) + deltaN));
-    n_alpha.correctBoundaryConditions();
+    // n_alpha=fvc::grad(alpha1)/((mag(gradalpha1) + deltaN));
+    // n_alpha.correctBoundaryConditions();
 
 
 /*

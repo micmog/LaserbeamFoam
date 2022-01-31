@@ -16,19 +16,19 @@ FoamFile
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 300.0;
+internalField   uniform 950.0;
 
 boundaryField
 {
 	frontAndBack{
 type fixedValue;
-value uniform 300;
+value uniform 950;
 	}
 
     lowerWall
     {
 type fixedValue;
-value uniform 300;
+value uniform 950;
     }
 
     atmosphere
