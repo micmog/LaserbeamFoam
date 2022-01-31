@@ -139,25 +139,7 @@ MELTING
     epsilonTolerance 1e-6;
     epsilonRelaxation 0.95;
     
-//	//	Heatsource characteristics
-HS_a 0.001;
-HS_bg 0.0;//20
-HS_velocity 1.0;//6.0;
-HS_lg -1e-3;
-HS_Q 780.0;//
-
-HS_deposition_cutoff 0.5;
-
-Oscillation_Amplitude   0.0;//0.015;
-Oscillation_Frequency   0.0;
-
-Y_R 0.2;//0.05; //Y_R->0 HS -> wider
-focY	0.0165; //-0.08;//
-foc_shift_vel 0.0;
-Q_ramp_rate 7800.0;
-tshift 0.25;
-
-damperSwitch false;//true;
+    damperSwitch false;//true;
 }
 
 relaxationFactors

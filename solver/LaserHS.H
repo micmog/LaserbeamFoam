@@ -29,6 +29,8 @@ initial_points.clear();//clear the labels
 
 Deposition*=0.0;
 Ray_Number*=0.0;
+Ray_Q*=0.0;
+
 forAll( mesh.C(), celli)
 {
 scalar x_coord = mesh.C()[celli].x();
@@ -39,7 +41,7 @@ scalar z_coord = mesh.C()[celli].z();
 
 if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(/*1.1*/a_cond.value(),2.0))
 &&(Laser_boundary[celli]>SMALL)){
-Ray_Number[celli]=1.0;
+// Ray_Number[celli]=1.0;
 initial_points.append(mesh.C()[celli]);
 
 }
@@ -88,11 +90,11 @@ vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
     //    Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
     //   scalar r= Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
 
-    //   scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
-	// 		*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(a_cond.value())),2.0)+
-    //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(a_cond.value()),2.0)));
+      scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
+			*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(a_cond.value())),2.0)+
+            Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(a_cond.value()),2.0)));
 
-        scalar Q=1.0;//
+        // scalar Q=1.0;//
        do{
            
             
@@ -117,11 +119,12 @@ vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
 
                     
                     Ray_Number[myCellId]=i+1;//set test field to beam flavour
+                    Ray_Q[myCellId]=Q;
 
                     if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>0.5){
                         
                             // Q-=1.0;
-                        Deposition[myCellId]+=0.5*Q;
+                        Deposition[myCellId]+=(0.5*Q)/yDim[myCellId];
                         Q*=(1.0-0.5);
 
                             V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
@@ -135,7 +138,7 @@ vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
                     ErrorTrack[myCellId]=1.0;//
                     V2=-V2;//DUMMYMAX;
                     //Q=DUMMYSCAL;
-                    Deposition[myCellId]+=0.5*Q;
+                    Deposition[myCellId]+=(0.5*Q)/yDim[myCellId];
                         Q*=(1.0-0.5);
                 }//////////////////////////////////////////////////////////////Catch rays that get through
 

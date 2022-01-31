@@ -34,7 +34,7 @@ regions
         );
     }
 
-
+/*
 cylinderToCell
 {
 p1 	 (-1 	 0.0005 	 0.0);
@@ -99,7 +99,7 @@ fieldValues
             volScalarFieldValue alpha.phase1 1
 );
 }
-
+*/
 
 );
 
