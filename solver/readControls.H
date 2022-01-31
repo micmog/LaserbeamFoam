@@ -30,6 +30,8 @@ IOdictionary LaserProperties
     scalar HS_velocity(readScalar(LaserProperties.lookup("HS_velocity")));
     scalar HS_lg(readScalar(LaserProperties.lookup("HS_lg")));
     scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
+    vector V_incident(LaserProperties.lookup("V_incident"));
+      
 
     // scalar HS_deposition_cutoff(readScalar(meltingDict.lookup("HS_deposition_cutoff")));
     // scalar Oscillation_Amplitude(readScalar(meltingDict.lookup("Oscillation_Amplitude")));

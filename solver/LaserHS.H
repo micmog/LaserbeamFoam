@@ -39,7 +39,7 @@ scalar z_coord = mesh.C()[celli].z();
 
 // Info<<"x "<<x_coord<<", y "<<y_coord<<", z "<<z_coord<<endl;
 
-if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(/*1.1*/a_cond.value(),2.0))
+if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.5*a_cond.value(),2.0))
 &&(Laser_boundary[celli]>SMALL)){
 // Ray_Number[celli]=1.0;
 initial_points.append(mesh.C()[celli]);
@@ -79,9 +79,11 @@ Info<<"Beam: "<<i<<endl;
     //         Deposition[celli]=0.0;
     //     }
 
-vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
+// vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
 // vector V2(0, 1, 0); //ray initial vector at boundary
 // vector V2(0, 0.9, 0.1); //ray initial vector at boundary
+
+vector V2(V_incident/mag(V_incident));
 
     //    Info<<i<<"\t"<<pointslistGlobal1[i]<<endl;
 
@@ -152,6 +154,7 @@ vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
                 // Pout<<V1_tip<<endl;
                 // Pout<<Q<<endl;
 
+// Pout<<mag(V2)<<endl;
                 
                 // V1_tip+=(iterator_distance*V2);
 

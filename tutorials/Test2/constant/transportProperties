@@ -44,11 +44,11 @@ kappasolid 0.016;
     Tsolidus    1.0;
     Tliquidus   10.0;
     LatentHeat  1;
-    beta    1.0e-5;
+    beta    5.0e-5;
 }
 
-sigma            0.8;//1.5;
-dsigmadT	-0.1e-4;
+sigma            1.5;//1.5;
+dsigmadT	-2.0e-4;
 
 p0		100000.0;
 Tvap 2743.0;
