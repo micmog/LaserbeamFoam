@@ -14,9 +14,10 @@ FoamFile
     object      PhaseFieldProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+V_incident	(0 1 0.5);//(0 1 0);//NORMALISED IN CODE
 
-HS_a 0.001;
+HS_a 0.0001;
 HS_bg 0.0;//20
 HS_velocity 1.0;//6.0;
-HS_lg -1e-3;
-HS_Q 150.0;//
+HS_lg 0e-3;
+HS_Q 250.0;//

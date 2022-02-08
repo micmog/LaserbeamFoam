@@ -385,20 +385,7 @@ forAll( mesh.C(), celli)
 
 cellarea.correctBoundaryConditions();
 
-volScalarField sourceTerm
-(
-    IOobject
-    (
-        "sourceTerm",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("sourceTerm",dimensionSet(1, -1, -3, 0, 0),scalar(0.0))
-);
-sourceTerm.write();
+
 
 volScalarField TRHS
 (
@@ -501,19 +488,6 @@ volScalarField ViscousDissipation
         dimensionedScalar("ViscousDissipation",dimensionSet(1, -1, -3, 0, 0),scalar(0.0))
 );
 
-volScalarField BeamProfile
-(
-    IOobject
-    (
-        "BeamProfile",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-        mesh,
-        dimensionedScalar("BeamProfile",dimensionSet(1, -1, -3, 0, 0),scalar(0.0))
-);
 
 volScalarField Num_divU
 (

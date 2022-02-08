@@ -25,7 +25,7 @@ initial_points.clear();//clear the labels
  List< pointField > gatheredData1(Pstream::nProcs());
 
 
-
+ErrorTrack*=0.0;
 
 Deposition*=0.0;
 Ray_Number*=0.0;

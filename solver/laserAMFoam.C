@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
             if (pimple.firstIter() || moveMeshOuterCorrectors)
             {
                 mesh.update();
+                
 
                 if (mesh.changing())
                 {
@@ -153,7 +154,7 @@ int main(int argc, char *argv[])
             #include "alphaEqnSubCycle.H"
             #include "UpdateProps.H"
 	   // #include "DivergingOscillatingGaussian.H"
-           #include "LaserHS.H"
+            #include "LaserHS.H"
 
             mixture.correct();
 
