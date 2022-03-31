@@ -11,46 +11,35 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "system";
-    object      controlDict;
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     Flint_multiphaseEulerFoamD;
+numberOfSubdomains 6;
 
-startFrom       latestTime;
+method          simple;
 
-startTime       0;
+simpleCoeffs
+{
+    n               (1 2 3);
+    delta           0.001;
+}
 
-stopAt          endTime;
+hierarchicalCoeffs
+{
+    n               (1 1 1);
+    delta           0.001;
+    order           xyz;
+}
 
-endTime         5e-2;
+manualCoeffs
+{
+    dataFile        "";
+}
 
-deltaT          1.0e-5;
+distributed     no;
 
-writeControl    adjustableRunTime;
-
-writeInterval   1e-04;
-
-purgeWrite      0;
-
-writeFormat     ascii;
-
-writePrecision  10;
-
-writeCompression uncompressed;
-
-timeFormat      general;
-
-timePrecision   10;
-
-runTimeModifiable yes;
-
-adjustTimeStep  yes;
-
-maxCo           0.1;//0.1;
-maxAlphaCo      0.1;
-
-maxDeltaT       2.5e-7;
+roots           ( );
 
 
 // ************************************************************************* //
