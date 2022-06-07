@@ -31,6 +31,10 @@ IOdictionary LaserProperties
     scalar HS_lg(readScalar(LaserProperties.lookup("HS_lg")));
     scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
     vector V_incident(LaserProperties.lookup("V_incident"));
+
+    scalar wavelength(readScalar(LaserProperties.lookup("wavelength")));
+    scalar e_num_density(readScalar(LaserProperties.lookup("e_num_density")));
+    scalar elec_resistivity(readScalar(LaserProperties.lookup("elec_resistivity"))); // this is temperature dependent - will include this in future versions
       
 
     // scalar HS_deposition_cutoff(readScalar(meltingDict.lookup("HS_deposition_cutoff")));
