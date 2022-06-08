@@ -9,6 +9,39 @@
     dimensionedScalar time("time",dimensionSet(0, 0, 1, 0, 0),runTime.time().value());//
 
 
+    double plasma_frequency = Foam::sqrt((e_num_density*constant::electromagnetic::e.value()*constant::electromagnetic::e.value())/(constant::atomic::me.value()*constant::electromagnetic::epsilon0.value()));
+    
+    double angular_frequency = 2.0*pi.value()*constant::universal::c.value()/wavelength;
+
+    double damping_frequency = plasma_frequency*plasma_frequency*constant::electromagnetic::epsilon0.value()*elec_resistivity;
+
+
+    double e_r = 1.0-(sqr(plasma_frequency)/(sqr(angular_frequency)+sqr(damping_frequency)));
+
+    double e_i = (damping_frequency/angular_frequency)*((plasma_frequency*plasma_frequency)/((angular_frequency*angular_frequency)+(damping_frequency*damping_frequency)));
+
+    double ref_index = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))+e_r)/2.0);
+
+    double ext_coefficient = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))-e_r)/2.0);
+
+
+
+    // Info<<"\n"<<endl;
+    // Info<<" plasma_frequency \t"<<plasma_frequency<<endl;
+    // Info<<" angular_frequency \t"<<angular_frequency<<endl;
+    // Info<<" damping_frequency \t"<<damping_frequency<<endl;
+    // Info<<" e_r \t"<<e_r<<endl;
+    // Info<<" e_i \t"<<e_i<<endl;
+    // Info<<" ref_index \t"<<ref_index<<endl;
+    // Info<<" ext_coefficient \t"<<ext_coefficient<<endl;
+    // Info<<"\n"<<endl;
+
+
+// vector TESTV1(0, 1, 0); //ray initial vector at boundary
+// vector TESTV2(0, 1, 0); //ray initial vector at boundary
+// Info<<"\n"<<endl;
+// Info<<"testvec"<<Foam::acos((TESTV1 & TESTV2)/(mag(TESTV1)*mag(TESTV2)))<<endl;
+// Info<<"\n"<<endl;
 
 //Set the boundary where the laser is incident
 Laser_boundary*=0.0;
@@ -25,10 +58,12 @@ initial_points.clear();//clear the labels
  List< pointField > gatheredData1(Pstream::nProcs());
 
 
-
+ErrorTrack*=0.0;
 
 Deposition*=0.0;
-Testval*=0.0;
+Ray_Number*=0.0;
+Ray_Q*=0.0;
+
 forAll( mesh.C(), celli)
 {
 scalar x_coord = mesh.C()[celli].x();
@@ -37,9 +72,9 @@ scalar z_coord = mesh.C()[celli].z();
 
 // Info<<"x "<<x_coord<<", y "<<y_coord<<", z "<<z_coord<<endl;
 
-if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(a_cond.value(),2.0))
+if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.5*a_cond.value(),2.0))
 &&(Laser_boundary[celli]>SMALL)){
-Testval[celli]=1.0;
+// Ray_Number[celli]=1.0;
 initial_points.append(mesh.C()[celli]);
 
 }
@@ -79,7 +114,9 @@ Info<<"Beam: "<<i<<endl;
 
 // vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
 // vector V2(0, 1, 0); //ray initial vector at boundary
-vector V2(0, 0.9, 0.1); //ray initial vector at boundary
+// vector V2(0, 0.9, 0.1); //ray initial vector at boundary
+
+vector V2(V_incident/mag(V_incident));
 
     //    Info<<i<<"\t"<<pointslistGlobal1[i]<<endl;
 
@@ -88,11 +125,11 @@ vector V2(0, 0.9, 0.1); //ray initial vector at boundary
     //    Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
     //   scalar r= Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
 
-    //   scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
-	// 		*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(a_cond.value())),2.0)+
-    //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(a_cond.value()),2.0)));
+      scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
+			*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(a_cond.value())),2.0)+
+            Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(a_cond.value()),2.0)));
 
-        scalar Q=1.0;//
+        // scalar Q=1.0;//
        do{
            
             
@@ -116,22 +153,63 @@ vector V2(0, 0.9, 0.1); //ray initial vector at boundary
                 if(myCellId!=-1){
 
                     
-                    Testval[myCellId]=i+1;//set test field to beam flavour
+                    Ray_Number[myCellId]=i+1;//set test field to beam flavour
+                    Ray_Q[myCellId]=Q;
 
-                    if(mag(n_alpha[myCellId])>0.5&&alpha1[myCellId]>0.5){
-                            // Q-=1.0;
-                        Deposition[myCellId]+=0.5*Q;
-                        Q*=0.5;
+                    if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>0.5){
+                        
 
-                            V2=V2-(((((2.0*V2) & n_alpha[myCellId])/(mag(n_alpha[myCellId])*mag(n_alpha[myCellId]))))*n_alpha[myCellId]);//;
+                            // Info<<"testvec"<<Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])))<<endl;
 
-                    } else{}
+                            // for(double theta_in=0.0;theta_in<=1.57;theta_in+=0.01){ // to plot absorptivity as a function of incideince angle - a bit hacky
+                             double theta_in = min(pi.value()/2.0,Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId]))));
+
+                            double alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));
+                            double beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
+                            
+                            double R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
+
+                            double R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
+
+
+                            double absorptivity = 1.0-((R_s+R_p)/2.0);
+
+                             Info<<pi.value()/2.0<<"\t"<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
+                                // }
+
+                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Q*=(1.0-absorptivity);
+
+                        if(theta_in>=(pi.value()/2.0)-SMALL){
+                            Q*=0.0;//
+                        }
+
+                            V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
+
+                    } else{}//
 
                 //////////////////////////////////////////////////////////////Catch rays that get through--maybe gump all their energy here
-                if(alpha1[myCellId]>0.5&&mag(n_alpha[myCellId])<0.5){
+                if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5){
                     // break;
+                    // maybe send ray back if its inside.....
                     ErrorTrack[myCellId]=1.0;//
-                    V2=DUMMYMAX;Q=DUMMYSCAL;
+
+                            double theta_in = 0.78;//Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])));
+
+                            double alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));
+                            double beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
+                            
+                            double R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
+
+                            double R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
+
+
+                            double absorptivity = 1.0-((R_s+R_p)/2.0);
+
+                    V2=-V2;//DUMMYMAX;
+                    //Q=DUMMYSCAL;
+                    Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Q*=(1.0-absorptivity);
                 }//////////////////////////////////////////////////////////////Catch rays that get through
 
 
@@ -144,6 +222,7 @@ vector V2(0, 0.9, 0.1); //ray initial vector at boundary
                 // Pout<<V1_tip<<endl;
                 // Pout<<Q<<endl;
 
+// Pout<<mag(V2)<<endl;
                 
                 // V1_tip+=(iterator_distance*V2);
 
