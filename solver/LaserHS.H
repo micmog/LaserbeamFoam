@@ -162,7 +162,7 @@ vector V2(V_incident/mag(V_incident));
                             // Info<<"testvec"<<Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])))<<endl;
 
                             // for(double theta_in=0.0;theta_in<=1.57;theta_in+=0.01){ // to plot absorptivity as a function of incideince angle - a bit hacky
-                             double theta_in = Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])));
+                             double theta_in = min(pi.value()/2.0,Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId]))));
 
                             double alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));
                             double beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
@@ -174,11 +174,15 @@ vector V2(V_incident/mag(V_incident));
 
                             double absorptivity = 1.0-((R_s+R_p)/2.0);
 
-                            // Info<<theta_in<<"\t"<<absorptivity<<endl;
+                             Info<<pi.value()/2.0<<"\t"<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
                                 // }
 
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                         Q*=(1.0-absorptivity);
+
+                        if(theta_in>=(pi.value()/2.0)-SMALL){
+                            Q*=0.0;//
+                        }
 
                             V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
 
