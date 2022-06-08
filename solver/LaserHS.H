@@ -174,7 +174,7 @@ vector V2(V_incident/mag(V_incident));
 
                             double absorptivity = 1.0-((R_s+R_p)/2.0);
 
-                             Info<<pi.value()/2.0<<"\t"<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
+                            //  Info<<pi.value()/2.0<<"\t"<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
                                 // }
 
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
