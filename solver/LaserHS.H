@@ -174,7 +174,7 @@ vector V2(V_incident/mag(V_incident));
 
                             double absorptivity = 1.0-((R_s+R_p)/2.0);
 
-                            //  Info<<pi.value()/2.0<<"\t"<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
+                             Pout<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
                                 // }
 
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
@@ -240,7 +240,7 @@ vector V2(V_incident/mag(V_incident));
                     reduce(V1_tip, maxOp<vector>());//reduce vector //
 
 //  Q-=0.1;
-       }while(Q>0);
+       }while(Q>1.0e-9);
 
 
 
