@@ -738,7 +738,19 @@ volScalarField ErrorTrack
     dimensionedScalar("ErrorTrack",dimensionSet(0, 0, 0, -0, 0),0.0)
 );
 
-
+volScalarField ErrorTrack2
+(
+    IOobject
+    (
+        "ErrorTrack2",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("ErrorTrack2",dimensionSet(0, 0, 0, -0, 0),0.0)
+);
 
 
 #include "UpdateProps.H"

@@ -59,6 +59,7 @@ initial_points.clear();//clear the labels
 
 
 ErrorTrack*=0.0;
+//ErrorTrack2*=0.0;
 
 Deposition*=0.0;
 Ray_Number*=0.0;
@@ -107,15 +108,7 @@ Info<<"iterator_distance \t"<<iterator_distance<<endl;
 int countbeams=0;
    forAll( pointslistGlobal1, i){
 Info<<"Beam: "<<i<<endl;
-    //    forAll( mesh.C(), celli)
-    //     {
-    //         Deposition[celli]=0.0;
-    //     }
 
-// vector V2(0, 0.70710678118, 0.70710678118); //ray initial vector at boundary
-// vector V2(0, 1, 0); //ray initial vector at boundary
-// vector V2(0, 0.9, 0.1); //ray initial vector at boundary
-// Pout<<"TEST_HERE1"<<endl;
 vector V2(V_incident/mag(V_incident));
 // Pout<<"TEST_HERE2"<<endl;
     //    Info<<i<<"\t"<<pointslistGlobal1[i]<<endl;
@@ -136,19 +129,8 @@ vector V2(V_incident/mag(V_incident));
             // Pout<<V1_tip<<endl;
             point DUMMYMAX(-GREAT,-GREAT,-GREAT);
             scalar DUMMYSCAL(-GREAT);
-            // label DUMMYMAXL(-GREAT);
-
-            // List< labelField > Listofcelllabels(Pstream::nProcs());
-            // List< pointField > Listofpoints(Pstream::nProcs());
-
-            // List<label> nextlabel(1,-1);
-            // List<vector> nextpoint(1,vector::zero);
-// Pout<<"TEST_HERE5"<<endl;
             label myCellId=mesh.findCell(V1_tip);
-// Pout<<"TEST_HERE6"<<endl;
-            // nextlabel[0]=(mesh.findCell(V1_tip));
-            // nextpoint[0]=DUMMYMAX;
-            // point V2(-GREAT,-GREAT,-GREAT);
+
             
                 if(myCellId!=-1){
 // Pout<<"TEST_HERE7"<<endl;
@@ -156,47 +138,64 @@ vector V2(V_incident/mag(V_incident));
                     Ray_Number[myCellId]=i+1;//set test field to beam flavour
                     Ray_Q[myCellId]=Q;
 // Pout<<"TEST_HERE8"<<endl;
-                    if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>0.5){
+                    if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=0.5){
                         
 // Pout<<"TEST_HERE9"<<endl;
                             // Info<<"testvec"<<Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])))<<endl;
-
+// Pout<<"About to calculate theta"<<endl;
                             // for(double theta_in=0.0;theta_in<=1.57;theta_in+=0.01){ // to plot absorptivity as a function of incideince angle - a bit hacky
-                             double theta_in = (Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId]))));
-// Pout<<"theta \t"<<theta_in<<endl;
+                             double argument = (V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId]));
+                                if(argument>=1.0-SMALL){argument=1.0;}
+                                if(argument<=-1.0+SMALL){argument=-1.0;}
+
+                            //  Pout<<"calculated argument of acos \t"<<argument<<endl;
+                             double theta_in = (std::acos(argument));
+                            //  double theta_in = (Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId]))));
+//  Pout<<"theta \t"<<theta_in<<endl;
+//  Pout<<"acos(1) \t"<<Foam::acos(1.0)<<endl;
+
+// ErrorTrack[myCellId]=theta_in;//
+// ErrorTrack2[myCellId]=1.0;//
+
                             double alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));
                             double beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
-// Pout<<"alpha_laser \t"<<alpha_laser<<endl; 
-// Pout<<"beta_laser \t"<<beta_laser<<endl;                            
+//  Pout<<"alpha_laser \t"<<alpha_laser<<endl; 
+//  Pout<<"beta_laser \t"<<beta_laser<<endl;                            
                             double R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
-// Pout<<"R_s \t"<<R_s<<endl; 
+//  Pout<<"R_s \t"<<R_s<<endl; 
                             double R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
-// Pout<<"R_p \t"<<R_p<<endl; 
+//  Pout<<"R_p \t"<<R_p<<endl; 
 
                             double absorptivity = 1.0-((R_s+R_p)/2.0);
 
                             //  Pout<<alpha_laser<<"\t"<<beta_laser<<"\t"<<R_s<<"\t"<<Q<<"\t"<<theta_in<<"\t"<<absorptivity<<endl;
                                 // }
 
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
-                        Q*=(1.0-absorptivity);
-
-                        if(theta_in>=(pi.value()/2.0)-SMALL){
-                            Q*=0.0;//
-                        }
-
+                            if(theta_in>=(pi.value()/2.0)/*-SMALL*/){
+                              Q*=0.0;//
+                            absorptivity=0.0;
+                             ErrorTrack[myCellId]-=1.0;//
+                            // ErrorTrack2[myCellId]=1.0;//
+                            //Pout<<"theta \t"<<theta_in<<", absorptivity \t"<<absorptivity<<endl;
+                            // V2=-V2;//DUMMYMAX;
+                            }
+                            // else{}
+                            // else{
+                            // Pout<<"TEST_HERE_pre_reflec"<<endl;
+                            Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                            Q*=(1.0-absorptivity);
                             V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
+                            // Pout<<"TEST_HERE_reflec"<<endl;
+                            // }
+                    } else{
 
-                    } else{}//
-
-                //////////////////////////////////////////////////////////////Catch rays that get through--maybe gump all their energy here
-                if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5){
+                        if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5){
                     // Pout<<"TEST_HERE"<<endl;
                     // break;
                     // maybe send ray back if its inside.....
-                    ErrorTrack[myCellId]=1.0;//
+                    ErrorTrack[myCellId]+=1.0;//
 
-                            double theta_in = 0.78;//Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])));
+                            double theta_in = 0.0;//Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])));
 
                             double alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));
                             double beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
@@ -208,11 +207,17 @@ vector V2(V_incident/mag(V_incident));
 
                             double absorptivity = 1.0-((R_s+R_p)/2.0);
 
-                    V2=-V2;//DUMMYMAX;
+                    V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                     //Q=DUMMYSCAL;
                     Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                         Q*=(1.0-absorptivity);
-                }//////////////////////////////////////////////////////////////Catch rays that get through
+                } 
+                else{}//////////////////////////////////////////////////////////////Catch rays that get through
+
+                    }//
+
+                //////////////////////////////////////////////////////////////Catch rays that get through--maybe gump all their energy here
+                
 
 
                 }
@@ -231,10 +236,10 @@ vector V2(V_incident/mag(V_incident));
                 label myCellIdnext=mesh.findCell(V1_tip);
                 if(myCellIdnext!=-1){
                 do{
-                    // Pout<<"cell index prior "<<myCellIdnext<<endl;
+                    //  Pout<<"cell index prior "<<myCellIdnext<<endl;
                     V1_tip+=(iterator_distance*V2);
                      myCellIdnext=mesh.findCell(V1_tip);
-                    //  Pout<<"cell index after iteration "<<myCellIdnext<<endl;
+                    //   Pout<<"cell index after iteration "<<myCellIdnext<<endl;
                     }
                 while(myCellIdnext==myCellId);
                 // Pout<<"leaving loop"<<endl;
