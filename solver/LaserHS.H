@@ -172,21 +172,26 @@ vector V2(V_incident/mag(V_incident));
                                 // }
 
                             if(theta_in>=(pi.value()/2.0)/*-SMALL*/){
-                              Q*=0.0;//
+                            //   Q*=0.0;//
+                            // absorptivity=1e-4;
+                            // Pout<<"vector: "<<V2<<"\t normal: "<<n_filtered[myCellId]<<endl;
                             absorptivity=0.0;
+                            
+                            Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                            Q*=(1.0-absorptivity);
                              ErrorTrack[myCellId]-=1.0;//
                             // ErrorTrack2[myCellId]=1.0;//
                             //Pout<<"theta \t"<<theta_in<<", absorptivity \t"<<absorptivity<<endl;
                             // V2=-V2;//DUMMYMAX;
                             }
                             // else{}
-                            // else{
+                            else{
                             // Pout<<"TEST_HERE_pre_reflec"<<endl;
                             Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                             Q*=(1.0-absorptivity);
                             V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
                             // Pout<<"TEST_HERE_reflec"<<endl;
-                            // }
+                            }
                     } else{
 
                         if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5){
