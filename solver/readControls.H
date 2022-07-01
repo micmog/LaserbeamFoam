@@ -37,6 +37,8 @@ IOdictionary LaserProperties
     scalar elec_resistivity(readScalar(LaserProperties.lookup("elec_resistivity"))); // this is temperature dependent - will include this in future versions
       
 
+    
+
     // scalar HS_deposition_cutoff(readScalar(meltingDict.lookup("HS_deposition_cutoff")));
     // scalar Oscillation_Amplitude(readScalar(meltingDict.lookup("Oscillation_Amplitude")));
     // scalar Oscillation_Frequency(readScalar(meltingDict.lookup("Oscillation_Frequency")));

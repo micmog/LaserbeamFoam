@@ -49,6 +49,15 @@ Laser_boundary=fvc::average(Laser_boundary);
 //Set the boundary where the laser is incident
 
 
+vector normal_interface(0,1,0);//laser comes in on top y boundary
+
+// Info<<"TEST_NORNALS \t "<<Foam::cos(Foam::acos(0.5))<<endl;
+
+double beam_radius = a_cond.value()/Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
+
+// Info<<"TEST ADJUST RADIUS \t "<<beam_radius<<endl;;
+
+
 scalar listLength(0);
 
 DynamicList<vector> initial_points(listLength,vector::zero);
@@ -73,7 +82,9 @@ scalar z_coord = mesh.C()[celli].z();
 
 // Info<<"x "<<x_coord<<", y "<<y_coord<<", z "<<z_coord<<endl;
 
-if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.5*a_cond.value(),2.0))
+// double beam_radius_adjusted_for_initial_incidence_angle = a_cond.value()/Foam::cos(Foam::acos(((V_incident/mag(V_incident)) & normal_interface)/(mag(V_incident/mag(V_incident))*mag(normal_interface))));
+
+if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.2*beam_radius,2.0))
 &&(Laser_boundary[celli]>SMALL)){
 // Ray_Number[celli]=1.0;
 initial_points.append(mesh.C()[celli]);
@@ -118,9 +129,9 @@ vector V2(V_incident/mag(V_incident));
     //    Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
     //   scalar r= Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
 // Pout<<"TEST_HERE3"<<endl;
-      scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
-			*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(a_cond.value())),2.0)+
-            Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(a_cond.value()),2.0)));
+      scalar Q=((3.0*Q_cond.value())/(beam_radius*beam_radius*pi.value()))
+			*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
+            Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
 // Pout<<"TEST_HERE4"<<endl;
         // scalar Q=1.0;//
        do{
