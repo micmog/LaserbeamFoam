@@ -33,7 +33,6 @@ else{alpha_filtered[celli]=alpha1[celli];}
 alpha_filtered.correctBoundaryConditions();
 
 
-
     volVectorField gradepsilon1=fvc::grad(alpha_filtered);
     gradepsilon1.correctBoundaryConditions();
 

@@ -139,7 +139,7 @@ MELTING
     epsilonTolerance 1e-6;
     epsilonRelaxation 0.95;
     
-    damperSwitch false;//true;
+    damperSwitch true;//false;//true;
 }
 
 relaxationFactors

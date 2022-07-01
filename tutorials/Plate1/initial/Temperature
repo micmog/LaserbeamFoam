@@ -21,8 +21,8 @@ internalField   uniform 300.0;
 boundaryField
 {
 	frontAndBack{
-type fixedValue;
-value uniform 300;
+type fixedGradient;
+gradient uniform -50.0;
 	}
 
     lowerWall

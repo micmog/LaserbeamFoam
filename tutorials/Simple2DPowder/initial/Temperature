@@ -21,13 +21,14 @@ internalField   uniform 300.0;
 boundaryField
 {
 	frontAndBack{
-type fixedValue;
-value uniform 300;
+type fixedGradient;
+gradient uniform -100.0;
 	}
 
     lowerWall
     {
-type zeroGradient;
+type fixedGradient;
+gradient uniform -100.0;
     }
 
     atmosphere
