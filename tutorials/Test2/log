@@ -7,21 +7,21 @@
 \*---------------------------------------------------------------------------*/
 Build  : 6-fa1285188035
 Exec   : laserAMFoam -parallel
-Date   : Jun 27 2022
-Time   : 13:53:20
+Date   : Jul 04 2022
+Time   : 10:59:50
 Host   : "e-uxxs4ly5294"
-PID    : 1370
+PID    : 22553
 I/O    : uncollated
 Case   : /home/mbcx7tf3/OpenFOAM/custom_solvers/laserAMFoam/tutorials/Test2
 nProcs : 6
 Slaves : 
 5
 (
-"e-uxxs4ly5294.1371"
-"e-uxxs4ly5294.1372"
-"e-uxxs4ly5294.1373"
-"e-uxxs4ly5294.1374"
-"e-uxxs4ly5294.1375"
+"e-uxxs4ly5294.22554"
+"e-uxxs4ly5294.22555"
+"e-uxxs4ly5294.22556"
+"e-uxxs4ly5294.22557"
+"e-uxxs4ly5294.22558"
 )
 
 Pstream initialized with:
@@ -75,8 +75,8 @@ Starting time loop
 
 Courant Number mean: 0 max: 0
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.111111111e-07
-Time = 1.111111111e-07
+deltaT = 1e-07
+Time = 1e-07
 
 smoothSolver:  Solving for alpha.phase1, Initial residual = 0, Final residual = 0, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
@@ -193,36 +193,112 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 0.8224553682, Final residual = 7.864559225e-17, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 5.830287702e-05, Final residual = 3.622674941e-22, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.9999999991, Final residual = 1.241526672e-09, No Iterations 1000
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117
+Beam: 118
+Beam: 119
+Beam: 120
+Beam: 121
+Beam: 122
+Beam: 123
+Beam: 124
+Beam: 125
+Beam: 126
+Beam: 127
+Beam: 128
+Beam: 129
+Beam: 130
+Beam: 131
+Beam: 132
+Beam: 133
+Beam: 134
+Beam: 135
+Beam: 136
+Beam: 137
+Beam: 138
+Beam: 139
+Beam: 140
+Beam: 141
+Beam: 142
+Beam: 143
+Beam: 144
+Beam: 145
+Beam: 146
+Beam: 147
+Beam: 148
+Beam: 149
+Beam: 150
+Beam: 151
+Beam: 152
+Beam: 153
+Beam: 154
+Beam: 155
+Beam: 156
+Beam: 157
+Beam: 158
+Beam: 159
+Beam: 160
+Beam: 161
+Beam: 162
+Beam: 163
+Beam: 164
+Beam: 165
+Beam: 166
+Beam: 167
+Beam: 168
+Beam: 169
+Beam: 170
+Beam: 171
+smoothSolver:  Solving for Uy, Initial residual = 0.8224553682, Final residual = 4.93949847e-17, No Iterations 5
+smoothSolver:  Solving for Uz, Initial residual = 5.830287702e-05, Final residual = 3.640333594e-22, No Iterations 5
+smoothSolver:  Solving for Temperature, Initial residual = 0.9999999995, Final residual = 9.191594126e-10, No Iterations 6
 Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 9.334595902e-13, Final residual = 9.334595902e-13, No Iterations 0
-time step continuity errors : sum local = 1.037177322e-30, global = 1.43956779e-36, cumulative = 1.43956779e-36
-GAMG:  Solving for p_rgh, Initial residual = 9.334595902e-13, Final residual = 9.334595902e-13, No Iterations 0
-time step continuity errors : sum local = 1.037177322e-30, global = 1.439567791e-36, cumulative = 2.879135581e-36
-GAMGPCG:  Solving for p_rgh, Initial residual = 9.334595902e-13, Final residual = 9.334595902e-13, No Iterations 0
-time step continuity errors : sum local = 1.037177322e-30, global = 1.439567791e-36, cumulative = 4.318703371e-36
-ExecutionTime = 22.37 s  ClockTime = 39 s
+GAMG:  Solving for p_rgh, Initial residual = 9.000765866e-13, Final residual = 9.000765866e-13, No Iterations 0
+time step continuity errors : sum local = 9.000765866e-31, global = 1.048129978e-36, cumulative = 1.048129978e-36
+GAMG:  Solving for p_rgh, Initial residual = 9.000765866e-13, Final residual = 9.000765866e-13, No Iterations 0
+time step continuity errors : sum local = 9.000765866e-31, global = 1.048129978e-36, cumulative = 2.096259957e-36
+GAMGPCG:  Solving for p_rgh, Initial residual = 9.000765866e-13, Final residual = 9.000765866e-13, No Iterations 0
+time step continuity errors : sum local = 9.000765866e-31, global = 1.048129978e-36, cumulative = 3.144389935e-36
+ExecutionTime = 19.19 s  ClockTime = 19 s
 
-Courant Number mean: 5.247979499e-31 max: 9.653135275e-28
+Courant Number mean: 4.550313249e-31 max: 8.686432658e-28
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.26984127e-07
-Time = 2.380952381e-07
+deltaT = 1e-07
+Time = 2e-07
 
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.792855991e-32, Final residual = 1.792855991e-32, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 1.411874088e-32, Final residual = 1.411874088e-32, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.792855991e-32, Final residual = 1.792855991e-32, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 1.411874088e-32, Final residual = 1.411874088e-32, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.792855991e-32, Final residual = 1.792855991e-32, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 1.411874088e-32, Final residual = 1.411874088e-32, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
@@ -325,36 +401,112 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 0.9994592539, Final residual = 3.594742249e-10, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.9999999999, Final residual = 6.966597381e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.2295373592, Final residual = 5.262096575e-10, No Iterations 5
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117
+Beam: 118
+Beam: 119
+Beam: 120
+Beam: 121
+Beam: 122
+Beam: 123
+Beam: 124
+Beam: 125
+Beam: 126
+Beam: 127
+Beam: 128
+Beam: 129
+Beam: 130
+Beam: 131
+Beam: 132
+Beam: 133
+Beam: 134
+Beam: 135
+Beam: 136
+Beam: 137
+Beam: 138
+Beam: 139
+Beam: 140
+Beam: 141
+Beam: 142
+Beam: 143
+Beam: 144
+Beam: 145
+Beam: 146
+Beam: 147
+Beam: 148
+Beam: 149
+Beam: 150
+Beam: 151
+Beam: 152
+Beam: 153
+Beam: 154
+Beam: 155
+Beam: 156
+Beam: 157
+Beam: 158
+Beam: 159
+Beam: 160
+Beam: 161
+Beam: 162
+Beam: 163
+Beam: 164
+Beam: 165
+Beam: 166
+Beam: 167
+Beam: 168
+Beam: 169
+Beam: 170
+Beam: 171
+smoothSolver:  Solving for Uy, Initial residual = 0.999739011, Final residual = 1.124398272e-10, No Iterations 5
+smoothSolver:  Solving for Uz, Initial residual = 0.9999999999, Final residual = 8.270576652e-17, No Iterations 5
+smoothSolver:  Solving for Temperature, Initial residual = 0.2076392289, Final residual = 2.227897816e-10, No Iterations 5
 Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.9915247319, Final residual = 7.810416149e-10, No Iterations 36
-time step continuity errors : sum local = 1.170227187e-25, global = 3.3979235e-27, cumulative = 3.397923504e-27
-GAMG:  Solving for p_rgh, Initial residual = 0.002721046765, Final residual = 8.927222759e-10, No Iterations 16
-time step continuity errors : sum local = 5.730279338e-25, global = -1.573510655e-26, cumulative = -1.233718305e-26
-GAMGPCG:  Solving for p_rgh, Initial residual = 8.517261948e-06, Final residual = 3.775558425e-10, No Iterations 2
-time step continuity errors : sum local = 2.39862363e-25, global = 4.216598152e-27, cumulative = -8.120584898e-27
-ExecutionTime = 43.02 s  ClockTime = 71 s
+GAMG:  Solving for p_rgh, Initial residual = 0.9948071231, Final residual = 8.517867384e-10, No Iterations 40
+time step continuity errors : sum local = 1.640298381e-25, global = 5.869198182e-28, cumulative = 5.869198213e-28
+GAMG:  Solving for p_rgh, Initial residual = 0.002146932291, Final residual = 8.059328029e-10, No Iterations 20
+time step continuity errors : sum local = 6.661119625e-25, global = -4.217307882e-27, cumulative = -3.630388061e-27
+GAMGPCG:  Solving for p_rgh, Initial residual = 5.308805784e-06, Final residual = 5.870719952e-10, No Iterations 2
+time step continuity errors : sum local = 4.81403734e-25, global = 6.42129133e-27, cumulative = 2.790903269e-27
+ExecutionTime = 38.23 s  ClockTime = 38 s
 
-Courant Number mean: 2.663056957e-20 max: 2.857493595e-18
+Courant Number mean: 1.498463979e-20 max: 1.598919728e-18
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.523809524e-07
-Time = 3.904761905e-07
+deltaT = 1e-07
+Time = 3e-07
 
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.584093124e-23, Final residual = 2.584093124e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 8.095446322e-24, Final residual = 8.095446322e-24, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.584093124e-23, Final residual = 2.584093124e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 8.095446322e-24, Final residual = 8.095446322e-24, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.584093124e-23, Final residual = 2.584093124e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 8.095446322e-24, Final residual = 8.095446322e-24, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
@@ -457,36 +609,112 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 5.335576096e-06, Final residual = 4.803338888e-15, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.339105402, Final residual = 6.552182763e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.1408138885, Final residual = 3.686870964e-10, No Iterations 5
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117
+Beam: 118
+Beam: 119
+Beam: 120
+Beam: 121
+Beam: 122
+Beam: 123
+Beam: 124
+Beam: 125
+Beam: 126
+Beam: 127
+Beam: 128
+Beam: 129
+Beam: 130
+Beam: 131
+Beam: 132
+Beam: 133
+Beam: 134
+Beam: 135
+Beam: 136
+Beam: 137
+Beam: 138
+Beam: 139
+Beam: 140
+Beam: 141
+Beam: 142
+Beam: 143
+Beam: 144
+Beam: 145
+Beam: 146
+Beam: 147
+Beam: 148
+Beam: 149
+Beam: 150
+Beam: 151
+Beam: 152
+Beam: 153
+Beam: 154
+Beam: 155
+Beam: 156
+Beam: 157
+Beam: 158
+Beam: 159
+Beam: 160
+Beam: 161
+Beam: 162
+Beam: 163
+Beam: 164
+Beam: 165
+Beam: 166
+Beam: 167
+Beam: 168
+Beam: 169
+Beam: 170
+Beam: 171
+smoothSolver:  Solving for Uy, Initial residual = 2.092164263e-05, Final residual = 2.425357513e-15, No Iterations 5
+smoothSolver:  Solving for Uz, Initial residual = 0.3134796603, Final residual = 5.329409679e-17, No Iterations 5
+smoothSolver:  Solving for Temperature, Initial residual = 0.1140484934, Final residual = 1.203359534e-10, No Iterations 5
 Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.2324517476, Final residual = 8.430323729e-10, No Iterations 33
-time step continuity errors : sum local = 1.002535834e-24, global = -2.740516271e-26, cumulative = -3.55257476e-26
-GAMG:  Solving for p_rgh, Initial residual = 0.00189636246, Final residual = 6.087043947e-10, No Iterations 16
-time step continuity errors : sum local = 1.291656601e-24, global = -3.597005925e-26, cumulative = -7.149580686e-26
-GAMGPCG:  Solving for p_rgh, Initial residual = 7.022826269e-06, Final residual = 3.098209962e-10, No Iterations 2
-time step continuity errors : sum local = 6.526120116e-25, global = 1.575033493e-26, cumulative = -5.574547193e-26
-ExecutionTime = 63.22 s  ClockTime = 103 s
+GAMG:  Solving for p_rgh, Initial residual = 0.2111700424, Final residual = 8.221150119e-10, No Iterations 36
+time step continuity errors : sum local = 8.568404341e-25, global = -1.175450495e-27, cumulative = 1.615452774e-27
+GAMG:  Solving for p_rgh, Initial residual = 0.001176676246, Final residual = 7.566691207e-10, No Iterations 19
+time step continuity errors : sum local = 1.346592597e-24, global = 8.311533617e-27, cumulative = 9.92698639e-27
+GAMGPCG:  Solving for p_rgh, Initial residual = 2.88995721e-06, Final residual = 3.149024476e-10, No Iterations 2
+time step continuity errors : sum local = 5.580759207e-25, global = 7.352742574e-27, cumulative = 1.727972896e-26
+ExecutionTime = 57.8 s  ClockTime = 58 s
 
-Courant Number mean: 1.208225343e-19 max: 1.215443055e-17
+Courant Number mean: 4.418893422e-20 max: 4.775598243e-18
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.523809524e-07
-Time = 5.428571429e-07
+deltaT = 1e-07
+Time = 4e-07
 
-smoothSolver:  Solving for alpha.phase1, Initial residual = 5.312161156e-23, Final residual = 5.312161156e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 1.547531709e-23, Final residual = 1.547531709e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 5.312161156e-23, Final residual = 5.312161156e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 1.547531709e-23, Final residual = 1.547531709e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 5.312161156e-23, Final residual = 5.312161156e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 1.547531709e-23, Final residual = 1.547531709e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
@@ -589,36 +817,111 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 3.151040051e-06, Final residual = 2.923017706e-15, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.22515048, Final residual = 4.935457355e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.09019579949, Final residual = 2.254705572e-10, No Iterations 5
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117
+Beam: 118
+Beam: 119
+Beam: 120
+Beam: 121
+Beam: 122
+Beam: 123
+Beam: 124
+Beam: 125
+Beam: 126
+Beam: 127
+Beam: 128
+Beam: 129
+Beam: 130
+Beam: 131
+Beam: 132
+Beam: 133
+Beam: 134
+Beam: 135
+Beam: 136
+Beam: 137
+Beam: 138
+Beam: 139
+Beam: 140
+Beam: 141
+Beam: 142
+Beam: 143
+Beam: 144
+Beam: 145
+Beam: 146
+Beam: 147
+Beam: 148
+Beam: 149
+Beam: 150
+Beam: 151
+Beam: 152
+Beam: 153
+Beam: 154
+Beam: 155
+Beam: 156
+Beam: 157
+Beam: 158
+Beam: 159
+Beam: 160
+Beam: 161
+Beam: 162
+Beam: 163
+Beam: 164
+Beam: 165
+Beam: 166
+Beam: 167
+Beam: 168
+Beam: 169
+Beam: 170
+smoothSolver:  Solving for Uy, Initial residual = 1.122103077e-05, Final residual = 1.340093918e-15, No Iterations 5
+smoothSolver:  Solving for Uz, Initial residual = 0.1850570246, Final residual = 5.028216564e-17, No Iterations 5
+smoothSolver:  Solving for Temperature, Initial residual = 0.07845939148, Final residual = 8.491404733e-11, No Iterations 5
 Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.1363775083, Final residual = 7.507330851e-10, No Iterations 32
-time step continuity errors : sum local = 1.831058073e-24, global = 7.666064095e-26, cumulative = 2.091516902e-26
-GAMG:  Solving for p_rgh, Initial residual = 0.001412715365, Final residual = 7.686340192e-10, No Iterations 15
-time step continuity errors : sum local = 2.751865952e-24, global = 6.896422625e-26, cumulative = 8.987939527e-26
-GAMGPCG:  Solving for p_rgh, Initial residual = 5.194997303e-06, Final residual = 2.245079881e-10, No Iterations 2
-time step continuity errors : sum local = 7.991778109e-25, global = 1.889689594e-26, cumulative = 1.087762912e-25
-ExecutionTime = 82.6 s  ClockTime = 133 s
+GAMG:  Solving for p_rgh, Initial residual = 0.1116009458, Final residual = 8.783437673e-10, No Iterations 34
+time step continuity errors : sum local = 1.752109897e-24, global = 3.00927884e-27, cumulative = 2.028900781e-26
+GAMG:  Solving for p_rgh, Initial residual = 0.0007934945386, Final residual = 8.030604824e-10, No Iterations 18
+time step continuity errors : sum local = 2.206734181e-24, global = -1.211864384e-26, cumulative = 8.170363967e-27
+GAMGPCG:  Solving for p_rgh, Initial residual = 1.939370191e-06, Final residual = 2.059853842e-10, No Iterations 2
+time step continuity errors : sum local = 5.645231377e-25, global = 7.495857441e-27, cumulative = 1.566622141e-26
+ExecutionTime = 74.77 s  ClockTime = 75 s
 
-Courant Number mean: 2.841003738e-19 max: 2.63113927e-17
+Courant Number mean: 8.926625016e-20 max: 9.51031628e-18
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.523809524e-07
-Time = 6.952380952e-07
+deltaT = 1e-07
+Time = 5e-07
 
-smoothSolver:  Solving for alpha.phase1, Initial residual = 8.577356645e-23, Final residual = 8.577356645e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 2.267607293e-23, Final residual = 2.267607293e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 8.577356645e-23, Final residual = 8.577356645e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 2.267607293e-23, Final residual = 2.267607293e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 8.577356645e-23, Final residual = 8.577356645e-23, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 2.267607293e-23, Final residual = 2.267607293e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
@@ -721,36 +1024,112 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 1.962186516e-06, Final residual = 1.876052408e-15, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.1509116675, Final residual = 4.878729666e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.06629566043, Final residual = 1.660875398e-10, No Iterations 5
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117
+Beam: 118
+Beam: 119
+Beam: 120
+Beam: 121
+Beam: 122
+Beam: 123
+Beam: 124
+Beam: 125
+Beam: 126
+Beam: 127
+Beam: 128
+Beam: 129
+Beam: 130
+Beam: 131
+Beam: 132
+Beam: 133
+Beam: 134
+Beam: 135
+Beam: 136
+Beam: 137
+Beam: 138
+Beam: 139
+Beam: 140
+Beam: 141
+Beam: 142
+Beam: 143
+Beam: 144
+Beam: 145
+Beam: 146
+Beam: 147
+Beam: 148
+Beam: 149
+Beam: 150
+Beam: 151
+Beam: 152
+Beam: 153
+Beam: 154
+Beam: 155
+Beam: 156
+Beam: 157
+Beam: 158
+Beam: 159
+Beam: 160
+Beam: 161
+Beam: 162
+Beam: 163
+Beam: 164
+Beam: 165
+Beam: 166
+Beam: 167
+Beam: 168
+Beam: 169
+Beam: 170
+Beam: 171
+smoothSolver:  Solving for Uy, Initial residual = 7.692296152e-06, Final residual = 9.439574797e-16, No Iterations 5
+smoothSolver:  Solving for Uz, Initial residual = 0.1202546712, Final residual = 4.090075452e-17, No Iterations 5
+smoothSolver:  Solving for Temperature, Initial residual = 0.05977333592, Final residual = 6.283568609e-11, No Iterations 5
 Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.0844794927, Final residual = 7.194582306e-10, No Iterations 31
-time step continuity errors : sum local = 2.797356649e-24, global = -5.854996671e-26, cumulative = 5.02263245e-26
-GAMG:  Solving for p_rgh, Initial residual = 0.001035577572, Final residual = 9.473439463e-10, No Iterations 14
-time step continuity errors : sum local = 4.767458868e-24, global = -1.388035684e-25, cumulative = -8.85772439e-26
-GAMGPCG:  Solving for p_rgh, Initial residual = 3.781157793e-06, Final residual = 1.573613017e-10, No Iterations 2
-time step continuity errors : sum local = 7.886851349e-25, global = 1.814917988e-26, cumulative = -7.042806402e-26
-ExecutionTime = 104.22 s  ClockTime = 166 s
+GAMG:  Solving for p_rgh, Initial residual = 0.0746303373, Final residual = 8.301696284e-10, No Iterations 33
+time step continuity errors : sum local = 2.458646735e-24, global = -8.729003879e-27, cumulative = 6.937217529e-27
+GAMG:  Solving for p_rgh, Initial residual = 0.0005995761057, Final residual = 6.093441552e-10, No Iterations 18
+time step continuity errors : sum local = 2.26493983e-24, global = -1.304148336e-26, cumulative = -6.104265832e-27
+GAMGPCG:  Solving for p_rgh, Initial residual = 1.459218549e-06, Final residual = 1.542399308e-10, No Iterations 2
+time step continuity errors : sum local = 5.721890304e-25, global = 7.542420663e-27, cumulative = 1.438154831e-27
+ExecutionTime = 94.29 s  ClockTime = 94 s
 
-Courant Number mean: 5.341193002e-19 max: 5.025678117e-17
+Courant Number mean: 1.513121155e-19 max: 1.578203197e-17
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.523809524e-07
-Time = 8.476190476e-07
+deltaT = 1e-07
+Time = 6e-07
 
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.183409002e-22, Final residual = 1.183409002e-22, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 2.981996613e-23, Final residual = 2.981996613e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.183409002e-22, Final residual = 1.183409002e-22, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 2.981996613e-23, Final residual = 2.981996613e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.183409002e-22, Final residual = 1.183409002e-22, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 2.981996613e-23, Final residual = 2.981996613e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
@@ -853,36 +1232,112 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 1.429928255e-06, Final residual = 1.407386262e-15, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.1134092658, Final residual = 5.117640071e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.05238293836, Final residual = 1.303083368e-10, No Iterations 5
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117
+Beam: 118
+Beam: 119
+Beam: 120
+Beam: 121
+Beam: 122
+Beam: 123
+Beam: 124
+Beam: 125
+Beam: 126
+Beam: 127
+Beam: 128
+Beam: 129
+Beam: 130
+Beam: 131
+Beam: 132
+Beam: 133
+Beam: 134
+Beam: 135
+Beam: 136
+Beam: 137
+Beam: 138
+Beam: 139
+Beam: 140
+Beam: 141
+Beam: 142
+Beam: 143
+Beam: 144
+Beam: 145
+Beam: 146
+Beam: 147
+Beam: 148
+Beam: 149
+Beam: 150
+Beam: 151
+Beam: 152
+Beam: 153
+Beam: 154
+Beam: 155
+Beam: 156
+Beam: 157
+Beam: 158
+Beam: 159
+Beam: 160
+Beam: 161
+Beam: 162
+Beam: 163
+Beam: 164
+Beam: 165
+Beam: 166
+Beam: 167
+Beam: 168
+Beam: 169
+Beam: 170
+Beam: 171
+smoothSolver:  Solving for Uy, Initial residual = 5.869045913e-06, Final residual = 7.427391765e-16, No Iterations 5
+smoothSolver:  Solving for Uz, Initial residual = 0.08276700089, Final residual = 3.988500363e-17, No Iterations 5
+smoothSolver:  Solving for Temperature, Initial residual = 0.04825082337, Final residual = 4.878974743e-11, No Iterations 5
 Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.06069313459, Final residual = 8.07741874e-10, No Iterations 30
-time step continuity errors : sum local = 4.309909226e-24, global = 1.945828308e-25, cumulative = 1.241547668e-25
-GAMG:  Solving for p_rgh, Initial residual = 0.0008253906464, Final residual = 7.491898101e-10, No Iterations 14
-time step continuity errors : sum local = 4.858144337e-24, global = -1.643496476e-25, cumulative = -4.019488077e-26
-GAMGPCG:  Solving for p_rgh, Initial residual = 2.995858824e-06, Final residual = 1.22726945e-10, No Iterations 2
-time step continuity errors : sum local = 7.929071407e-25, global = 1.76499587e-26, cumulative = -2.254492207e-26
-ExecutionTime = 124.59 s  ClockTime = 201 s
+GAMG:  Solving for p_rgh, Initial residual = 0.05570196276, Final residual = 8.854737267e-10, No Iterations 32
+time step continuity errors : sum local = 3.478630845e-24, global = 1.689230701e-26, cumulative = 1.833046184e-26
+GAMG:  Solving for p_rgh, Initial residual = 0.0004846707506, Final residual = 8.549993016e-10, No Iterations 17
+time step continuity errors : sum local = 4.004552933e-24, global = 3.798301847e-26, cumulative = 5.631348031e-26
+GAMGPCG:  Solving for p_rgh, Initial residual = 1.175099961e-06, Final residual = 1.210389169e-10, No Iterations 2
+time step continuity errors : sum local = 5.660821315e-25, global = 7.298048114e-27, cumulative = 6.361152843e-26
+ExecutionTime = 113.26 s  ClockTime = 113 s
 
-Courant Number mean: 8.8323651e-19 max: 9.350883547e-17
+Courant Number mean: 2.317507049e-19 max: 2.357056219e-17
 Interface Courant Number mean: 0 max: 0
-deltaT = 1.523809524e-07
-Time = 1e-06
+deltaT = 1e-07
+Time = 7e-07
 
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.508239464e-22, Final residual = 1.508239464e-22, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 3.695422231e-23, Final residual = 3.695422231e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.508239464e-22, Final residual = 1.508239464e-22, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 3.695422231e-23, Final residual = 3.695422231e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 1.508239464e-22, Final residual = 1.508239464e-22, No Iterations 0
+smoothSolver:  Solving for alpha.phase1, Initial residual = 3.695422231e-23, Final residual = 3.695422231e-23, No Iterations 0
 Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
 MULES: Correcting alpha.phase1
 MULES: Correcting alpha.phase1
@@ -985,235 +1440,25 @@ Beam: 92
 Beam: 93
 Beam: 94
 Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 1.128410773e-06, Final residual = 1.141329342e-15, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.09077887307, Final residual = 5.389076645e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.04328029769, Final residual = 1.074222733e-10, No Iterations 5
-Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.04708914249, Final residual = 9.867304924e-10, No Iterations 29
-time step continuity errors : sum local = 6.68996838e-24, global = -1.352790979e-25, cumulative = -1.5782402e-25
-GAMG:  Solving for p_rgh, Initial residual = 0.0006921875304, Final residual = 6.25632621e-10, No Iterations 14
-time step continuity errors : sum local = 4.959607088e-24, global = -1.950230889e-25, cumulative = -3.528471089e-25
-GAMGPCG:  Solving for p_rgh, Initial residual = 2.496153513e-06, Final residual = 1.008583733e-10, No Iterations 2
-time step continuity errors : sum local = 7.973606819e-25, global = 1.716472859e-26, cumulative = -3.356823803e-25
-ExecutionTime = 144.41 s  ClockTime = 230 s
-
-Courant Number mean: 1.343806839e-18 max: 1.558989203e-16
-Interface Courant Number mean: 0 max: 0
-deltaT = 1.666666667e-07
-Time = 1.166666667e-06
-
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.004001948e-22, Final residual = 2.004001948e-22, No Iterations 0
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.004001948e-22, Final residual = 2.004001948e-22, No Iterations 0
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.004001948e-22, Final residual = 2.004001948e-22, No Iterations 0
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-iterator_distance 	2.486795986e-06
-Beam: 0
-Beam: 1
-Beam: 2
-Beam: 3
-Beam: 4
-Beam: 5
-Beam: 6
-Beam: 7
-Beam: 8
-Beam: 9
-Beam: 10
-Beam: 11
-Beam: 12
-Beam: 13
-Beam: 14
-Beam: 15
-Beam: 16
-Beam: 17
-Beam: 18
-Beam: 19
-Beam: 20
-Beam: 21
-Beam: 22
-Beam: 23
-Beam: 24
-Beam: 25
-Beam: 26
-Beam: 27
-Beam: 28
-Beam: 29
-Beam: 30
-Beam: 31
-Beam: 32
-Beam: 33
-Beam: 34
-Beam: 35
-Beam: 36
-Beam: 37
-Beam: 38
-Beam: 39
-Beam: 40
-Beam: 41
-Beam: 42
-Beam: 43
-Beam: 44
-Beam: 45
-Beam: 46
-Beam: 47
-Beam: 48
-Beam: 49
-Beam: 50
-Beam: 51
-Beam: 52
-Beam: 53
-Beam: 54
-Beam: 55
-Beam: 56
-Beam: 57
-Beam: 58
-Beam: 59
-Beam: 60
-Beam: 61
-Beam: 62
-Beam: 63
-Beam: 64
-Beam: 65
-Beam: 66
-Beam: 67
-Beam: 68
-Beam: 69
-Beam: 70
-Beam: 71
-Beam: 72
-Beam: 73
-Beam: 74
-Beam: 75
-Beam: 76
-Beam: 77
-Beam: 78
-Beam: 79
-Beam: 80
-Beam: 81
-Beam: 82
-Beam: 83
-Beam: 84
-Beam: 85
-Beam: 86
-Beam: 87
-Beam: 88
-Beam: 89
-Beam: 90
-Beam: 91
-Beam: 92
-Beam: 93
-Beam: 94
-Beam: 95
-smoothSolver:  Solving for Uy, Initial residual = 9.342625386e-07, Final residual = 1.477580467e-15, No Iterations 5
-smoothSolver:  Solving for Uz, Initial residual = 0.07563360442, Final residual = 4.898135904e-17, No Iterations 5
-smoothSolver:  Solving for Temperature, Initial residual = 0.04017771049, Final residual = 1.302758078e-10, No Iterations 5
-Correcting epsilon1, mean residual = 0, max residual = 0
-GAMG:  Solving for p_rgh, Initial residual = 0.03831386776, Final residual = 7.84140597e-10, No Iterations 29
-time step continuity errors : sum local = 7.689065807e-24, global = -1.777674577e-25, cumulative = -5.13449838e-25
-GAMG:  Solving for p_rgh, Initial residual = 0.0006547270049, Final residual = 5.935420565e-10, No Iterations 14
-time step continuity errors : sum local = 6.634427625e-24, global = -2.982469532e-25, cumulative = -8.116967911e-25
-GAMGPCG:  Solving for p_rgh, Initial residual = 2.557485282e-06, Final residual = 1.022797818e-10, No Iterations 2
-time step continuity errors : sum local = 1.1403513e-24, global = 2.374087375e-26, cumulative = -7.879559174e-25
-ExecutionTime = 157.11 s  ClockTime = 243 s
-
-Courant Number mean: 2.168348368e-18 max: 2.717463695e-16
-Interface Courant Number mean: 0 max: 0
-deltaT = 1.666666667e-07
-Time = 1.333333333e-06
-
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.357454254e-22, Final residual = 2.357454254e-22, No Iterations 0
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.357454254e-22, Final residual = 2.357454254e-22, No Iterations 0
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-smoothSolver:  Solving for alpha.phase1, Initial residual = 2.357454254e-22, Final residual = 2.357454254e-22, No Iterations 0
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-MULES: Correcting alpha.phase1
-Phase-1 volume fraction = 0.5  Min(alpha.phase1) = 0  Max(alpha.phase1) = 1
-iterator_distance 	2.486795986e-06
-Beam: 0
-Beam: 1
-Beam: 2
-Beam: 3
-Beam: 4
-Beam: 5
-Beam: 6
-Beam: 7
-Beam: 8
-Beam: 9
-Beam: 10
-Beam: 11
-Beam: 12
-Beam: 13
-Beam: 14
-Beam: 15
-Beam: 16
-Beam: 17
-Beam: 18
-Beam: 19
-Beam: 20
-Beam: 21
-Beam: 22
-Beam: 23
-Beam: 24
-Beam: 25
-Beam: 26
-Beam: 27
-Beam: 28
-Beam: 29
-Beam: 30
-Beam: 31
-Beam: 32
-Beam: 33
-Beam: 34
-Beam: 35
-Beam: 36
-Beam: 37
-Beam: 38
-Beam: 39
-Beam: 40
-Beam: 41
-Beam: 42
-Beam: 43
-Beam: 44
-Beam: 45
-Beam: 46
-Beam: 47
-Beam: 48
-Beam: 49
-Beam: 50
-Beam: 51
-Beam: 52
-Beam: 53
-Beam: 54
-Beam: 55
-Beam: 56
-Beam: 57
-Beam: 58
-Beam: 59
-Beam: 60
-Beam: 61
-Beam: 62
-Beam: 63
+Beam: 96
+Beam: 97
+Beam: 98
+Beam: 99
+Beam: 100
+Beam: 101
+Beam: 102
+Beam: 103
+Beam: 104
+Beam: 105
+Beam: 106
+Beam: 107
+Beam: 108
+Beam: 109
+Beam: 110
+Beam: 111
+Beam: 112
+Beam: 113
+Beam: 114
+Beam: 115
+Beam: 116
+Beam: 117

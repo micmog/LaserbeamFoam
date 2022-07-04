@@ -1,11 +1,6 @@
 {
 
-    dimensionedScalar pi = constant::mathematical::pi;
-    dimensionedScalar a_cond("a_cond",dimensionSet(0, 1, 0, 0, 0),HS_a);//
-    dimensionedScalar b_g("b_g",dimensionSet(0, 1, 0, 0, 0),HS_bg);//
-    dimensionedScalar v_arc("v_arc",dimensionSet(0, 1, -1, 0, 0),HS_velocity);//
-    dimensionedScalar Q_cond("Q_cond",dimensionSet(1, 2, -3, 0, 0),HS_Q);//
-    dimensionedScalar lg("lg",dimensionSet(0, 1, 0, 0, 0),HS_lg);//
+
     dimensionedScalar time("time",dimensionSet(0, 0, 1, 0, 0),runTime.time().value());//
 
 
@@ -51,11 +46,8 @@ Laser_boundary=fvc::average(Laser_boundary);
 
 vector normal_interface(0,1,0);//laser comes in on top y boundary
 
-// Info<<"TEST_NORNALS \t "<<Foam::cos(Foam::acos(0.5))<<endl;
-
 double beam_radius = a_cond.value()/Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
-
-// Info<<"TEST ADJUST RADIUS \t "<<beam_radius<<endl;;
+// Adjust sample radius for if beam is not normal too top boundary
 
 
 scalar listLength(0);
@@ -84,7 +76,7 @@ scalar z_coord = mesh.C()[celli].z();
 
 // double beam_radius_adjusted_for_initial_incidence_angle = a_cond.value()/Foam::cos(Foam::acos(((V_incident/mag(V_incident)) & normal_interface)/(mag(V_incident/mag(V_incident))*mag(normal_interface))));
 
-if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.2*beam_radius,2.0))
+if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.1*beam_radius,2.0))
 &&(Laser_boundary[celli]>SMALL)){
 // Ray_Number[celli]=1.0;
 initial_points.append(mesh.C()[celli]);
@@ -126,13 +118,21 @@ vector V2(V_incident/mag(V_incident));
 
 
        point V1_tip(pointslistGlobal1[i]);
-    //    Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
-    //   scalar r= Foam::sqrt(Foam::pow(pointslistGlobal1[i].x()-b_g.value(),2.0)+Foam::pow(pointslistGlobal1[i].z()-(lg.value()+(v_arc.value()*time.value())),2.0));
-// Pout<<"TEST_HERE3"<<endl;
-      scalar Q=((3.0*Q_cond.value())/(beam_radius*beam_radius*pi.value()))
-			*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
-            Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
-// Pout<<"TEST_HERE4"<<endl;
+    
+    point mid(b_g.value(),pointslistGlobal1[i].y(),lg.value()+(v_arc.value()*time.value()));
+    vector x1 = mid-(10.0*V2);
+    vector x2 = mid+(10.0*V2);
+
+    vector x0(pointslistGlobal1[i].x(),pointslistGlobal1[i].y(),pointslistGlobal1[i].z());
+
+    double dist=mag(((x0-x1) ^ (x0-x2)))/mag(x2-x1);//cross product to find distance to beam central axis
+
+    //   scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
+	// 		*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
+    //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
+
+    scalar Q = ((3.0*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-3.0*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
+
         // scalar Q=1.0;//
        do{
            
