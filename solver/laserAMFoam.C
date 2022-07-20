@@ -53,6 +53,7 @@ Description
 #include "fvcSmooth.H"
 
 #include <vector>
+#include "meshSearch.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

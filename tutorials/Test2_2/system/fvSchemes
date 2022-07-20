@@ -28,7 +28,7 @@ d2dt2(D) steadyState;//Euler;
 }
 gradSchemes
 {
-    default         Gauss linear;;//leastSquares;//Gauss linear;
+    default         Gauss linear;
 }
 
 divSchemes
