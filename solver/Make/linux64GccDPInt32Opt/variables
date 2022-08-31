@@ -1,1 +1,1 @@
-EXE = $(FOAM_USER_APPBIN)/laserAMFoam
+EXE = $(FOAM_USER_APPBIN)/laserbeamFoam

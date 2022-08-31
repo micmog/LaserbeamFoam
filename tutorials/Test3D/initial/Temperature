@@ -9,37 +9,46 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    class       volScalarField;
+    object      p_rgh;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 6;
+dimensions      [0 0 0 1 0 0 0];
 
-method          scotch;
+internalField   uniform 300.0;
 
-simpleCoeffs
+boundaryField
 {
-    n               (1 4 8);
-    delta           0.001;
+	frontAndBack{
+type fixedGradient;
+gradient uniform -50.0;
+	}
+
+    lowerWall
+    {
+type zeroGradient;
+    }
+
+    atmosphere
+    {
+type zeroGradient;
+    }
+rightWall
+    {
+type fixedGradient;
+gradient uniform -50.0;
+    }
+    leftWall
+    {
+type fixedGradient;
+gradient uniform -50.0;
+    }
+
+    defaultFaces
+    {
+        type            empty;
+    }
 }
-
-hierarchicalCoeffs
-{
-    n               (1 1 1);
-    delta           0.001;
-    order           xyz;
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
-
 
 // ************************************************************************* //
