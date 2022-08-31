@@ -4,13 +4,16 @@
 ## Overview
 Presented here is the extensible open-source volume-of-fluid (VOF) solver laserbeamFoam, for studying high energy density laser based advanced manufacturing processes and laser-substrate interactions. In this implementation the metallic substrate, and shielding gas phase, are treated as in-compressible. The solver fully captures the fusion/melting state transition of the metallic substrate. For the vapourisation of the substrate, the explicit volumetric dilation due to the vapourisation state transition is neglected, instead, a phenomenological recoil pressure term is used to capture the contribution to the momentum and energy fields due to vaporisation events. laserbeamFoam also captures surface tension effects, the temperature dependence of surface tension (Marangoni) effects, latent heat effects due to melting/fusion (and vapourisation), buoyancy effects due to the thermal expansion of the phases using a Boussinesq approximation, and momentum damping due to solidification.
 
-A ray-tracing algorithm is implemented that permits the incident Gaussian laser beam to be discretised based on the computational grid resolution. The 'Rays' of this incident laser beam are then tracked through the domain through their multiple reflections. The absorptivity of a particular ray is given using the Fresnel equations. 
+A ray-tracing algorithm is implemented that permits the incident Gaussian laser beam to be discretised into a number of 'Rays' based on the computational grid resolution. The 'Rays' of this incident laser beam are then tracked through the domain through their multiple reflections; with the energy deposited by each ray determined through the Fresnel equations.
+ 
 The solver approach is based on the adiabatic two-phase interFoam code developed by [OpenCFD Ltd.](http://openfoam.com/). Target applications for laserbeamFoam include:
 
 * Laser Welding
 * Laser Drilling
+* Laser Powder Bed Fusion
+* Selective Laser Melting
 
-The laserbeamFoam solver is evvectively an extension of the beamWeldFoam solver previously released, with the implementation of the Ray-Tracing functionality and the Fresnel absorptivity model.
+The laserbeamFoam solver is effectively an extension of the beamWeldFoam solver previously released, with the implementation of the Ray-Tracing functionality and the Fresnel absorptivity model.
 
 ## Installation
 
@@ -46,6 +49,22 @@ $ mpirun -np 6 laserbeamFoam -parallel >log &
 ```
 for deployment on 6 cores.
 
+### 2D Plate Examples
+
+In these cases the penetration rate of an incident laser source is investigated based on the angle of incidence of the laser beam. Two cases are presented where the beam is either perpendicular to the substrate or at 45 degrees to the initial plate normal.
+
+### 3D Plate Example
+
+In this case the two-dimensional 45 degree example is extended to three dimensions.
+
+### 2D circular particles Example
+
+In this example a series of circular metallic regions are seeded on top of a planar substrate. The laser heat source traverses along the domain and melts these regions and their topology evolves accordingly.
+
+### 2D Laser-Powder Bed Fusion Example
+
+In this example a two-dimensional domain is seeded with many small powder particles with a complex size distribution, representative of that observed in the L-PBF manufacturing process. The laser heat source traverses the domain and a portion of these particles melt and re-solidify in the heat source wake.
+
 ## Algorithm
 
 Initially the solver loads the mesh, reads in fields and boundary conditions, reads certain mesh information into arrays (for the heat source application), selects the turbulence model (if specified). The main solver loop is then initiated. First, the time step is
@@ -70,7 +89,7 @@ The main solver loop iterates until program termination. A summary of the simula
         * 3. Correct u
   * 6. Write Fields
   
-Two sample tutorial cases, i.e. Gallium Meliing, and Sen and Davies cases are in strong agreement with experimental and analytical data available in the literature and serve as the validation cases for the implementation in beamWeldFoam.
+There are no constraints on how the computational domain is discretised.
 
 ## License
 OpenFoam, and by extension the laserbeamFoam application, is licensed free and open source only under the [GNU General Public Licence version 3](https://www.gnu.org/licenses/gpl-3.0.en.html). One reason for OpenFOAM’s popularity is that its users are granted the freedom to modify and redistribute the software and have a right of continued free use, within the terms of the GPL.
@@ -79,7 +98,7 @@ OpenFoam, and by extension the laserbeamFoam application, is licensed free and o
 The work was generously supported by the Engineering and Physical Sciences Research Council (EPSRC) under the ''Cobalt-free Hard-facing for Reactor Systems'' grant EP/T016728/1, and Science Foundation Ireland (SFI), co-funded under European Regional Development Fund and by I-Form industry partners, grant 16/RC/3872.
 
 ## Citing This Work
-If you use laserbeamFoam in your work. Please use the following to cite our work:
+If you use laserbeamFoam in your work. Please use the following to cite our work until a more appropriate reference is available:
 
 Thomas F. Flint, Gowthaman Parivendhan, Alojz Ivankovic, Michael C. Smith, Philip Cardiff,
 beamWeldFoam: Numerical simulation of high energy density fusion and vapourisation-inducing processes,
@@ -95,3 +114,6 @@ https://doi.org/10.1016/j.softx.2022.101065
 * Sen, A., & Davis, S. (1982). Steady thermocapillary flows in two-dimensional slots. Journal of Fluid Mechanics, 121, 163-186. doi:10.1017/S0022112082001840
 * Sabina L. Campanelli, Giuseppe Casalino, Michelangelo Mortello, Andrea Angelastro, Antonio Domenico Ludovico, Microstructural Characteristics and Mechanical Properties of Ti6Al4V Alloy Fiber Laser Welds
 
+
+
+![visitors](https://visitor-badge.deta.dev/badge?page_id=micmog.LaserbeamFoam)
