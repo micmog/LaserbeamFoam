@@ -217,11 +217,9 @@ vector V2(V_incident/mag(V_incident));
                 }
                 else{V2=DUMMYMAX;Q=DUMMYSCAL;}
 
-                reduce(V2, maxOp<vector>());//reduce vector //
+                reduce(V2, maxOp<vector>());//
                 reduce(Q, maxOp<scalar>());//
-                // reduce(V1_tip, maxOp<vector>());//reduce vector //All processors know where next tip is
-                // Pout<<V1_tip<<endl;
-                // Pout<<Q<<endl;
+
 
 // Pout<<mag(V2)<<endl;
                 

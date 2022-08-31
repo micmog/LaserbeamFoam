@@ -1,2 +1,2 @@
 SOURCE = \
-laserAMFoam.C 
+laserbeamFoam.C 
