@@ -36,7 +36,7 @@ solvers
     p_rgh
     {
         solver          GAMG;
-        tolerance       1e-12;
+        tolerance       1e-9;
         relTol          0.0;//0.005;//0.05;
         smoother        GaussSeidel;//GaussSeidel;//
         nPreSweeps      2;
@@ -54,7 +54,7 @@ solvers
         preconditioner
         {
             preconditioner  GAMG;
-            tolerance       1e-12;
+            tolerance       1e-9;
             relTol          0;
             nVcycles        5;
             smoother        GaussSeidel;//GaussSeidel;//DICGaussSeidel;//
@@ -66,7 +66,7 @@ solvers
             agglomerator    faceAreaPair;
             mergeLevels     1;
         }
-        tolerance       1e-12;
+        tolerance       1e-9;
         relTol          0;
         maxIter         25;//20;
     }
@@ -77,11 +77,11 @@ solvers
         preconditioner
         {
             preconditioner  GAMG;
-            tolerance       1e-12;
+            tolerance       1e-9;
             relTol          0;
             smoother        GaussSeidel;
         }
-        tolerance       1e-12;
+        tolerance       1e-9;
         relTol          0;
         maxIter         100;
     }
@@ -90,7 +90,7 @@ solvers
     {
         solver          smoothSolver;
         smoother        GaussSeidel;//GaussSeidel;//DICGaussSeidel;//
-        tolerance       1e-12;
+        tolerance       1e-9;
         relTol          0.0;//0.1;
         nSweeps         5;//1;
     }
@@ -98,7 +98,7 @@ solvers
     UFinal
     {
         $U;
-        tolerance       1e-12;
+        tolerance       1e-9;
         relTol          0;
     }
 
@@ -139,7 +139,7 @@ MELTING
     epsilonTolerance 1e-6;
     epsilonRelaxation 0.95;
     
-    damperSwitch true;//true;
+    damperSwitch false;//true;
 }
 
 relaxationFactors
