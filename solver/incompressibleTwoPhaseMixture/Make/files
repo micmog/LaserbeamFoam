@@ -1,0 +1,3 @@
+incompressibleTwoPhaseMixture.C
+
+LIB = $(FOAM_USER_LIBBIN)/libincompressibleTwoPhaseMixture_U

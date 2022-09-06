@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cp -r initial 0
+blockMesh
+setFields
+laser_interFoam
+#------------------------------------------------------------------------------
