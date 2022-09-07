@@ -1,9 +1,9 @@
 EXE_INC = \
-    -I./incompressibleInterPhaseTransportModel/lnInclude \
-    -I./incompressibleTwoPhaseMixture/lnInclude \
-    -I./interfaceProperties/lnInclude \
+    -IincompressibleInterPhaseTransportModel/lnInclude \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/twoPhaseMixture/lnInclude \
+    -I$(LIB_SRC)/twoPhaseModels/interfaceProperties/lnInclude \
+    -I$(LIB_SRC)/twoPhaseModels/incompressibleTwoPhaseMixture/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/immiscibleIncompressibleTwoPhaseMixture/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/twoPhaseChange/lnInclude \
     -I$(LIB_SRC)/MomentumTransportModels/momentumTransportModels/lnInclude \
@@ -19,11 +19,8 @@ EXE_LIBS = \
     -ltwoPhaseChangeModels \
     -lmomentumTransportModels \
     -lincompressibleMomentumTransportModels \
+    -lincompressibleInterPhaseTransportModel \
     -lfiniteVolume \
     -lfvModels \
     -lfvConstraints \
-    -lmeshTools \
-    -L$(FOAM_USER_LIBBIN) \
-    -lincompressibleInterPhaseTransportModel_U \
-    -linterfaceProperties_U \
-    -lincompressibleTwoPhaseMixture_U
+    -lmeshTools

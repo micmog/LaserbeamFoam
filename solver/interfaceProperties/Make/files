@@ -1,8 +1,0 @@
-interfaceProperties.C
-
-surfaceTensionModels/surfaceTensionModel/surfaceTensionModel.C
-surfaceTensionModels/surfaceTensionModel/surfaceTensionModelNew.C
-surfaceTensionModels/constant/constantSurfaceTension.C
-surfaceTensionModels/temperatureDependent/temperatureDependentSurfaceTension.C
-
-LIB = $(FOAM_USER_LIBBIN)/libinterfaceProperties_U

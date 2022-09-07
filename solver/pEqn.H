@@ -96,4 +96,6 @@
     {
         rAU.clear();
     }
+
+    Num_divU=fvc::div(phi);
 }
