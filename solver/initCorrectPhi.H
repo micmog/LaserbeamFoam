@@ -1,7 +1,7 @@
 if
 (
     !runTime.restart()
- || isType<twoPhaseChangeModels::noPhaseChange>(phaseChange)
+    || isType<twoPhaseChangeModels::noPhaseChange>(phaseChange)
 )
 {
     if (correctPhi)

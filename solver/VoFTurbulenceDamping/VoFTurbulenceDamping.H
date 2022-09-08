@@ -93,35 +93,35 @@ namespace fv
 \*---------------------------------------------------------------------------*/
 
 class VoFTurbulenceDamping
-:
+    :
     public fvModel
 {
     // Private Data
 
-        //- The name of the Lagrangian phase
-        word phaseName_;
+    //- The name of the Lagrangian phase
+    word phaseName_;
 
-        //- Field name
-        word fieldName_;
+    //- Field name
+    word fieldName_;
 
-        //- Interface turbulence damping length scale
-        //  This is a required input as described in section 3.3 of the paper
-        dimensionedScalar delta_;
+    //- Interface turbulence damping length scale
+    //  This is a required input as described in section 3.3 of the paper
+    dimensionedScalar delta_;
 
-        //- Reference to the mixture properties
-        const incompressibleTwoPhaseMixture& mixture_;
+    //- Reference to the mixture properties
+    const incompressibleTwoPhaseMixture& mixture_;
 
-        //- Reference to the interface properties
-        const interfaceProperties& interface_;
+    //- Reference to the interface properties
+    const interfaceProperties& interface_;
 
-        //- Reference to the mixture turbulence model
-        const incompressibleMomentumTransportModel& turbulence_;
+    //- Reference to the mixture turbulence model
+    const incompressibleMomentumTransportModel& turbulence_;
 
-        // Turbulence model coefficients
+    // Turbulence model coefficients
 
-            dimensionedScalar C2_;
-            dimensionedScalar betaStar_;
-            dimensionedScalar beta_;
+    dimensionedScalar C2_;
+    dimensionedScalar betaStar_;
+    dimensionedScalar beta_;
 
 
 public:
@@ -132,64 +132,64 @@ public:
 
     // Constructors
 
-        //- Construct from explicit source name and mesh
-        VoFTurbulenceDamping
-        (
-            const word& sourceName,
-            const word& modelType,
-            const dictionary& dict,
-            const fvMesh& mesh
-        );
+    //- Construct from explicit source name and mesh
+    VoFTurbulenceDamping
+    (
+        const word& sourceName,
+        const word& modelType,
+        const dictionary& dict,
+        const fvMesh& mesh
+    );
 
-        //- Disallow default bitwise copy construction
-        VoFTurbulenceDamping
-        (
-            const VoFTurbulenceDamping&
-        ) = delete;
+    //- Disallow default bitwise copy construction
+    VoFTurbulenceDamping
+    (
+        const VoFTurbulenceDamping&
+    ) = delete;
 
 
     // Member Functions
 
-        //- Return the list of fields for which the option adds source term
-        //  to the transport equation
-        virtual wordList addSupFields() const;
+    //- Return the list of fields for which the option adds source term
+    //  to the transport equation
+    virtual wordList addSupFields() const;
 
-        //- Add explicit contribution to epsilon or omega equation
-        virtual void addSup
-        (
-            fvMatrix<scalar>& eqn,
-            const word& fieldName
-        ) const;
+    //- Add explicit contribution to epsilon or omega equation
+    virtual void addSup
+    (
+        fvMatrix<scalar>& eqn,
+        const word& fieldName
+    ) const;
 
-        //- Add explicit contribution to phase epsilon or omega equation
-        virtual void addSup
-        (
-            const volScalarField& alpha,
-            const volScalarField& rho,
-            fvMatrix<scalar>& eqn,
-            const word& fieldName
-        ) const;
+    //- Add explicit contribution to phase epsilon or omega equation
+    virtual void addSup
+    (
+        const volScalarField& alpha,
+        const volScalarField& rho,
+        fvMatrix<scalar>& eqn,
+        const word& fieldName
+    ) const;
 
 
-        // Mesh changes
+    // Mesh changes
 
-            //- Update topology using the given map
-            virtual void topoChange(const polyTopoChangeMap&);
+    //- Update topology using the given map
+    virtual void topoChange(const polyTopoChangeMap&);
 
-            //- Update from another mesh using the given map
-            virtual void mapMesh(const polyMeshMap&);
+    //- Update from another mesh using the given map
+    virtual void mapMesh(const polyMeshMap&);
 
-            //- Redistribute or update using the given distribution map
-            virtual void distribute(const polyDistributionMap&);
+    //- Redistribute or update using the given distribution map
+    virtual void distribute(const polyDistributionMap&);
 
-            //- Update for mesh motion
-            virtual bool movePoints();
+    //- Update for mesh motion
+    virtual bool movePoints();
 
 
     // Member Operators
 
-        //- Disallow default bitwise assignment
-        void operator=(const VoFTurbulenceDamping&) = delete;
+    //- Disallow default bitwise assignment
+    void operator=(const VoFTurbulenceDamping&) = delete;
 };
 
 

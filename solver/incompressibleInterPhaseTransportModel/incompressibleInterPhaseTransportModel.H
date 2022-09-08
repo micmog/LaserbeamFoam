@@ -60,72 +60,72 @@ class incompressibleInterPhaseTransportModel
 {
     // Private Data
 
-        //- Switch to select two-phase or mixture transport modelling
-        Switch twoPhaseTransport_;
+    //- Switch to select two-phase or mixture transport modelling
+    Switch twoPhaseTransport_;
 
-        //- Two-phase mixture
-        const incompressibleTwoPhaseMixture& mixture_;
+    //- Two-phase mixture
+    const incompressibleTwoPhaseMixture& mixture_;
 
-        //- Mixture volumetric flux
-        const surfaceScalarField& phi_;
+    //- Mixture volumetric flux
+    const surfaceScalarField& phi_;
 
-        //- Phase volumetric flux
-        const surfaceScalarField& alphaPhi10_;
+    //- Phase volumetric flux
+    const surfaceScalarField& alphaPhi10_;
 
-        //- Phase-2 mass-flux (constructed from alphaPhi10_ and phi_)
-        tmp<surfaceScalarField> alphaPhi2_;
+    //- Phase-2 mass-flux (constructed from alphaPhi10_ and phi_)
+    tmp<surfaceScalarField> alphaPhi2_;
 
-        //- Mixture transport model (constructed for mixture transport)
-        autoPtr<incompressible::momentumTransportModel> turbulence_;
+    //- Mixture transport model (constructed for mixture transport)
+    autoPtr<incompressible::momentumTransportModel> turbulence_;
 
-        //- Phase-1 transport model (constructed for two-phase transport)
-        autoPtr<phaseIncompressible::momentumTransportModel> turbulence1_;
+    //- Phase-1 transport model (constructed for two-phase transport)
+    autoPtr<phaseIncompressible::momentumTransportModel> turbulence1_;
 
-        //- Phase-2 transport model (constructed for two-phase transport)
-        autoPtr<phaseIncompressible::momentumTransportModel> turbulence2_;
+    //- Phase-2 transport model (constructed for two-phase transport)
+    autoPtr<phaseIncompressible::momentumTransportModel> turbulence2_;
 
 
 public:
 
     // Constructors
 
-        //- Construct from components
-        incompressibleInterPhaseTransportModel
-        (
-            const volVectorField& U,
-            const surfaceScalarField& phi,
-            const surfaceScalarField& alphaPhi10,
-            const incompressibleTwoPhaseMixture& mixture
-        );
+    //- Construct from components
+    incompressibleInterPhaseTransportModel
+    (
+        const volVectorField& U,
+        const surfaceScalarField& phi,
+        const surfaceScalarField& alphaPhi10,
+        const incompressibleTwoPhaseMixture& mixture
+    );
 
-        //- Disallow default bitwise copy construction
-        incompressibleInterPhaseTransportModel
-        (
-            const incompressibleInterPhaseTransportModel&
-        );
+    //- Disallow default bitwise copy construction
+    incompressibleInterPhaseTransportModel
+    (
+        const incompressibleInterPhaseTransportModel&
+    );
 
 
     // Member Functions
 
-        //- Return the effective momentum stress divergence
-        tmp<fvVectorMatrix> divDevTau
-        (
-            const volScalarField& rho,
-            volVectorField& U
-        ) const;
+    //- Return the effective momentum stress divergence
+    tmp<fvVectorMatrix> divDevTau
+    (
+        const volScalarField& rho,
+        volVectorField& U
+    ) const;
 
-        //- Correct the phase mass-fluxes
-        // (required for the two-phase transport option)
-        void correctPhasePhi();
+    //- Correct the phase mass-fluxes
+    // (required for the two-phase transport option)
+    void correctPhasePhi();
 
-        //- Correct the phase or mixture transport models
-        void correct();
+    //- Correct the phase or mixture transport models
+    void correct();
 
 
     // Member Operators
 
-        //- Disallow default bitwise assignment
-        void operator=(const incompressibleInterPhaseTransportModel&) = delete;
+    //- Disallow default bitwise assignment
+    void operator=(const incompressibleInterPhaseTransportModel&) = delete;
 };
 
 

@@ -96,12 +96,12 @@ pressureReference pressureReference(p, p_rgh, pimple.dict());
 if (p_rgh.needReference())
 {
     p += dimensionedScalar
-    (
-        "p",
-        p.dimensions(),
-        pressureReference.refValue()
-      - getRefCellValue(p, pressureReference.refCell())
-    );
+         (
+             "p",
+             p.dimensions(),
+             pressureReference.refValue()
+             - getRefCellValue(p, pressureReference.refCell())
+         );
     p_rgh = p - rho*gh;
 }
 
@@ -114,8 +114,8 @@ mesh.schemes().setFluxRequired(alpha1.name());
 
 
 
-    
-    
+
+
 
 
 
@@ -297,23 +297,23 @@ volVectorField n_filtered
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
     ),
-        mesh,
-         dimensionedVector("n_filtered",dimensionSet(0, 0, 0, 0, 0),vector::zero)
+    mesh,
+    dimensionedVector("n_filtered",dimensionSet(0, 0, 0, 0, 0),vector::zero)
 );
 
-    volScalarField epsilon1mask
+volScalarField epsilon1mask
+(
+    IOobject
     (
-        IOobject
-        (
-            "epsilon1mask",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,
-            IOobject::NO_WRITE
-        ),
+        "epsilon1mask",
+        runTime.timeName(),
         mesh,
-       dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
-    );
+        IOobject::READ_IF_PRESENT,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
+);
 
 
 volVectorField gradT

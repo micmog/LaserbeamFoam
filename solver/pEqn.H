@@ -14,7 +14,7 @@
     (
         "phiHbyA",
         fvc::flux(HbyA)
-      + MRF.zeroFilter(fvc::interpolate(rho*rAU())*fvc::ddtCorr(U, phi, Uf))
+        + MRF.zeroFilter(fvc::interpolate(rho*rAU())*fvc::ddtCorr(U, phi, Uf))
     );
     MRF.makeRelative(phiHbyA);
 
@@ -29,8 +29,8 @@
     (
         (
             mixture.surfaceTensionForce()*fvc::interpolate(damper)
-	    +fvc::interpolate(pVap)*fvc::snGrad(alpha1)*fvc::interpolate(damper)
-          - ghf*fvc::snGrad(rho*rhok)
+            +fvc::interpolate(pVap)*fvc::snGrad(alpha1)*fvc::interpolate(damper)
+            - ghf*fvc::snGrad(rho*rhok)
         )*rAUf*mesh.magSf()
     );
 
@@ -47,7 +47,7 @@
         fvScalarMatrix p_rghEqn
         (
             fvc::div(phiHbyA) - fvm::laplacian(rAUf, p_rgh)
-         == Sp_rgh
+            == Sp_rgh
         );
 
         p_rghEqn.setReference
@@ -70,7 +70,7 @@
         }
     }
 
-    #include "continuityErrs.H"
+#include "continuityErrs.H"
 
     // Correct Uf if the mesh is moving
     fvc::correctUf(Uf, U, phi, MRF);
@@ -83,12 +83,12 @@
     if (p_rgh.needReference())
     {
         p += dimensionedScalar
-        (
-            "p",
-            p.dimensions(),
-            pressureReference.refValue()
-          - getRefCellValue(p, pressureReference.refCell())
-        );
+             (
+                 "p",
+                 p.dimensions(),
+                 pressureReference.refValue()
+                 - getRefCellValue(p, pressureReference.refCell())
+             );
         p_rgh = p - rho*gh*rhok;
     }
 
