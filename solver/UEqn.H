@@ -8,9 +8,9 @@ dimensionedScalar TSmooth("TSmooth",dimensionSet(0, 0, 0, 1, 0),50.0);
 DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)/(Foam::pow(epsilon1mask,3)+DarcyConstantsmall));
 DC.correctBoundaryConditions();
 
-volVectorField gradAlpha = fvc::grad(alpha1);
+const volVectorField gradAlpha(fvc::grad(alpha1));
 
-volVectorField nHatM = gradAlpha/(mag(gradAlpha) + deltaN);
+const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
 Marangoni = Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
 
 if(damperSwitch)
@@ -19,7 +19,6 @@ if(damperSwitch)
 }
 
 pVap = min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)* 0.54 * p0 * Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)));
-pVap.correctBoundaryConditions();
 
 fvVectorMatrix UEqn
 (

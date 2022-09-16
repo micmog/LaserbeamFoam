@@ -8,12 +8,10 @@
     dimensionedScalar meanResidual("meanResidual",dimensionSet(0, 0, 0, 0, 0),scalar(1.0));
     dimensionedScalar Tresidual("Tresidual",dimensionSet(0, 0, 0, 0, 0),scalar(1.0));
 
-    TRHS*=0.0;
+    TRHS *= 0.0;
 
-    volScalarField rhoCp = rho*cp;
-    rhoCp.correctBoundaryConditions();
-    surfaceScalarField rhoPhiCp=fvc::interpolate(cp)*rhoPhi;
-    surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
+    const volScalarField rhoCp(rho*cp);
+    const surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
 
     do
     {
@@ -23,8 +21,8 @@
         TRHS = LatentHeat*((fvc::ddt(rho,epsilon1) + fvc::div(rhoPhi, epsilon1)));
         TRHS.correctBoundaryConditions();
 
-        volTensorField gradU = fvc::grad(U);
-        volTensorField tau = ((mixture.mu()*gradU) + (mixture.mu()*gradU.T()))-((2.0/3.0)*mixture.mu()*(fvc::div(phi))*I);
+        const volTensorField gradU(fvc::grad(U));
+        volTensorField tau(((mixture.mu()*gradU) + (mixture.mu()*gradU.T()))-((2.0/3.0)*mixture.mu()*(fvc::div(phi))*I));
 
         Qv = min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*0.82*LatentHeatVap*Mm*p0*Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)))/Foam::pow(2*M_PI*Mm*R*T,0.5);
         Qv.correctBoundaryConditions();
