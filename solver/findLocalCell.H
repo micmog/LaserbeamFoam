@@ -32,18 +32,27 @@ namespace Foam
         const point& p,
         const label seedCellID,
         const polyMesh& mesh,
-        const label maxLocalSearch = 100
+        const label maxLocalSearch = 100,
+        const Switch debug = false
     )
     {
         // If the seed is out-of-range then use N2 search
         if (seedCellID < 0 || seedCellID >= mesh.nCells())
         {
+            if (debug)
+            {
+                Info<< "    Seed cell out of range: use N2 search" << endl;
+            }
             return mesh.findCell(p);
         }
 
         // Trivial case: check if the point is in the seed cell
         if (mesh.pointInCell(p, seedCellID))
         {
+            if (debug)
+            {
+                Info<< "    Found point in seed cell" << endl;
+            }
             return seedCellID;
         }
 
@@ -79,6 +88,11 @@ namespace Foam
             // Check if the point is in this cell
             if (mesh.pointInCell(p, cellID))
 	    {
+                if (debug)
+                {
+                    Info<< "    local search: found after " << localSearchI
+                        << " checks" << endl;
+                }
                 return cellID;
             }
 
@@ -104,6 +118,10 @@ namespace Foam
         }
 
         // Resort to N2 search
+        if (debug)
+        {
+            Info<< "    Defaults to N2 search" << endl;
+        }
         return mesh.findCell(p);
     }
 

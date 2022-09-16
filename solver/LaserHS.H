@@ -155,9 +155,6 @@
 
         point V1_tip(pointslistGlobal1[i]);
 
-        // Previous cell location of the tip
-        const label myPrevCellID = rayCellIDs[i];
-
         point mid(b_g.value(),pointslistGlobal1[i].y(),lg.value()+(v_arc.value()*time.value()));
         vector x1 = mid-(10.0*V2);
         vector x2 = mid+(10.0*V2);
@@ -178,7 +175,14 @@
             point DUMMYMAX(-GREAT,-GREAT,-GREAT);
             scalar DUMMYSCAL(-GREAT);
             //label myCellId=mesh.findCell(V1_tip);
+            const label myPrevCellID = rayCellIDs[i];
             const label myCellId = findLocalCell(V1_tip, myPrevCellID, mesh);
+
+            // Update rayCellIDs
+            if (useLocalSearch)
+            {
+                rayCellIDs[i] = myCellId;
+            }
 
             if (myCellId!=-1)
             {
@@ -292,12 +296,6 @@
             reduce(V1_tip, maxOp<vector>());//reduce vector //
 
             //  Q-=0.1;
-
-            // Update rayCellIDs
-            if (useLocalSearch)
-            {
-                rayCellIDs[i] = myCellId;
-            }
         };
 
         // countbeams++;
