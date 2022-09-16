@@ -1,5 +1,4 @@
 {
-
     IOdictionary LaserProperties
     (
         IOobject
@@ -13,121 +12,118 @@
     );
 
 
+    const scalar HS_a(readScalar(LaserProperties.lookup("HS_a")));
+    const scalar HS_bg(readScalar(LaserProperties.lookup("HS_bg")));
+    const scalar HS_velocity(readScalar(LaserProperties.lookup("HS_velocity")));
+    const scalar HS_lg(readScalar(LaserProperties.lookup("HS_lg")));
+    const scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
+    const vector V_incident(LaserProperties.lookup("V_incident"));
 
-    scalar HS_a(readScalar(LaserProperties.lookup("HS_a")));
-    scalar HS_bg(readScalar(LaserProperties.lookup("HS_bg")));
-    scalar HS_velocity(readScalar(LaserProperties.lookup("HS_velocity")));
-    scalar HS_lg(readScalar(LaserProperties.lookup("HS_lg")));
-    scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
-    vector V_incident(LaserProperties.lookup("V_incident"));
-
-    scalar wavelength(readScalar(LaserProperties.lookup("wavelength")));
-    scalar e_num_density(readScalar(LaserProperties.lookup("e_num_density")));
-    scalar elec_resistivity(readScalar(LaserProperties.lookup("elec_resistivity"))); // this is temperature dependent - will include this in future versions
-
-
-    dimensionedScalar pi = constant::mathematical::pi;
-    dimensionedScalar a_cond("a_cond",dimensionSet(0, 1, 0, 0, 0),HS_a);//
-    dimensionedScalar b_g("b_g",dimensionSet(0, 1, 0, 0, 0),HS_bg);//
-    dimensionedScalar v_arc("v_arc",dimensionSet(0, 1, -1, 0, 0),HS_velocity);//
-    dimensionedScalar Q_cond("Q_cond",dimensionSet(1, 2, -3, 0, 0),HS_Q);//
-    dimensionedScalar lg("lg",dimensionSet(0, 1, 0, 0, 0),HS_lg);//
+    const scalar wavelength(readScalar(LaserProperties.lookup("wavelength")));
+    const scalar e_num_density(readScalar(LaserProperties.lookup("e_num_density")));
+    const scalar elec_resistivity(readScalar(LaserProperties.lookup("elec_resistivity"))); // this is temperature dependent - will include this in future versions
 
 
+    const dimensionedScalar pi = constant::mathematical::pi;
+    const dimensionedScalar a_cond("a_cond",dimensionSet(0, 1, 0, 0, 0),HS_a);
+    const dimensionedScalar b_g("b_g",dimensionSet(0, 1, 0, 0, 0),HS_bg);
+    const dimensionedScalar v_arc("v_arc",dimensionSet(0, 1, -1, 0, 0),HS_velocity);
+    const dimensionedScalar Q_cond("Q_cond",dimensionSet(1, 2, -3, 0, 0),HS_Q);
+    const dimensionedScalar lg("lg",dimensionSet(0, 1, 0, 0, 0),HS_lg);
 
-    dimensionedScalar time("time",dimensionSet(0, 0, 1, 0, 0),runTime.time().value());//
-
-
-    scalar plasma_frequency = Foam::sqrt((e_num_density*constant::electromagnetic::e.value()*constant::electromagnetic::e.value())/(constant::atomic::me.value()*constant::electromagnetic::epsilon0.value()));
-
-    scalar angular_frequency = 2.0*pi.value()*constant::universal::c.value()/wavelength;
-
-    scalar damping_frequency = plasma_frequency*plasma_frequency*constant::electromagnetic::epsilon0.value()*elec_resistivity;
-
-
-    scalar e_r = 1.0-(sqr(plasma_frequency)/(sqr(angular_frequency)+sqr(damping_frequency)));
-
-    scalar e_i = (damping_frequency/angular_frequency)*((plasma_frequency*plasma_frequency)/((angular_frequency*angular_frequency)+(damping_frequency*damping_frequency)));
-
-    scalar ref_index = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))+e_r)/2.0);
-
-    scalar ext_coefficient = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))-e_r)/2.0);
+    const dimensionedScalar time("time",dimensionSet(0, 0, 1, 0, 0),runTime.time().value());
 
 
+    const scalar plasma_frequency = Foam::sqrt((e_num_density*constant::electromagnetic::e.value()*constant::electromagnetic::e.value())/(constant::atomic::me.value()*constant::electromagnetic::epsilon0.value()));
+    const scalar angular_frequency = 2.0*pi.value()*constant::universal::c.value()/wavelength;
+    const scalar damping_frequency = plasma_frequency*plasma_frequency*constant::electromagnetic::epsilon0.value()*elec_resistivity;
+    const scalar e_r = 1.0-(sqr(plasma_frequency)/(sqr(angular_frequency)+sqr(damping_frequency)));
+    const scalar e_i = (damping_frequency/angular_frequency)*((plasma_frequency*plasma_frequency)/((angular_frequency*angular_frequency)+(damping_frequency*damping_frequency)));
+    const scalar ref_index = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))+e_r)/2.0);
+    const scalar ext_coefficient = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))-e_r)/2.0);
 
-    // Info<<"\n"<<endl;
-    // Info<<" plasma_frequency \t"<<plasma_frequency<<endl;
-    // Info<<" angular_frequency \t"<<angular_frequency<<endl;
-    // Info<<" damping_frequency \t"<<damping_frequency<<endl;
-    // Info<<" e_r \t"<<e_r<<endl;
-    // Info<<" e_i \t"<<e_i<<endl;
-    // Info<<" ref_index \t"<<ref_index<<endl;
-    // Info<<" ext_coefficient \t"<<ext_coefficient<<endl;
-    // Info<<"\n"<<endl;
+    const Switch debug(LaserProperties.lookupOrDefault<Switch>("debug", false));
+    const Switch useLocalSearch
+    (
+        LaserProperties.lookupOrDefault<Switch>("useLocalSearch", true)
+    );
+
+    if (debug)
+    {
+        Info<<"\n" << nl
+            <<" plasma_frequency \t" << plasma_frequency << nl
+            <<" angular_frequency \t" << angular_frequency << nl
+            <<" damping_frequency \t" << damping_frequency << nl
+            <<" e_r \t" << e_r << nl
+            <<" e_i \t" << e_i << nl
+            <<" ref_index \t" << ref_index << nl
+            <<" ext_coefficient \t" << ext_coefficient << nl
+            <<"\n" << endl;
+    }
+
+    // Set the boundary where the laser is incident
+    Laser_boundary *= 0.0;
+    Laser_boundary = fvc::average(Laser_boundary);
 
 
-// vector TESTV1(0, 1, 0); //ray initial vector at boundary
-// vector TESTV2(0, 1, 0); //ray initial vector at boundary
-// Info<<"\n"<<endl;
-// Info<<"testvec"<<Foam::acos((TESTV1 & TESTV2)/(mag(TESTV1)*mag(TESTV2)))<<endl;
-// Info<<"\n"<<endl;
+    const vector normal_interface(0,1,0);//laser comes in on top y boundary
 
-//Set the boundary where the laser is incident
-    Laser_boundary*=0.0;
-    Laser_boundary=fvc::average(Laser_boundary);
-//Set the boundary where the laser is incident
-
-
-    vector normal_interface(0,1,0);//laser comes in on top y boundary
-
-    scalar beam_radius = a_cond.value()/Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
-// Adjust sample radius for if beam is not normal too top boundary
-    scalar CosTheta_incident = Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
-    Info<<"cos (theta): \t"<<CosTheta_incident<<endl;
+    const scalar beam_radius = a_cond.value()/Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
+    // Adjust sample radius for if beam is not normal too top boundary
+    const scalar CosTheta_incident = Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
+    Info<< "cos (theta): \t" << CosTheta_incident<<endl;
 
     scalar listLength(0);
 
     DynamicList<vector> initial_points(listLength,vector::zero);
     initial_points.clear();//clear the labels
 
-//List with size equal to number of processors
+    //List with size equal to number of processors
     List< pointField > gatheredData1(Pstream::nProcs());
 
 
-    ErrorTrack*=0.0;
-//ErrorTrack2*=0.0;
+    ErrorTrack *= 0.0;
+    //ErrorTrack2 *= 0.0;
 
-    Deposition*=0.0;
-    Ray_Number*=0.0;
-    Ray_Q*=0.0;
+    Deposition *= 0.0;
+    Ray_Number *= 0.0;
+    Ray_Q *= 0.0;
 
-    forAll( mesh.C(), celli)
+    forAll(mesh.C(), celli)
     {
-        scalar x_coord = mesh.C()[celli].x();
-// scalar y_coord = mesh.C()[celli].y();
-        scalar z_coord = mesh.C()[celli].z();
+        const scalar x_coord = mesh.C()[celli].x();
+        // const scalar y_coord = mesh.C()[celli].y();
+        const scalar z_coord = mesh.C()[celli].z();
 
-// Info<<"x "<<x_coord<<", y "<<y_coord<<", z "<<z_coord<<endl;
+        // scalar beam_radius_adjusted_for_initial_incidence_angle = a_cond.value()/Foam::cos(Foam::acos(((V_incident/mag(V_incident)) & normal_interface)/(mag(V_incident/mag(V_incident))*mag(normal_interface))));
 
-// scalar beam_radius_adjusted_for_initial_incidence_angle = a_cond.value()/Foam::cos(Foam::acos(((V_incident/mag(V_incident)) & normal_interface)/(mag(V_incident/mag(V_incident))*mag(normal_interface))));
-
-        if(((Foam::pow(x_coord-b_g.value(),2.0))+(Foam::pow(z_coord-(lg.value()+(v_arc.value()*time.value())),2.0))<=Foam::pow(1.5*beam_radius,2.0))
-                &&(Laser_boundary[celli]>SMALL))
+        if
+        (
+            (
+                (Foam::pow(x_coord-b_g.value(),2.0))
+              + (
+                    Foam::pow
+                    (
+                        z_coord-(lg.value()+(v_arc.value()*time.value())),
+                        2.0
+                    )
+                )
+             <= Foam::pow(1.5*beam_radius, 2.0)
+            )
+        && (Laser_boundary[celli] > SMALL)
+        )
         {
-// Ray_Number[celli]=1.0;
+            // Ray_Number[celli]=1.0;
             initial_points.append(mesh.C()[celli]);
-
         }
-
-
     }
 
 
-//  Populate and gather the list onto the master processor.
+    //  Populate and gather the list onto the master processor.
     gatheredData1[Pstream::myProcNo()] = initial_points;
     Pstream::gatherList(gatheredData1);
 
-//  Distibulte the data accross the different processors
+    //  Distibulte the data accross the different processors
     Pstream::scatterList(gatheredData1);
 
     pointField pointslistGlobal1//list of initial points
@@ -139,22 +135,27 @@
         )
     );
 
-
+    // Store the list of cell indices where the ray tips are located; these will
+    // be used to previous a local search for the new tip cell indices
+    labelList rayCellIDs(pointslistGlobal1.size(), -1);
 
     scalar iterator_distance = (0.5/pi.value())*gMin(yDim);//gMin(xcoord);
     Info<<"iterator_distance \t"<<iterator_distance<<endl;
-//then loop over all starting points
-// int countbeams=0;
-    forAll( pointslistGlobal1, i)
+    //then loop over all starting points
+    // int countbeams=0;
+    forAll(pointslistGlobal1, i)
     {
         Info<<"Beam: "<<i<<endl;
 
         vector V2(V_incident/mag(V_incident));
-// Pout<<"TEST_HERE2"<<endl;
+        // Pout<<"TEST_HERE2"<<endl;
         //    Info<<i<<"\t"<<pointslistGlobal1[i]<<endl;
 
 
         point V1_tip(pointslistGlobal1[i]);
+
+        // Previous cell location of the tip
+        const label myPrevCellID = rayCellIDs[i];
 
         point mid(b_g.value(),pointslistGlobal1[i].y(),lg.value()+(v_arc.value()*time.value()));
         vector x1 = mid-(10.0*V2);
@@ -172,16 +173,13 @@
 
         while (Q > 1.0e-9)
         {
-
-
             // Pout<<V1_tip<<endl;
             point DUMMYMAX(-GREAT,-GREAT,-GREAT);
             scalar DUMMYSCAL(-GREAT);
             //label myCellId=mesh.findCell(V1_tip);
-            const label myCellId = findLocalCell(V1_tip, -1, mesh);
+            const label myCellId = findLocalCell(V1_tip, myPrevCellID, mesh);
 
-
-            if(myCellId!=-1)
+            if (myCellId!=-1)
             {
 
 
@@ -216,7 +214,7 @@
 
                     if(theta_in>=(pi.value()/2.0)/*-SMALL*/) //sometimes the ray can be reflected and 'skip' along the interface cells - this is unphysical and the ray should traverse  without depositing any energy so set Q to 0 in this instance
                     {
-                        Q*=0.0;//
+                        Q *= 0.0;//
                         // Pout<<"vector: "<<V2<<"\t normal: "<<n_filtered[myCellId]<<endl;
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                         ErrorTrack[myCellId]-=1.0;//
@@ -229,7 +227,7 @@
                     {
                         // Pout<<"TEST_HERE_pre_reflec"<<endl;
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
-                        Q*=(1.0-absorptivity);
+                        Q *= (1.0-absorptivity);
                         V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
                         // Pout<<"TEST_HERE_reflec"<<endl;
                     }
@@ -254,7 +252,7 @@
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
-                        Q*=(1.0-absorptivity);
+                        Q *= (1.0-absorptivity);
                     }
                     else {} //////////////////////////////////////////////////////////////Catch rays that get through
 
@@ -271,27 +269,20 @@
                 Q=DUMMYSCAL;
             }
 
-            reduce(V2, maxOp<vector>());//
-            reduce(Q, maxOp<scalar>());//
-
-
-// Pout<<mag(V2)<<endl;
+            reduce(V2, maxOp<vector>());
+            reduce(Q, maxOp<scalar>());
 
             // V1_tip+=(iterator_distance*V2);
             //label myCellIdnext=mesh.findCell(V1_tip);
-            label myCellIdnext = findLocalCell(V1_tip, -1, mesh);
-            if(myCellIdnext!=-1)
+            label myCellIdnext = findLocalCell(V1_tip, myPrevCellID, mesh);
+            if (myCellIdnext != -1)
             {
-                while(myCellIdnext==myCellId)
+                while (myCellIdnext == myCellId)
                 {
-                    //  Pout<<"cell index prior "<<myCellIdnext<<endl;
                     V1_tip += (iterator_distance*V2);
                     //myCellIdnext = mesh.findCell(V1_tip);
-                    myCellIdnext = findLocalCell(V1_tip, -1, mesh);
-                    //   Pout<<"cell index after iteration "<<myCellIdnext<<endl;
+                    myCellIdnext = findLocalCell(V1_tip, myPrevCellID, mesh);
                 }
-                ;
-                // Pout<<"leaving loop"<<endl;
             }
             else
             {
@@ -299,29 +290,21 @@
             }
             reduce(V1_tip, maxOp<vector>());//reduce vector //
 
-//  Q-=0.1;
+            //  Q-=0.1;
+
+            // Update rayCellIDs
+            if (useLocalSearch)
+            {
+                rayCellIDs[i] = myCellId;
+            }
         };
 
-
-
-
-
-// countbeams++;
-// if (countbeams>=1){break;}
+        // countbeams++;
+        // if (countbeams>=1){break;}
     }
 
 
-    scalar TotalQ=gSum(Deposition)*mesh.V()[1];//assumes all cells in mesh are same volume - this code only works on regular meshes anyway
+    // assumes all cells in mesh are same volume - this code only works on regular meshes anyway
+    const scalar TotalQ = gSum(Deposition)*mesh.V()[0];
     Info<<"Total Q deposited this timestep: \t"<<TotalQ<<endl;
-// sourceTerm[cellpointhit]=(1.0/yDim[cellpointhit])*
-
-
-
-
-
-
-
-
-
-
 }
