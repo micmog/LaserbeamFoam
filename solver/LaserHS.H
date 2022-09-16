@@ -47,6 +47,7 @@
     (
         LaserProperties.lookupOrDefault<Switch>("useLocalSearch", true)
     );
+    Info<< "useLocalSearch: " << useLocalSearch << endl;
 
     if (debug)
     {
