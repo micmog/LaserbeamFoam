@@ -222,7 +222,10 @@
                         Q *= 0.0;//
                         // Pout<<"vector: "<<V2<<"\t normal: "<<n_filtered[myCellId]<<endl;
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        if (debug)
+                        {
                         ErrorTrack[myCellId]-=1.0;//
+                        }
                         // ErrorTrack2[myCellId]=1.0;//
                         //Pout<<"theta \t"<<theta_in<<", absorptivity \t"<<absorptivity<<endl;
                         // V2=-V2;//DUMMYMAX;
@@ -242,8 +245,10 @@
 
                     if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5) // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
                     {
+                        if (debug)
+                        {
                         ErrorTrack[myCellId]+=1.0;//
-
+                        }
                         scalar theta_in = 0.0;//Foam::acos((V2 & n_filtered[myCellId])/(mag(V2)*mag(n_filtered[myCellId])));
 
                         scalar alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));

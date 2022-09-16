@@ -9,44 +9,12 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      fvSchemes;
+    location    "constant";
+    object      momentumTransport;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-ddtSchemes
-{
-    default         Euler;
-}
-
-gradSchemes
-{
-    default         Gauss linear;
-}
-
-divSchemes
-{
-    div(rhoPhi,U)  Gauss linearUpwind grad(U);
-    div(phi,alpha)  Gauss interfaceCompression vanLeer 1;
-    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
-    div(rhoPhi,epsilon1)	Gauss linear;//Gauss vanLeer01;
-    div((interpolate(cp)*rhoPhi),T)   Gauss upwind;
-}
-
-laplacianSchemes
-{
-    default         Gauss linear corrected;
-}
-
-interpolationSchemes
-{
-    default         linear;
-}
-
-snGradSchemes
-{
-    default         corrected;
-}
+simulationType  laminar;
 
 
 // ************************************************************************* //

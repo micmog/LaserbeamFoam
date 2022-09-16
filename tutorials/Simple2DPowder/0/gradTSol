@@ -9,13 +9,38 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       dictionary;
-    location    "constant";
-    object      motionProperties;
+    class       volVectorField;
+    location    "0";
+    object      U;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-movingFvMesh    staticFvMesh;
+dimensions      [0 -1 0 1 0 0 0];
+
+internalField   uniform (0 0 0);
+
+boundaryField
+{
+	frontAndBack{
+        type            fixedValue;
+        value           uniform (0 0 0);
+	}
+    lowerWall
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+
+    }
+    atmosphere
+    {
+        type            fixedValue;
+        value           uniform (0 0 0);
+    }
+    defaultFaces
+    {
+        type            empty;
+    }
+}
 
 
 // ************************************************************************* //

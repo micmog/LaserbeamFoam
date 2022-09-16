@@ -17,7 +17,7 @@ FoamFile
 
 defaultFieldValues
 (
-    volScalarFieldValue alpha.phase1 0
+    volScalarFieldValue alpha.metal 0
 );
 
 regions
@@ -30,7 +30,7 @@ regions
         box (-0.085 0.001 -0.05) (0.085 0.003 0.05);
         fieldValues
         (
-    volScalarFieldValue alpha.phase1 1
+    volScalarFieldValue alpha.metal 1
         );
     }
 
@@ -42,7 +42,7 @@ p2 	 (51 	 0.0005 	 1e-3);
 radius 5e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
@@ -53,7 +53,7 @@ p2 	 (51 	 0.0005 	 2.2e-3);
 radius 5e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
@@ -65,7 +65,7 @@ p2 	 (51 	 0.000 	 4e-3);
 radius 10e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
@@ -76,7 +76,7 @@ p2 	 (51 	 0.0005 	 5.5e-3);
 radius 5e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
@@ -87,7 +87,7 @@ p2 	 (51 	 0.000 	 7e-3);
 radius 10e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
@@ -98,7 +98,7 @@ p2 	 (51 	 0.0005 	 8.5e-3);
 radius 5e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
@@ -109,7 +109,7 @@ p2 	 (51 	 0.000 	 10e-3);
 radius 10e-4;
 fieldValues
 (
-            volScalarFieldValue alpha.phase1 1
+            volScalarFieldValue alpha.metal 1
 );
 }
 
