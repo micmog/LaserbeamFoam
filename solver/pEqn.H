@@ -1,5 +1,5 @@
 {
-    if (correctPhi)
+    if (rAU.valid())
     {
         rAU.ref() = 1.0/UEqn.A();
     }
@@ -14,7 +14,7 @@
     (
         "phiHbyA",
         fvc::flux(HbyA)
-      + MRF.zeroFilter(fvc::interpolate(rho*rAU())*fvc::ddtCorr(U, phi, Uf))
+        + MRF.zeroFilter(fvc::interpolate(rho*rAU())*fvc::ddtCorr(U, phi, Uf))
     );
     MRF.makeRelative(phiHbyA);
 
@@ -29,8 +29,8 @@
     (
         (
             mixture.surfaceTensionForce()*fvc::interpolate(damper)
-	    +fvc::interpolate(pVap)*fvc::snGrad(alpha1)*fvc::interpolate(damper)
-          - ghf*fvc::snGrad(rho*rhok)
+            +fvc::interpolate(pVap)*fvc::snGrad(alpha1)*fvc::interpolate(damper)
+            - ghf*fvc::snGrad(rho*rhok)
         )*rAUf*mesh.magSf()
     );
 
@@ -39,33 +39,41 @@
     // Update the pressure BCs to ensure flux consistency
     constrainPressure(p_rgh, U, phiHbyA, rAUf, MRF);
 
+    // Cache the phase change pressure source
+    fvScalarMatrix Sp_rgh(phaseChange.Sp_rgh(rho, gh, p_rgh));
+
     while (pimple.correctNonOrthogonal())
     {
         fvScalarMatrix p_rghEqn
         (
-            fvm::laplacian(rAUf, p_rgh) == fvc::div(phiHbyA)
+            fvc::div(phiHbyA) - fvm::laplacian(rAUf, p_rgh)
+            == Sp_rgh
         );
 
-        p_rghEqn.setReference(pRefCell, getRefCellValue(p_rgh, pRefCell));
+        p_rghEqn.setReference
+        (
+            pressureReference.refCell(),
+            getRefCellValue(p_rgh, pressureReference.refCell())
+        );
 
-        p_rghEqn.solve(mesh.solver(p_rgh.select(pimple.finalInnerIter())));
+        p_rghEqn.solve();
 
         if (pimple.finalNonOrthogonalIter())
         {
-            phi = phiHbyA - p_rghEqn.flux();
+            phi = phiHbyA + p_rghEqn.flux();
 
             p_rgh.relax();
 
-            U = HbyA + rAU()*fvc::reconstruct((phig - p_rghEqn.flux())/rAUf);
+            U = HbyA + rAU()*fvc::reconstruct((phig + p_rghEqn.flux())/rAUf);
             U.correctBoundaryConditions();
-            fvOptions.correct(U);
+            fvConstraints.constrain(U);
         }
     }
 
-    #include "continuityErrs.H"
+#include "continuityErrs.H"
 
     // Correct Uf if the mesh is moving
-    fvc::correctUf(Uf, U, phi);
+    fvc::correctUf(Uf, U, phi, MRF);
 
     // Make the fluxes relative to the mesh motion
     fvc::makeRelative(phi, U);
@@ -75,11 +83,12 @@
     if (p_rgh.needReference())
     {
         p += dimensionedScalar
-        (
-            "p",
-            p.dimensions(),
-            pRefValue - getRefCellValue(p, pRefCell)
-        );
+             (
+                 "p",
+                 p.dimensions(),
+                 pressureReference.refValue()
+                 - getRefCellValue(p, pressureReference.refCell())
+             );
         p_rgh = p - rho*gh*rhok;
     }
 
@@ -89,5 +98,4 @@
     }
 
     Num_divU=fvc::div(phi);
-
 }

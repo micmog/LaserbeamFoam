@@ -1,51 +1,22 @@
-    #include "readTimeControls.H"
-
-    const dictionary& meltingDict = mesh.solutionDict().subDict("MELTING");
-    int minTCorr(readLabel(meltingDict.lookup("minTempCorrector")));
-    int maxTCorr(readLabel(meltingDict.lookup("maxTempCorrector")));
-
-    dimensionedScalar epsilonTol(readScalar(meltingDict.lookup("epsilonTolerance")));
-    dimensionedScalar epsilonRel(readScalar(meltingDict.lookup("epsilonRelaxation")));
-
-    bool damperSwitch = meltingDict.lookupOrDefault<bool>("damperSwitch", false);
-
-
-
-IOdictionary LaserProperties
+IOdictionary solutionDict
 (
     IOobject
     (
-        "LaserProperties",    // dictionary name
-        runTime.constant(),     // dict is found in "constant"
-        mesh,                   // registry for the dict
-        IOobject::MUST_READ,    // must exist, otherwise failure
-        IOobject::NO_WRITE      // dict is only read by the solver
+        "fvSolution",
+        runTime.system(), //folder where the fvSolution file is located
+        runTime,
+        IOobject::MUST_READ
     )
 );
 
 
 
-    scalar HS_a(readScalar(LaserProperties.lookup("HS_a")));
-    scalar HS_bg(readScalar(LaserProperties.lookup("HS_bg")));
-    scalar HS_velocity(readScalar(LaserProperties.lookup("HS_velocity")));
-    scalar HS_lg(readScalar(LaserProperties.lookup("HS_lg")));
-    scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
-    vector V_incident(LaserProperties.lookup("V_incident"));
+dictionary& meltingDict = solutionDict.subDict("MELTING");
 
-    scalar wavelength(readScalar(LaserProperties.lookup("wavelength")));
-    scalar e_num_density(readScalar(LaserProperties.lookup("e_num_density")));
-    scalar elec_resistivity(readScalar(LaserProperties.lookup("elec_resistivity"))); // this is temperature dependent - will include this in future versions
-      
+int minTCorr(readLabel(meltingDict.lookup("minTempCorrector")));
+int maxTCorr(readLabel(meltingDict.lookup("maxTempCorrector")));
 
-    dimensionedScalar pi = constant::mathematical::pi;
-    dimensionedScalar a_cond("a_cond",dimensionSet(0, 1, 0, 0, 0),HS_a);//
-    dimensionedScalar b_g("b_g",dimensionSet(0, 1, 0, 0, 0),HS_bg);//
-    dimensionedScalar v_arc("v_arc",dimensionSet(0, 1, -1, 0, 0),HS_velocity);//
-    dimensionedScalar Q_cond("Q_cond",dimensionSet(1, 2, -3, 0, 0),HS_Q);//
-    dimensionedScalar lg("lg",dimensionSet(0, 1, 0, 0, 0),HS_lg);//
+dimensionedScalar epsilonTol(readScalar(meltingDict.lookup("epsilonTolerance")));
+dimensionedScalar epsilonRel(readScalar(meltingDict.lookup("epsilonRelaxation")));
 
-    // scalar HS_deposition_cutoff(readScalar(meltingDict.lookup("HS_deposition_cutoff")));
-    // scalar Oscillation_Amplitude(readScalar(meltingDict.lookup("Oscillation_Amplitude")));
-    // scalar Oscillation_Frequency(readScalar(meltingDict.lookup("Oscillation_Frequency")));
-
-
+bool damperSwitch = meltingDict.lookupOrDefault<bool>("damperSwitch", false);

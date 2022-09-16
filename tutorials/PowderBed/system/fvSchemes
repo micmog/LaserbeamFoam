@@ -2,12 +2,11 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  6
+    \\  /    A nd           | Version:  10
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
-    version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
@@ -20,12 +19,6 @@ ddtSchemes
     default         Euler;
 }
 
-d2dt2Schemes
-{
-//d2dt2(rho,D) steadyState;
-d2dt2(D) steadyState;//Euler;
-
-}
 gradSchemes
 {
     default         Gauss linear;
@@ -34,27 +27,10 @@ gradSchemes
 divSchemes
 {
     div(rhoPhi,U)  Gauss linearUpwind grad(U);
-
-    div((interpolate(epsilon1mask)*rhoPhi),U)    Gauss linearUpwind grad(U);
-
-    div(phi,alpha)  Gauss vanLeer;
-    div(phirb,alpha) Gauss linear;
+    div(phi,alpha)  Gauss interfaceCompression vanLeer 1;
     div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
-
-    div(phi*cp,Temperature)   Gauss linearUpwind grad(Temperature);
-
-div(rhoPhi,epsilon1)	Gauss linear;//Gauss vanLeer01;
-
-    div((interpolate(cp)*rhoPhi),Temperature)   Gauss upwind;
-
-    div(rhoPhi,Temperature)	Gauss upwind;
-    div(phi,Temperature)   Gauss upwind;	
-	
-     div(phi,epsilon1) Gauss linear;//Gauss vanLeer01;
-div(rhoPhi,Le1) Gauss linear;//
-
-div((interpolate(LatentHeat)*rhoPhi),epsilon1)	Gauss vanLeer;
-
+    div(rhoPhi,epsilon1)	Gauss linear;//Gauss vanLeer01;
+    div((interpolate(cp)*rhoPhi),T)   Gauss upwind;
 }
 
 laplacianSchemes

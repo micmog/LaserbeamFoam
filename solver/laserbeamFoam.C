@@ -2,7 +2,7 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Copyright (C) 2011-2018 OpenFOAM Foundation
+    \\  /    A nd           | Copyright (C) 2011-2022 OpenFOAM Foundation
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
 License
@@ -22,38 +22,33 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    interFusionFoam
+    interFoam
 
 Description
-    Solver for 2 incompressible, non-isothermal immiscible fluids experiencing fusion state changes
-    using a VOF (volume of fluid) phase-fraction based interface capturing approach,
+    Solver for 2 incompressible, isothermal immiscible fluids using a VOF
+    (volume of fluid) phase-fraction based interface capturing approach,
     with optional mesh motion and mesh topology changes including adaptive
-    re-meshing. Captures the melting and fusion of an alloy
-
-    Credit:
-
-    Tom Flint, University of Manchester
-    Gowthaman Parivendhan, University College Dublin
-    Philip Cardiff, University College Dublin
+    re-meshing.
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "dynamicFvMesh.H"
+#include "interfaceCompression.H"
 #include "CMULES.H"
 #include "EulerDdtScheme.H"
 #include "localEulerDdtScheme.H"
 #include "CrankNicolsonDdtScheme.H"
 #include "subCycle.H"
 #include "immiscibleIncompressibleTwoPhaseMixture.H"
-#include "turbulentTransportModel.H"
+#include "noPhaseChange.H"
+#include "incompressibleInterPhaseTransportModel.H"
 #include "pimpleControl.H"
-#include "fvOptions.H"
+#include "pressureReference.H"
+#include "fvModels.H"
+#include "fvConstraints.H"
 #include "CorrectPhi.H"
 #include "fvcSmooth.H"
-
-#include <vector>
-#include "meshSearch.H"
+#include "findLocalCell.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -63,20 +58,13 @@ int main(int argc, char *argv[])
 
     #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createDynamicFvMesh.H"
+    #include "createMesh.H"
     #include "initContinuityErrs.H"
     #include "createDyMControls.H"
-
-    // Info<< "\nFinding Number of Unique X co-ordinates for Ray-Tracing\n" << endl;
-    // #include "uniqueX.H"
-
-
     #include "createFields.H"
-    #include "createAlphaFluxes.H"
+    #include "createFieldRefs.H"
     #include "initCorrectPhi.H"
     #include "createUfIfPresent.H"
-
-    turbulence->validate();
 
     if (!LTS)
     {
@@ -87,9 +75,8 @@ int main(int argc, char *argv[])
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
     Info<< "\nStarting time loop\n" << endl;
 
-    while (runTime.run())
+    while (pimple.run(runTime))
     {
-
         #include "readControls.H"
         #include "readDyMControls.H"
 
@@ -104,27 +91,67 @@ int main(int argc, char *argv[])
             #include "setDeltaT.H"
         }
 
+        fvModels.preUpdateMesh();
+
+        // Store divU from the previous mesh so that it can be mapped
+        // and used in correctPhi to ensure the corrected phi has the
+        // same divergence
+        tmp<volScalarField> divU;
+
+        if
+        (
+            correctPhi
+         && !isType<twoPhaseChangeModels::noPhaseChange>(phaseChange)
+         && mesh.topoChanged()
+        )
+        {
+            // Construct and register divU for correctPhi
+            divU = new volScalarField
+            (
+                "divU0",
+                fvc::div(fvc::absolute(phi, U))
+            );
+        }
+
+        // Update the mesh for topology change, mesh to mesh mapping
+        bool topoChanged = mesh.update();
+
+        // Do not apply previous time-step mesh compression flux
+        // if the mesh topology changed
+        if (topoChanged)
+        {
+            talphaPhi1Corr0.clear();
+        }
+
         runTime++;
 
-        Info<< "Time = " << runTime.timeName() << nl << endl;
+        Info<< "Time = " << runTime.userTimeName() << nl << endl;
 
         // --- Pressure-velocity PIMPLE corrector loop
         while (pimple.loop())
         {
-            if (pimple.firstIter() || moveMeshOuterCorrectors)
+            if (pimple.firstPimpleIter() || moveMeshOuterCorrectors)
             {
-                mesh.update();
-                
+                if
+                (
+                    correctPhi
+                 && !isType<twoPhaseChangeModels::noPhaseChange>(phaseChange)
+                 && !divU.valid()
+                )
+                {
+                    // Construct and register divU for correctPhi
+                    divU = new volScalarField
+                    (
+                        "divU0",
+                        fvc::div(fvc::absolute(phi, U))
+                    );
+                }
+
+                // Move the mesh
+                mesh.move();
 
                 if (mesh.changing())
                 {
-                    // Do not apply previous time-step mesh compression flux
-                    // if the mesh topology changed
-                    if (mesh.topoChanging())
-                    {
-                        talphaPhi1Corr0.clear();
-                    }
-
                     gh = (g & mesh.C()) - ghRef;
                     ghf = (g & mesh.Cf()) - ghRef;
 
@@ -132,30 +159,42 @@ int main(int argc, char *argv[])
 
                     if (correctPhi)
                     {
-                        // Calculate absolute flux
-                        // from the mapped surface velocity
-                        phi = mesh.Sf() & Uf();
-
                         #include "correctPhi.H"
-
-                        // Make the flux relative to the mesh motion
-                        fvc::makeRelative(phi, U);
-
-                        mixture.correct();
                     }
+
+                    mixture.correct();
 
                     if (checkMeshCourantNo)
                     {
                         #include "meshCourantNo.H"
                     }
                 }
+
+                divU.clear();
             }
+
+            fvModels.correct();
+
+            surfaceScalarField rhoPhi
+            (
+                IOobject
+                (
+                    "rhoPhi",
+                    runTime.timeName(),
+                    mesh
+                ),
+                mesh,
+                dimensionedScalar(dimMass/dimTime, 0)
+            );
 
             #include "alphaControls.H"
             #include "alphaEqnSubCycle.H"
+
             #include "UpdateProps.H"
 	   // #include "DivergingOscillatingGaussian.H"
             #include "LaserHS.H"
+
+            turbulence.correctPhasePhi();
 
             mixture.correct();
 
@@ -170,10 +209,8 @@ int main(int argc, char *argv[])
 
             if (pimple.turbCorr())
             {
-                turbulence->correct();
+                turbulence.correct();
             }
-
-
         }
 
         runTime.write();

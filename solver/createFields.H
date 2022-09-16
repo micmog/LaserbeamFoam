@@ -30,22 +30,106 @@ volVectorField U
     mesh
 );
 
-#include "createPhi.H"
-
-Info<< "Reading transportProperties\n" << endl;
-immiscibleIncompressibleTwoPhaseMixture mixture(U, phi);
-
-volScalarField& alpha1(mixture.alpha1());
-volScalarField& alpha2(mixture.alpha2());
-
-const dimensionedScalar& rho1 = mixture.rho1();
-const dimensionedScalar& rho2 = mixture.rho2();
-
-IOdictionary transportProperties
+Info<< "Reading field Temperature\n" << endl;
+volScalarField T
 (
     IOobject
     (
-        "transportProperties",
+        "T",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh
+);
+
+#include "createPhi.H"
+
+
+Info<< "Reading phaseProperties\n" << endl;
+immiscibleIncompressibleTwoPhaseMixture mixture(U, phi);
+
+autoPtr<twoPhaseChangeModel> phaseChangePtr
+(
+    twoPhaseChangeModel::New(mixture)
+);
+
+
+// Need to store rho for ddt(rho, U)
+volScalarField rho
+(
+    IOobject
+    (
+        "rho",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT
+    ),
+    mixture.rho()
+);
+rho.oldTime();
+
+
+
+
+#include "readGravitationalAcceleration.H"
+#include "readhRef.H"
+#include "gh.H"
+
+
+volScalarField p
+(
+    IOobject
+    (
+        "p",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    p_rgh + rho*gh
+);
+
+pressureReference pressureReference(p, p_rgh, pimple.dict());
+
+if (p_rgh.needReference())
+{
+    p += dimensionedScalar
+         (
+             "p",
+             p.dimensions(),
+             pressureReference.refValue()
+             - getRefCellValue(p, pressureReference.refCell())
+         );
+    p_rgh = p - rho*gh;
+}
+
+mesh.schemes().setFluxRequired(p_rgh.name());
+
+volScalarField& alpha1(mixture.alpha1());
+mesh.schemes().setFluxRequired(alpha1.name());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+IOdictionary transportProperties_metal
+(
+    IOobject
+    (
+        "physicalProperties.metal",
         runTime.constant(),
         mesh,
         IOobject::MUST_READ_IF_MODIFIED,
@@ -53,39 +137,61 @@ IOdictionary transportProperties
     )
 );
 
-dictionary phase1 = transportProperties.subDict("phase1");
-dictionary phase2 = transportProperties.subDict("phase2");
+IOdictionary transportProperties_gas
+(
+    IOobject
+    (
+        "physicalProperties.gas",
+        runTime.constant(),
+        mesh,
+        IOobject::MUST_READ_IF_MODIFIED,
+        IOobject::NO_WRITE
+    )
+);
 
-dimensionedScalar cp1("cp1",dimensionSet(0, 2, -2, -1, 0),phase1.lookup("cp"));
-dimensionedScalar cp2("cp2",dimensionSet(0, 2, -2, -1, 0),phase2.lookup("cp"));
+IOdictionary phaseProperties
+(
+    IOobject
+    (
+        "phaseProperties",
+        runTime.constant(),
+        mesh,
+        IOobject::MUST_READ_IF_MODIFIED,
+        IOobject::NO_WRITE
+    )
+);
 
-dimensionedScalar cp1solid("cp1solid",dimensionSet(0, 2, -2, -1, 0),phase1.lookup("cpsolid"));
-dimensionedScalar cp2solid("cp2solid",dimensionSet(0, 2, -2, -1, 0),phase2.lookup("cpsolid"));
+dimensionedScalar cp1("cp1",dimensionSet(0, 2, -2, -1, 0),transportProperties_metal.lookup("cp"));
+dimensionedScalar cp2("cp2",dimensionSet(0, 2, -2, -1, 0),transportProperties_gas.lookup("cp"));
 
-dimensionedScalar kappa1("kappa1",dimensionSet(1, 1, -3, -1, 0),phase1.lookup("kappa"));
-dimensionedScalar kappa2("kappa2",dimensionSet(1, 1, -3, -1, 0),phase2.lookup("kappa"));
+dimensionedScalar cp1solid("cp1solid",dimensionSet(0, 2, -2, -1, 0),transportProperties_metal.lookup("cpsolid"));
+dimensionedScalar cp2solid("cp2solid",dimensionSet(0, 2, -2, -1, 0),transportProperties_gas.lookup("cpsolid"));
 
-dimensionedScalar kappa1solid("kappa1solid",dimensionSet(1, 1, -3, -1, 0),phase1.lookup("kappasolid"));
-dimensionedScalar kappa2solid("kappa2solid",dimensionSet(1, 1, -3, -1, 0),phase2.lookup("kappasolid"));
+dimensionedScalar kappa1("kappa1",dimensionSet(1, 1, -3, -1, 0),transportProperties_metal.lookup("kappa"));
+dimensionedScalar kappa2("kappa2",dimensionSet(1, 1, -3, -1, 0),transportProperties_gas.lookup("kappa"));
 
-dimensionedScalar Tsolidus1("Tsolidus1",dimensionSet(0, 0, 0, 1, 0),phase1.lookup("Tsolidus"));
-dimensionedScalar Tsolidus2("Tsolidus2",dimensionSet(0, 0, 0, 1, 0),phase2.lookup("Tsolidus"));
+dimensionedScalar kappa1solid("kappa1solid",dimensionSet(1, 1, -3, -1, 0),transportProperties_metal.lookup("kappasolid"));
+dimensionedScalar kappa2solid("kappa2solid",dimensionSet(1, 1, -3, -1, 0),transportProperties_gas.lookup("kappasolid"));
 
-dimensionedScalar Tliquidus1("Tliquidus1",dimensionSet(0, 0, 0, 1, 0),phase1.lookup("Tliquidus"));
-dimensionedScalar Tliquidus2("Tliquidus2",dimensionSet(0, 0, 0, 1, 0),phase2.lookup("Tliquidus"));
+dimensionedScalar Tsolidus1("Tsolidus1",dimensionSet(0, 0, 0, 1, 0),transportProperties_metal.lookup("Tsolidus"));
+dimensionedScalar Tsolidus2("Tsolidus2",dimensionSet(0, 0, 0, 1, 0),transportProperties_gas.lookup("Tsolidus"));
 
-dimensionedScalar LatentHeat1("LatentHeat1",dimensionSet(0, 2, -2, 0, 0),phase1.lookup("LatentHeat"));
-dimensionedScalar LatentHeat2("LatentHeat2",dimensionSet(0, 2, -2, 0, 0),phase2.lookup("LatentHeat"));
+dimensionedScalar Tliquidus1("Tliquidus1",dimensionSet(0, 0, 0, 1, 0),transportProperties_metal.lookup("Tliquidus"));
+dimensionedScalar Tliquidus2("Tliquidus2",dimensionSet(0, 0, 0, 1, 0),transportProperties_gas.lookup("Tliquidus"));
 
-dimensionedScalar beta1("beta1",dimensionSet(0, 0, 0, -1, 0),phase1.lookup("beta"));
-dimensionedScalar beta2("beta2",dimensionSet(0, 0, 0, -1, 0),phase2.lookup("beta"));
+dimensionedScalar LatentHeat1("LatentHeat1",dimensionSet(0, 2, -2, 0, 0),transportProperties_metal.lookup("LatentHeat"));
+dimensionedScalar LatentHeat2("LatentHeat2",dimensionSet(0, 2, -2, 0, 0),transportProperties_gas.lookup("LatentHeat"));
 
-dimensionedScalar Marangoni_Constant("Marangoni_Constant",dimensionSet(1, 0, -2, -1, 0),transportProperties.lookup("dsigmadT"));
-dimensionedScalar p0("p0",dimensionSet(1,-1,-2,0,0,0,0),transportProperties.lookup("p0"));//atmospheric pressure
-dimensionedScalar Tvap("Tvap",dimensionSet(0, 0, 0, 1, 0),transportProperties.lookup("Tvap"));
-dimensionedScalar Mm("Mm",dimensionSet(1, 0, 0, 0, -1),transportProperties.lookup("Mm"));
-dimensionedScalar LatentHeatVap("LatentHeatVap",dimensionSet(0, 2, -2, 0, 0),transportProperties.lookup("LatentHeatVap"));
+dimensionedScalar beta1("beta1",dimensionSet(0, 0, 0, -1, 0),transportProperties_metal.lookup("beta"));
+dimensionedScalar beta2("beta2",dimensionSet(0, 0, 0, -1, 0),transportProperties_gas.lookup("beta"));
+
+dimensionedScalar Marangoni_Constant("Marangoni_Constant",dimensionSet(1, 0, -2, -1, 0),phaseProperties.lookup("dsigmadT"));
+dimensionedScalar p0("p0",dimensionSet(1,-1,-2,0,0,0,0),phaseProperties.lookup("p0"));//atmospheric pressure
+dimensionedScalar Tvap("Tvap",dimensionSet(0, 0, 0, 1, 0),phaseProperties.lookup("Tvap"));
+dimensionedScalar Mm("Mm",dimensionSet(1, 0, 0, 0, -1),phaseProperties.lookup("Mm"));
+dimensionedScalar LatentHeatVap("LatentHeatVap",dimensionSet(0, 2, -2, 0, 0),phaseProperties.lookup("LatentHeatVap"));
 dimensionedScalar R ("R", dimensionSet(1,2,-2,-1,-1,0,0),8.314);
+
 
 volScalarField cp
 (
@@ -100,7 +206,8 @@ volScalarField cp
     mesh,
     dimensionedScalar("cp",dimensionSet(0, 2, -2, -1, 0),0.0)
 );
-cp=alpha1*cp1 + alpha2*cp2;
+cp=alpha1*cp1 + (1.0-alpha1)*cp2;
+
 
 volScalarField kappa
 (
@@ -116,21 +223,8 @@ volScalarField kappa
     dimensionedScalar("kappa",dimensionSet(1, 1, -3, -1, 0),0.0)
 );
 
-kappa=alpha1*kappa1 + alpha2*kappa2;
+kappa=alpha1*kappa1 + (1.0-alpha1)*kappa2;
 
-Info<< "Reading field Temperature\n" << endl;
-volScalarField Temperature
-(
-    IOobject
-    (
-        "Temperature",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
 
 volScalarField TSolidus
 (
@@ -145,7 +239,7 @@ volScalarField TSolidus
     mesh,
     dimensionedScalar("TSolidus",dimensionSet(0, 0, 0, 1, 0),0.0)
 );
-TSolidus=alpha1*Tsolidus1 + alpha2*Tsolidus2;
+TSolidus=alpha1*Tsolidus1 + (1.0-alpha1)*Tsolidus2;
 
 volScalarField TLiquidus
 (
@@ -160,7 +254,7 @@ volScalarField TLiquidus
     mesh,
     dimensionedScalar("TLiquidus",dimensionSet(0, 0, 0, 1, 0),1.0)
 );
-TLiquidus=alpha1*Tliquidus1 + alpha2*Tliquidus2;
+TLiquidus=alpha1*Tliquidus1 + (1.0-alpha1)*Tliquidus2;
 
 volScalarField DC
 (
@@ -191,7 +285,7 @@ volScalarField epsilon1
     dimensionedScalar("epsilon1",dimensionSet(0,0,0,0,0),0.0)
 );
 
-epsilon1=max(min((Temperature-TSolidus)/(TLiquidus-TSolidus),scalar(1)),scalar(0));
+epsilon1=max(min((T-TSolidus)/(TLiquidus-TSolidus),scalar(1)),scalar(0));
 
 volVectorField n_filtered
 (
@@ -203,38 +297,23 @@ volVectorField n_filtered
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
     ),
-        mesh,
-         dimensionedVector("n_filtered",dimensionSet(0, 0, 0, 0, 0),vector::zero)
+    mesh,
+    dimensionedVector("n_filtered",dimensionSet(0, 0, 0, 0, 0),vector::zero)
 );
 
-// volVectorField n_alpha
-// (
-//     IOobject
-//     (
-//         "n_alpha",
-//         runTime.timeName(),
-//         mesh,
-//         IOobject::READ_IF_PRESENT,
-//         IOobject::AUTO_WRITE
-//     ),
-//         mesh,
-//          dimensionedVector("n_alpha",dimensionSet(0, 0, 0, 0, 0),vector::zero)
-// );
-
-
-     volScalarField epsilon1mask
+volScalarField epsilon1mask
+(
+    IOobject
     (
-        IOobject
-        (
-            "epsilon1mask",
-            runTime.timeName(),
-            mesh,
-            IOobject::READ_IF_PRESENT,
-            IOobject::NO_WRITE
-        ),
+        "epsilon1mask",
+        runTime.timeName(),
         mesh,
-       dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
-    );
+        IOobject::READ_IF_PRESENT,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
+);
 
 
 volVectorField gradT
@@ -264,35 +343,7 @@ volScalarField LatentHeat
     mesh,
     dimensionedScalar("LatentHeat",dimensionSet(0, 2, -2, 0, 0),0.0)
 );
-LatentHeat=alpha1*LatentHeat1 + alpha2*LatentHeat2;
-
-volScalarField xcoord
-(
-    IOobject
-    (
-        "xcoord",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("xcoord", dimensionSet(0, 1, 0, 0, 0), 0.0)
-);
-
-volScalarField zcoord
-(
-    IOobject
-    (
-        "zcoord",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-        mesh,
-         dimensionedScalar("zcoord", dimensionSet(0, 1, 0, 0, 0), 0.0)
-);
+LatentHeat=alpha1*LatentHeat1 + (1.0-alpha1)*LatentHeat2;
 
 volScalarField yDim
 (
@@ -308,43 +359,14 @@ volScalarField yDim
     dimensionedScalar("yDim", dimensionSet(0, 1, 0, 0, 0), 1.0)
 );
 
-volScalarField xDim
-(
-    IOobject
-    (
-        "xDim",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("xDim", dimensionSet(0, 1, 0, 0, 0), 1.0)
-);
-
-
-volScalarField zDim
-(
-    IOobject
-    (
-        "zDim",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("zDim", dimensionSet(0, 1, 0, 0, 0), 1.0)
-);
-
 const faceList & ff = mesh.faces();
 const pointField & pp = mesh.points();
 
 forAll( mesh.C(), celli)
 {
-    vector XYZ = mesh.C()[celli];
-    xcoord[celli]=XYZ.x();
-    zcoord[celli]=XYZ.z();
+    // vector XYZ = mesh.C()[celli];
+    // xcoord[celli]=XYZ.x();
+    // zcoord[celli]=XYZ.z();
 
     const cell & cc = mesh.cells()[celli];
     labelList pLabels(cc.labels(ff));
@@ -355,35 +377,14 @@ forAll( mesh.C(), celli)
         pLocal[pointi] = pp[pLabels[pointi]];
     }
 
-    xDim[celli] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
+    // xDim[celli] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
     yDim[celli] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
-    zDim[celli] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
+    // zDim[celli] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
 }
 
-xDim.correctBoundaryConditions();
+// xDim.correctBoundaryConditions();
 yDim.correctBoundaryConditions();
-zDim.correctBoundaryConditions();
-
-volScalarField cellarea
-(
-    IOobject
-    (
-        "cellarea",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-        mesh,
-         dimensionedScalar("cellarea", dimensionSet(0, 2, 0, 0, 0), 0.0)
-);
-
-forAll( mesh.C(), celli)
-{
-    cellarea[celli]=(xDim[celli]*zDim[celli]);
-}
-
-cellarea.correctBoundaryConditions();
+// zDim.correctBoundaryConditions();
 
 
 
@@ -429,7 +430,7 @@ volScalarField beta
     mesh,
     dimensionedScalar("beta",dimensionSet(0, 0, 0, -1, 0),0.0)
 );
-beta=alpha1*beta1 + alpha2*beta2;
+beta=alpha1*beta1 + (1.0-alpha1)*beta2;
 
 volScalarField rhok
 (
@@ -445,50 +446,6 @@ volScalarField rhok
     dimensionedScalar("rhok",dimensionSet(0,0,0,0,0),0.0)
 );
 
-// Need to store rho for ddt(rho, U)
-volScalarField rho
-(
-    IOobject
-    (
-        "rho",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-            IOobject::AUTO_WRITE
-    ),
-    alpha1*rho1 + alpha2*rho2
-);
-rho.oldTime();
-
-// Mass flux
-surfaceScalarField rhoPhi
-(
-    IOobject
-    (
-        "rhoPhi",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    fvc::interpolate(rho)*phi
-);
-
-volScalarField ViscousDissipation
-(
-    IOobject
-    (
-        "ViscousDissipation",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-        mesh,
-        dimensionedScalar("ViscousDissipation",dimensionSet(1, -1, -3, 0, 0),scalar(0.0))
-);
-
-
 volScalarField Num_divU
 (
     IOobject
@@ -502,6 +459,7 @@ volScalarField Num_divU
     mesh,
     dimensionedScalar("Num_divU",dimensionSet(0,0,-1,0,0),0.0)
 );
+
 
 volVectorField Marangoni
 (
@@ -545,57 +503,6 @@ volScalarField Qv
     dimensionedScalar("0", dimensionSet(1,0,-3,0,0,0,0), 0.0)
 );// Evaporation Cooling
 
-// Construct incompressible turbulence model
-autoPtr<incompressible::turbulenceModel> turbulence
-(
-    incompressible::turbulenceModel::New(U, phi, mixture)
-);
-
-#include "readGravitationalAcceleration.H"
-#include "readhRef.H"
-#include "gh.H"
-
-
-volScalarField p
-(
-    IOobject
-    (
-        "p",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    p_rgh + rho*gh
-);
-
-label pRefCell = 0;
-scalar pRefValue = 0.0;
-setRefCell
-(
-    p,
-    p_rgh,
-    pimple.dict(),
-    pRefCell,
-    pRefValue
-);
-
-if (p_rgh.needReference())
-{
-    p += dimensionedScalar
-    (
-        "p",
-        p.dimensions(),
-        pRefValue - getRefCellValue(p, pRefCell)
-    );
-    p_rgh = p - rho*gh;
-}
-
-mesh.setFluxRequired(p_rgh.name());
-mesh.setFluxRequired(alpha1.name());
-
-#include "createMRF.H"
-#include "createFvOptions.H"
 
 volScalarField ddte1
 (
@@ -641,12 +548,6 @@ volScalarField thermalDamper
     dimensionedScalar("thermalDamper",dimless,1.0),
     zeroGradientFvPatchScalarField::typeName
 );
-
-
-
-
-
-
 
 
 
@@ -751,6 +652,26 @@ volScalarField ErrorTrack2
     mesh,
     dimensionedScalar("ErrorTrack2",dimensionSet(0, 0, 0, -0, 0),0.0)
 );
+
+
+
+
+
+#include "createAlphaFluxes.H"
+
+// Construct incompressible turbulence model
+incompressibleInterPhaseTransportModel turbulence
+(
+    U,
+    phi,
+    alphaPhi1,
+    mixture
+);
+
+
+#include "createMRF.H"
+#include "createFvModels.H"
+#include "createFvConstraints.H"
 
 
 #include "UpdateProps.H"

@@ -1,13 +1,12 @@
 /*--------------------------------*- C++ -*----------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  3.0.1                                 |
-|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
-|    \\/     M anipulation  |                                                 |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
-    version     2.0;
     format      ascii;
     class       dictionary;
     location    "system";
@@ -17,92 +16,50 @@ FoamFile
 
 solvers
 {
-    "alpha.phase1.*"
+    "alpha.metal.*"
     {
-        nAlphaCorr      3;
-        nAlphaSubCycles 3;
-        cAlpha          1.0;
-	scAlpha		0.5;
+        nAlphaCorr      2;
+        nAlphaSubCycles 1;
 
         MULESCorr       yes;
         nLimiterIter    5;
 
         solver          smoothSolver;
         smoother        symGaussSeidel;
-        tolerance       1e-9;
+        tolerance       1e-8;
         relTol          0;
-    }
-
-    p_rgh
-    {
-        solver          GAMG;
-        tolerance       1e-9;
-        relTol          0.0;//0.005;//0.05;
-        smoother        GaussSeidel;//GaussSeidel;//
-        nPreSweeps      2;
-        nPostSweeps     3;
-        nFinestSweeps   2;
-        cacheAgglomeration on;
-        nCellsInCoarsestLevel 10;
-        agglomerator    faceAreaPair;
-        mergeLevels     1;
-    }
-
-    p_rghFinal
-    {
-        solver          PCG;
-        preconditioner
-        {
-            preconditioner  GAMG;
-            tolerance       1e-9;
-            relTol          0;
-            nVcycles        5;
-            smoother        GaussSeidel;//GaussSeidel;//DICGaussSeidel;//
-            nPreSweeps      2;
-            nPostSweeps     3;
-            nFinestSweeps   2;
-            cacheAgglomeration on;
-            nCellsInCoarsestLevel 10;
-            agglomerator    faceAreaPair;
-            mergeLevels     1;
-        }
-        tolerance       1e-9;
-        relTol          0;
-        maxIter         25;//20;
     }
 
     "pcorr.*"
     {
         solver          PCG;
-        preconditioner
-        {
-            preconditioner  GAMG;
-            tolerance       1e-9;
-            relTol          0;
-            smoother        GaussSeidel;
-        }
-        tolerance       1e-9;
+        preconditioner  DIC;
+        tolerance       1e-5;
         relTol          0;
-        maxIter         100;
+    }
+
+    p_rgh
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-07;
+        relTol          0.05;
+    }
+
+    p_rghFinal
+    {
+        $p_rgh;
+        relTol          0;
     }
 
     U
     {
         solver          smoothSolver;
-        smoother        GaussSeidel;//GaussSeidel;//DICGaussSeidel;//
-        tolerance       1e-9;
-        relTol          0.0;//0.1;
-        nSweeps         5;//1;
-    }
-
-    UFinal
-    {
-        $U;
-        tolerance       1e-9;
+        smoother        symGaussSeidel;
+        tolerance       1e-06;
         relTol          0;
     }
-
-    Temperature
+        T
     {
 /*
         solver          PBiCG;
@@ -117,19 +74,10 @@ solvers
         relTol          0.0;
     }
 
-    TemperatureFinal
+    TFinal
     {
-        $Temperature;
+        $T;
     }
-}
-
-PIMPLE
-{
-    nOuterCorrectors 1;
-    nCorrectors     3;
-    nNonOrthogonalCorrectors 0;
-    pRefCell        0.0;
-    pRefValue       0.0;
 }
 
 MELTING
@@ -139,13 +87,24 @@ MELTING
     epsilonTolerance 1e-6;
     epsilonRelaxation 0.95;
     
-    damperSwitch false;//true;
+    damperSwitch true;//false;//true;
+}
+
+PIMPLE
+{
+    momentumPredictor   no;
+    nOuterCorrectors    1;
+    nCorrectors         3;
+    nNonOrthogonalCorrectors 0;
 }
 
 relaxationFactors
 {
+    equations
+    {
+        ".*" 1;
+    }
 }
-    "U.*"           0.82;//0.82;//1;
-}
+
 
 // ************************************************************************* //
