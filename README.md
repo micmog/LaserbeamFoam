@@ -17,7 +17,7 @@ The laserbeamFoam solver is effectively an extension of the beamWeldFoam solver 
 
 ## Installation
 
-The current version of the code utilises the [OpenFoam6 libraries](https://openfoam.org/version/6/). The code has been developed and tested using an Ubuntu installation, but should work on any operating system capable of installing OpenFoam. To install the laserbeamFoam solver, first follow the instructions on this page: [OpenFoam 6 Install](https://openfoam.org/download/6-ubuntu/) to install the OpenFoam 6 libraries.
+The current version of the code utilises the [OpenFoam10 libraries](https://openfoam.org/version/10/). A branch is provided that compiles against the older [OpenFoam6 libraries](https://openfoam.org/version/6/). The code has been developed and tested using an Ubuntu installation, but should work on any operating system capable of installing OpenFoam. To install the laserbeamFoam solver, first follow the instructions on this page: [OpenFoam 6 Install](https://openfoam.org/download/6-ubuntu/) to install the OpenFoam 6 libraries.
 
 
 
