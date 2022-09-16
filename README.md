@@ -25,7 +25,7 @@ Then navigate to a working folder in a shell terminal, clone the git code reposi
 
 ```
 $ git clone https://github.com/micmog/laserbeamFoam.git laserbeamFoam
-$ cd laserbeamFoam/applications/solvers/laserbeamFoam/
+$ cd solver
 $ wclean
 $ wmake
 ```
