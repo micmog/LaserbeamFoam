@@ -14,16 +14,14 @@ FoamFile
     object      PhaseFieldProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-V_incident	(0 1 0.5);//(0 1 0);//NORMALISED IN CODE
+V_incident	(0 1 0.25);//(0 1 0);//NORMALISED IN CODE
 
-HS_a 0.002;
+HS_a 0.0002;
 HS_bg 0.0;//20
-HS_velocity 0.01;//6.0;
-HS_lg 0.005;
-HS_Q 2000.0;//
+HS_velocity 3.0;//6.0;
+HS_lg 0.0;
+HS_Q 400.0;//
 
 wavelength	1.064e-6;
 e_num_density	5.83e29;
 elec_resistivity	1.0e-6;
-
-debug true;

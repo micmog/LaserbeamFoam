@@ -2,28 +2,32 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  6
+    \\  /    A nd           | Version:  10
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
-    version     2.0;
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      PhaseFieldProperties;
+    object      physicalProperties.water;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-V_incident	(0 1 0.5);//(0 1 0);//NORMALISED IN CODE
 
-HS_a 0.002;
-HS_bg 0.0;//20
-HS_velocity 0.01;//6.0;
-HS_lg 0.005;
-HS_Q 2000.0;//
+viscosityModel  constant;
 
-wavelength	1.064e-6;
-e_num_density	5.83e29;
-elec_resistivity	1.0e-6;
+nu              1e-06;
 
-debug true;
+rho             1000;
+
+    cp  800;
+    cpsolid 600.0;
+    kappa  30.0;
+	kappasolid  20.0; 
+	Tsolidus 1658;
+	Tliquidus 1723;
+    LatentHeat 2.7e5;
+    beta    5.0e-6;
+
+
+// ************************************************************************* //

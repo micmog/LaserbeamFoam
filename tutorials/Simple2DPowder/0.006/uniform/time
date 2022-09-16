@@ -2,28 +2,29 @@
   =========                 |
   \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
    \\    /   O peration     | Website:  https://openfoam.org
-    \\  /    A nd           | Version:  6
+    \\  /    A nd           | Version:  10
      \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
-    version     2.0;
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      PhaseFieldProperties;
+    location    "0.006/uniform";
+    object      time;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-V_incident	(0 1 0.5);//(0 1 0);//NORMALISED IN CODE
 
-HS_a 0.002;
-HS_bg 0.0;//20
-HS_velocity 0.01;//6.0;
-HS_lg 0.005;
-HS_Q 2000.0;//
+beginTime       0;
 
-wavelength	1.064e-6;
-e_num_density	5.83e29;
-elec_resistivity	1.0e-6;
+value           0.00600000000000000012;
 
-debug true;
+name            "0.006";
+
+index           729;
+
+deltaT          5.23999499e-06;
+
+deltaT0         5.23999499e-06;
+
+
+// ************************************************************************* //
