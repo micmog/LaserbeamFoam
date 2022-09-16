@@ -39,13 +39,11 @@ forAll( mesh.C(), celli)
 }
 alpha_filtered.correctBoundaryConditions();
 
-volVectorField gradepsilon1=fvc::grad(alpha_filtered);
-gradepsilon1.correctBoundaryConditions();
+const volVectorField gradepsilon1(fvc::grad(alpha_filtered));
 
-n_filtered=fvc::grad(alpha_filtered)/((mag(gradepsilon1) + deltaN));
-n_filtered.correctBoundaryConditions();
+n_filtered = fvc::grad(alpha_filtered)/((mag(gradepsilon1) + deltaN));
 
-volScalarField e1temp = fvc::average(epsilon1);
+const volScalarField e1temp(fvc::average(epsilon1));
 
 
 

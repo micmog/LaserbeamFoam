@@ -6,7 +6,7 @@ Presented here is the extensible open-source volume-of-fluid (VOF) solver laserb
 
 A ray-tracing algorithm is implemented that permits the incident Gaussian laser beam to be discretised into a number of 'Rays' based on the computational grid resolution. The 'Rays' of this incident laser beam are then tracked through the domain through their multiple reflections; with the energy deposited by each ray determined through the Fresnel equations.
  
-The solver approach is based on the adiabatic two-phase interFoam code developed by [OpenCFD Ltd.](http://openfoam.com/). Target applications for laserbeamFoam include:
+The solver approach is extended from the adiabatic two-phase interFoam code developed by [OpenCFD Ltd.](http://openfoam.com/) to include non-isothermal state transition physics and ray-tracing heat source application. Target applications for laserbeamFoam include:
 
 * Laser Welding
 * Laser Drilling
@@ -25,7 +25,7 @@ Then navigate to a working folder in a shell terminal, clone the git code reposi
 
 ```
 $ git clone https://github.com/micmog/laserbeamFoam.git laserbeamFoam
-$ cd laserbeamFoam/applications/solvers/laserbeamFoam/
+$ cd solver
 $ wclean
 $ wmake
 ```
