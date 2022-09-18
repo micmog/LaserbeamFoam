@@ -16,9 +16,9 @@ FoamFile
 
 viscosityModel  constant;
 
-nu              1e-06;
+nu              5e-07;
 
-rho             1000;
+rho             8000;
 
     cp  800;
     cpsolid 600.0;

@@ -20,7 +20,7 @@ method          simple;
 
 simpleCoeffs
 {
-    n               (2 2 1);
+    n               (1 2 2);
 }
 
 hierarchicalCoeffs
