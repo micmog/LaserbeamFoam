@@ -48,6 +48,10 @@
         LaserProperties.lookupOrDefault<Switch>("useLocalSearch", true)
     );
     Info<< "useLocalSearch: " << useLocalSearch << endl;
+    const label maxLocalSearch
+    (
+        LaserProperties.lookupOrDefault<label>("maxLocalSearch", 100)
+    );
 
     if (debug)
     {
@@ -137,7 +141,8 @@
     );
 
     // Store the list of cell indices where the ray tips are located; these will
-    // be used to previous a local search for the new tip cell indices
+    // be used by the the findLocalSearch function when looking for the new tip
+    // cell indices
     labelList rayCellIDs(pointslistGlobal1.size(), -1);
 
     scalar iterator_distance = (0.5/pi.value())*gMin(yDim);//gMin(xcoord);
@@ -174,20 +179,20 @@
             // Pout<<V1_tip<<endl;
             point DUMMYMAX(-GREAT,-GREAT,-GREAT);
             scalar DUMMYSCAL(-GREAT);
-            //label myCellId=mesh.findCell(V1_tip);
-            const label myPrevCellID = rayCellIDs[i];
-            const label myCellId = findLocalCell(V1_tip, myPrevCellID, mesh);
 
-            // Update rayCellIDs
+            label myCellId = -1;
             if (useLocalSearch)
             {
-                rayCellIDs[i] = myCellId;
+                myCellId =
+                    findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+            }
+            else
+            {
+                myCellId = mesh.findCell(V1_tip);
             }
 
-            if (myCellId!=-1)
+            if (myCellId != -1)
             {
-
-
                 Ray_Number[myCellId]=i+1;//set test field to beam flavour
                 Ray_Q[myCellId]=Q;
 
@@ -282,16 +287,22 @@
             reduce(V2, maxOp<vector>());
             reduce(Q, maxOp<scalar>());
 
+            // Update seed cells for local search
+            rayCellIDs[i] = myCellId;
+
             // V1_tip+=(iterator_distance*V2);
             //label myCellIdnext=mesh.findCell(V1_tip);
-            label myCellIdnext = findLocalCell(V1_tip, myPrevCellID, mesh);
+            label myCellIdnext =
+                findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+
             if (myCellIdnext != -1)
             {
                 while (myCellIdnext == myCellId)
                 {
                     V1_tip += (iterator_distance*V2);
                     //myCellIdnext = mesh.findCell(V1_tip);
-                    myCellIdnext = findLocalCell(V1_tip, myPrevCellID, mesh);
+                    myCellIdnext =
+                        findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
                 }
             }
             else
@@ -299,8 +310,10 @@
                 V1_tip=DUMMYMAX;
             }
             reduce(V1_tip, maxOp<vector>());//reduce vector //
-
             //  Q-=0.1;
+
+            // Update seed cells for local search
+            rayCellIDs[i] = myCellIdnext;
         };
 
         // countbeams++;

@@ -39,11 +39,14 @@ namespace Foam
         // If the seed is out-of-range then use N2 search
         if (seedCellID < 0 || seedCellID >= mesh.nCells())
         {
+            const label cellID = mesh.findCell(p);
             if (debug)
             {
-                Info<< "    Seed cell out of range: use N2 search" << endl;
+                Pout<< "    Seed cell out of range: use N2 search. "
+                    << "Seed ID = " << seedCellID
+                    << ", Cell ID = " << cellID << endl;
             }
-            return mesh.findCell(p);
+            return cellID;
         }
 
         // Trivial case: check if the point is in the seed cell
@@ -51,7 +54,9 @@ namespace Foam
         {
             if (debug)
             {
-                Info<< "    Found point in seed cell" << endl;
+                Pout<< "    Found point in seed cell. Seed ID = " << seedCellID
+                    << ", Cell ID = " << seedCellID
+                    << endl;
             }
             return seedCellID;
         }
@@ -90,8 +95,9 @@ namespace Foam
 	    {
                 if (debug)
                 {
-                    Info<< "    local search: found after " << localSearchI
-                        << " checks" << endl;
+                    Pout<< "    local search: found after " << localSearchI
+                        << " checks. Seed ID = " << seedCellID
+                        << ", Cell ID = " << cellID << endl;
                 }
                 return cellID;
             }
@@ -113,16 +119,23 @@ namespace Foam
             if (++localSearchI > maxLocalSearch)
             {
                 // Break to the N2 search
+                if (debug)
+                {
+                    Pout<< "    Max number of local searches reached: "
+                        << maxLocalSearch << endl;
+                }
                 break;
             }
         }
 
         // Resort to N2 search
+        const label cellID = mesh.findCell(p);
         if (debug)
         {
-            Info<< "    Defaults to N2 search" << endl;
+            Pout<< "    Defaults to N2 search. Seed ID = " << seedCellID
+                << ", Cell ID = " << cellID << endl;
         }
-        return mesh.findCell(p);
+        return cellID;
     }
 
 } // End namespace Foam
