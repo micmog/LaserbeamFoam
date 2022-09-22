@@ -33,4 +33,4 @@ elec_resistivity	1.0e-6;
 debug no;
 
 //extra switch to enforce harsher momentum damping between solid and fluid states in powder bed cases
-PowderSim true;
+//PowderSim true;

@@ -27,3 +27,5 @@ e_num_density	5.83e29;
 elec_resistivity	1.0e-6;
 
 debug false;
+
+PowderSim true;
