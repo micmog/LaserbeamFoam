@@ -1,5 +1,6 @@
 # Solution Files
-log
+log 
+0*
 1*
 2*
 3*
@@ -22,7 +23,6 @@ points
 .*~
 *.bak
 *.bak[0-9][0-9]
-*.orig
 *.orig[0-9][0-9]
 \#*\#
 .DS_Store
