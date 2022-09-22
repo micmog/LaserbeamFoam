@@ -1,4 +1,4 @@
-{
+// {
     IOdictionary LaserProperties
     (
         IOobject
@@ -41,6 +41,9 @@
     const scalar e_i = (damping_frequency/angular_frequency)*((plasma_frequency*plasma_frequency)/((angular_frequency*angular_frequency)+(damping_frequency*damping_frequency)));
     const scalar ref_index = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))+e_r)/2.0);
     const scalar ext_coefficient = Foam::sqrt((Foam::sqrt((e_r*e_r)+(e_i*e_i))-e_r)/2.0);
+
+    //needed for cases with spherical particles or spurious currents will smear out the particle interface un-physically
+    const Switch PowderSim(LaserProperties.lookupOrDefault<Switch>("PowderSim", false));
 
     const Switch debug(LaserProperties.lookupOrDefault<Switch>("debug", false));
     const Switch useLocalSearch
@@ -324,4 +327,4 @@
     // assumes all cells in mesh are same volume - this code only works on regular meshes anyway
     const scalar TotalQ = gSum(Deposition)*mesh.V()[0];
     Info<<"Total Q deposited this timestep: \t"<<TotalQ<<endl;
-}
+// }

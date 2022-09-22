@@ -5,9 +5,17 @@ dimensionedScalar DarcyConstantsmall("DarcyConstantsmall",dimensionSet(0,0,0,0,0
 
 dimensionedScalar TSmooth("TSmooth",dimensionSet(0, 0, 0, 1, 0),50.0);
 
+
+
+if(PowderSim){
+
 DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)/(Foam::pow(epsilon1mask,3)+DarcyConstantsmall));
 DC.correctBoundaryConditions();
-
+}
+else{
+DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1),2)/(Foam::pow(epsilon1,3)+DarcyConstantsmall));
+DC.correctBoundaryConditions();
+}
 const volVectorField gradAlpha(fvc::grad(alpha1));
 
 const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
