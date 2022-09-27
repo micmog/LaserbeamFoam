@@ -172,10 +172,13 @@
         scalar dist=mag(((x0-x1) ^ (x0-x2)))/mag(x2-x1);//cross product to find distance to beam central axis
 
         //   scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
-        // 		*Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
+        //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
         //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
 
         scalar Q = CosTheta_incident*((3.0*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-3.0*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
+
+        // ID of the processor that contains the beam tip
+        label tipProcID = -1;
 
         while (Q > 1.0e-9)
         {
@@ -183,16 +186,35 @@
             point DUMMYMAX(-GREAT,-GREAT,-GREAT);
             scalar DUMMYSCAL(-GREAT);
 
+            // Search for the cell that contains the local beam tip
+            // Only the processor that contained the old tip will perform the
+            // search, or all processor will search if the old tip is not on any
+            // processor
             label myCellId = -1;
-            if (useLocalSearch)
+            if (tipProcID == Pstream::myProcNo() || tipProcID == -1)
             {
-                myCellId =
-                    findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                if (useLocalSearch)
+                {
+                    myCellId =
+                        findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                }
+                else
+                {
+                    myCellId = mesh.findCell(V1_tip);
+                }
+            }
+
+            // Proc ID where the tip is located
+            // If the tip in not on any processor, then this is set to -1
+            if (myCellId != -1)
+            {
+                tipProcID = Pstream::myProcNo();
             }
             else
             {
-                myCellId = mesh.findCell(V1_tip);
+                tipProcID = -1;
             }
+            reduce(tipProcID, maxOp<label>());
 
             if (myCellId != -1)
             {
@@ -283,8 +305,11 @@
             }
             else
             {
-                V2=DUMMYMAX;
-                Q=DUMMYSCAL;
+                // The tip is not on this processor for one of two reasons:
+                // 1. the tip left the entire global domain
+                // 2. the tip is on another processor
+                V2 = DUMMYMAX;
+                Q = DUMMYSCAL;
             }
 
             reduce(V2, maxOp<vector>());
@@ -295,18 +320,28 @@
 
             // V1_tip+=(iterator_distance*V2);
             //label myCellIdnext=mesh.findCell(V1_tip);
-            label myCellIdnext =
-                findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
-
-            if (myCellIdnext != -1)
+            if (tipProcID == Pstream::myProcNo())
             {
-                while (myCellIdnext == myCellId)
+                label myCellIdnext =
+                    findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+
+                if (myCellIdnext != -1)
                 {
-                    V1_tip += (iterator_distance*V2);
-                    //myCellIdnext = mesh.findCell(V1_tip);
-                    myCellIdnext =
-                        findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                    while (myCellIdnext == myCellId)
+                    {
+                        V1_tip += (iterator_distance*V2);
+                        //myCellIdnext = mesh.findCell(V1_tip);
+                        myCellIdnext =
+                            findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                    }
                 }
+                else
+                {
+                    V1_tip=DUMMYMAX;
+                }
+
+                // Update seed cells for local search
+                rayCellIDs[i] = myCellIdnext;
             }
             else
             {
@@ -315,8 +350,15 @@
             reduce(V1_tip, maxOp<vector>());//reduce vector //
             //  Q-=0.1;
 
-            // Update seed cells for local search
-            rayCellIDs[i] = myCellIdnext;
+            if (rayCellIDs[i] == -1)
+            {
+                tipProcID = -1;
+            }
+            reduce(tipProcID, maxOp<label>());
+
+
+            // // Update seed cells for local search
+            // rayCellIDs[i] = myCellIdnext;
         };
 
         // countbeams++;
