@@ -14,13 +14,13 @@ FoamFile
     object      PhaseFieldProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-V_incident	(0 1 0);//(0 1 0);//NORMALISED IN CODE
+V_incident	(0 1 1);//(0 1 0);//NORMALISED IN CODE
 
-HS_a 0.0005;
+HS_a 0.001;
 HS_bg 0.0;//20
-HS_velocity 0.05;//6.0;
+HS_velocity 0.025;//6.0;
 HS_lg 1e-3;
-HS_Q 500;//2000.0;//
+HS_Q 1000;//2000.0;//
 
 wavelength	1.064e-6;
 e_num_density	5.83e29;
@@ -32,5 +32,5 @@ elec_resistivity	1.0e-6;
 // Print extra debug information: defaults to no
 debug no;
 
-//extra switch to enforce harsher momentum damping between solid and fluid states in powder bed cases
+//extra switch to enforce harsher momentum damping between solid and fluid states in powder bed cases, defaults to no
 //PowderSim true;
