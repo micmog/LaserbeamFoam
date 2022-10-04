@@ -194,7 +194,6 @@ int main(int argc, char *argv[])
             #include "alphaEqnSubCycle.H"
 
             #include "UpdateProps.H"
-	   // #include "DivergingOscillatingGaussian.H"
             #include "LaserHS.H"
 
             turbulence.correctPhasePhi();

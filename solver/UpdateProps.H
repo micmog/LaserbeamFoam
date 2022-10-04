@@ -3,7 +3,7 @@ cp=(epsilon1*(alpha1*cp1 + (1.0-alpha1)*cp2)) + ((1.0-epsilon1)*(alpha1*cp1solid
 kappa=(epsilon1*(alpha1*kappa1 + (1.0-alpha1)*kappa2)) + ((1.0-epsilon1)*(alpha1*kappa1solid + (1.0-alpha1)*kappa2solid));
 TSolidus=alpha1*Tsolidus1 + (1.0-alpha1)*Tsolidus2;
 TLiquidus=alpha1*Tliquidus1 + (1.0-alpha1)*Tliquidus2;
-LatentHeat=alpha1*LatentHeat1 + (1.0-alpha1)*LatentHeat2;
+// LatentHeat=alpha1*LatentHeat1 + (1.0-alpha1)*LatentHeat2;
 beta=alpha1*beta1 + (1.0-alpha1)*beta2;
 
 rhok=(1.0-max(epsilon1*(beta)*(T-TSolidus),0.0));
@@ -38,6 +38,8 @@ forAll( mesh.C(), celli)
     }
 }
 alpha_filtered.correctBoundaryConditions();
+
+LatentHeat=alpha_filtered*LatentHeat1 + (1.0-alpha_filtered)*LatentHeat2;
 
 const volVectorField gradepsilon1(fvc::grad(alpha_filtered));
 
