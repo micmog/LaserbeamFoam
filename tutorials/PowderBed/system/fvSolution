@@ -26,7 +26,7 @@ solvers
 
         solver          smoothSolver;
         smoother        symGaussSeidel;
-        tolerance       1e-8;
+        tolerance       1e-9;
         relTol          0;
     }
 
@@ -34,7 +34,7 @@ solvers
     {
         solver          PCG;
         preconditioner  DIC;
-        tolerance       1e-5;
+        tolerance       1e-9;
         relTol          0;
     }
 
@@ -42,8 +42,8 @@ solvers
     {
         solver          PCG;
         preconditioner  DIC;
-        tolerance       1e-07;
-        relTol          0.05;
+        tolerance       1e-09;
+        relTol          0.0;
     }
 
     p_rghFinal
@@ -56,7 +56,7 @@ solvers
     {
         solver          smoothSolver;
         smoother        symGaussSeidel;
-        tolerance       1e-06;
+        tolerance       1e-09;
         relTol          0;
     }
         T
@@ -84,7 +84,7 @@ MELTING
 {
     minTempCorrector 1;
     maxTempCorrector 150;
-    epsilonTolerance 1e-6;
+    epsilonTolerance 1e-5;
     epsilonRelaxation 0.95;
     
     damperSwitch true;//false;//true;
