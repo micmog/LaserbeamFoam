@@ -27,7 +27,7 @@ regions
 
     boxToCell
     {
-        box (-100e-6 50e-6 -0.5) (100e-6 350e-6 0.5);
+        box (-200e-6 50.1e-6 -0.5) (200e-6 350.1e-6 0.5);
         fieldValues
         (
     volScalarFieldValue alpha.metal 1

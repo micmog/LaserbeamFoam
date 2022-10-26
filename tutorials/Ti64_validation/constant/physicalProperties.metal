@@ -20,9 +20,9 @@ nu              1.35e-06;
 
 rho             4420;
 
-    cp  522;
-    cpsolid 522.0;
-    kappa  22.0;
+    cp  650;
+    cpsolid 600.0;
+    kappa  28.0;
 	kappasolid  22.0; 
 	Tsolidus 1890;
 	Tliquidus 1928.15;
