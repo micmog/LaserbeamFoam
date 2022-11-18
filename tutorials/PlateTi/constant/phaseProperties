@@ -1,0 +1,27 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      phaseProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+phases          (metal gas);
+
+sigma           1.49;
+
+dsigmadT	-4.1e-4;//Surface Tension and Viscosity of Industrial Alloys from Parabolic Flight Experiments - Results of the ThermoLab Project
+
+p0		100000.0;
+Tvap 3560.0;
+Mm 4.786e-2;
+LatentHeatVap 8.88e6;
+// ************************************************************************* //
