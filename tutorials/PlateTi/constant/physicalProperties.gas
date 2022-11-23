@@ -16,14 +16,14 @@ FoamFile
 
 viscosityModel  constant;
 
-nu              1.48e-05;
+nu              2.8e-05;
 
-rho             1;
+rho             1.78;
 
     cp  520;
 cpsolid 520;
-    kappa  0.016;
-kappasolid 0.016;
+    kappa  0.04;
+kappasolid 0.04;
     Tsolidus    1.0;
     Tliquidus   10.0;
     LatentHeat  1;

@@ -22,7 +22,7 @@ boundaryField
 {
 	frontAndBack{
 type fixedGradient;
-gradient uniform -500.0;
+gradient uniform -50000.0;
 	}
 
     lowerWall

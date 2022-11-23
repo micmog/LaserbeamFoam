@@ -45,6 +45,8 @@
     //needed for cases with spherical particles or spurious currents will smear out the particle interface un-physically
     const Switch PowderSim(LaserProperties.lookupOrDefault<Switch>("PowderSim", false));
 
+    const scalar dep_cutoff(LaserProperties.lookupOrDefault<scalar>("dep_cutoff", 0.5));
+
     const Switch debug(LaserProperties.lookupOrDefault<Switch>("debug", false));
     const Switch useLocalSearch
     (
@@ -221,7 +223,7 @@
                 Ray_Number[myCellId]=i+1;//set test field to beam flavour
                 Ray_Q[myCellId]=Q;
 
-                if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=0.5)
+                if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=dep_cutoff)
                 {
 
 
@@ -273,7 +275,7 @@
                 else
                 {
 
-                    if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5) // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
+                    if(alpha_filtered[myCellId]>dep_cutoff&&mag(n_filtered[myCellId])<0.5) // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
                     {
                         if (debug)
                         {

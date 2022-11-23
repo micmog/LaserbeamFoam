@@ -20,10 +20,10 @@ nu              1.35e-06;
 
 rho             4420;
 
-    cp  650;
+    cp  750;
     cpsolid 600.0;
-    kappa  26.0;
-	kappasolid  24.0; 
+    kappa  16.0;
+	kappasolid  10.0; 
 	Tsolidus 1890;
 	Tliquidus 1928.15;
     LatentHeat 2.95653e5;
