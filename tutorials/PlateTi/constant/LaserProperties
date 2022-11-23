@@ -27,3 +27,5 @@ e_num_density	12.475e29;
 elec_resistivity	1.92e-6;
 
 dep_cutoff	0.95;
+
+debug	false;//true;
