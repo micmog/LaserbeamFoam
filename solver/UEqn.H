@@ -3,7 +3,7 @@ MRF.correctBoundaryVelocity(U);
 dimensionedScalar DarcyConstantlarge("DarcyConstantlarge",dimensionSet(1,-3,-1,0,0),scalar(1.0e6));//1e10
 dimensionedScalar DarcyConstantsmall("DarcyConstantsmall",dimensionSet(0,0,0,0,0),scalar(1.0e-12));//1e-6
 
-dimensionedScalar TSmooth("TSmooth",dimensionSet(0, 0, 0, 1, 0),50.0);
+// dimensionedScalar TSmooth("TSmooth",dimensionSet(0, 0, 0, 1, 0),50.0);
 
 
 
@@ -26,7 +26,7 @@ if(damperSwitch)
     damper = 2.0 * rho /(rho1+rho2); //To account for high density difference
 }
 
-pVap = min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)* 0.54 * p0 * Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)));
+pVap = /*min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*/ 0.54 * p0 * Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)));
 
 fvVectorMatrix UEqn
 (
