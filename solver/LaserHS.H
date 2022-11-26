@@ -253,7 +253,7 @@
                     {
                         Q *= 0.0;//
                         // Pout<<"vector: "<<V2<<"\t normal: "<<n_filtered[myCellId]<<endl;
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Deposition[myCellId]+=(absorptivity*Q)/*yDim[myCellId]*/;
                         if (debug)
                         {
                         ErrorTrack[myCellId]-=1.0;//
@@ -266,7 +266,7 @@
                     else
                     {
                         // Pout<<"TEST_HERE_pre_reflec"<<endl;
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Deposition[myCellId]+=(absorptivity*Q)/*yDim[myCellId]*/;
                         Q *= (1.0-absorptivity);
                         V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
                         // Pout<<"TEST_HERE_reflec"<<endl;
@@ -293,7 +293,7 @@
 
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Deposition[myCellId]+=(absorptivity*Q)/*yDim[myCellId]*/;
                         Q *= (1.0-absorptivity);
                     }
                     else {} //////////////////////////////////////////////////////////////Catch rays that get through

@@ -22,11 +22,11 @@ rho             1.78;
 
     cp  520;
 cpsolid 520;
-    kappa  0.04;
-kappasolid 0.04;
+    kappa  0.016;
+kappasolid 0.016;
     Tsolidus    1.0;
     Tliquidus   10.0;
-    LatentHeat  1;
+    LatentHeat  0.00001;
     beta    5.0e-5;
 
 // ************************************************************************* //
