@@ -1,0 +1,11 @@
+#!/bin/bash
+#$ -V
+#$ -cwd
+#$ -l mem512
+
+
+
+
+reconstructPar
+
+# End of jobscript
