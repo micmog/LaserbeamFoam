@@ -576,7 +576,8 @@ volScalarField Deposition
         IOobject::AUTO_WRITE
     ),
     mesh,
-    dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
+    // dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
+    dimensionedScalar("Deposition",dimensionSet(1, 0, -3, -0, 0),-1.0)
 );
 
 volScalarField Ray_Q

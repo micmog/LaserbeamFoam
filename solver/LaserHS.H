@@ -45,6 +45,8 @@
     //needed for cases with spherical particles or spurious currents will smear out the particle interface un-physically
     const Switch PowderSim(LaserProperties.lookupOrDefault<Switch>("PowderSim", false));
 
+    const scalar dep_cutoff(LaserProperties.lookupOrDefault<scalar>("dep_cutoff", 0.5));
+
     const Switch debug(LaserProperties.lookupOrDefault<Switch>("debug", false));
     const Switch useLocalSearch
     (
@@ -175,7 +177,7 @@
         //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
         //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
 
-        scalar Q = CosTheta_incident*((3.0*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-3.0*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
+        scalar Q = CosTheta_incident*((2.0*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-2.0*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
 
         // ID of the processor that contains the beam tip
         label tipProcID = -1;
@@ -221,7 +223,7 @@
                 Ray_Number[myCellId]=i+1;//set test field to beam flavour
                 Ray_Q[myCellId]=Q;
 
-                if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=0.5)
+                if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=dep_cutoff)
                 {
 
 
@@ -251,7 +253,7 @@
                     {
                         Q *= 0.0;//
                         // Pout<<"vector: "<<V2<<"\t normal: "<<n_filtered[myCellId]<<endl;
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Deposition[myCellId]+=(absorptivity*Q)/*yDim[myCellId]*/;
                         if (debug)
                         {
                         ErrorTrack[myCellId]-=1.0;//
@@ -264,7 +266,7 @@
                     else
                     {
                         // Pout<<"TEST_HERE_pre_reflec"<<endl;
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Deposition[myCellId]+=(absorptivity*Q)/*yDim[myCellId]*/;
                         Q *= (1.0-absorptivity);
                         V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
                         // Pout<<"TEST_HERE_reflec"<<endl;
@@ -273,7 +275,7 @@
                 else
                 {
 
-                    if(alpha_filtered[myCellId]>0.5&&mag(n_filtered[myCellId])<0.5) // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
+                    if(alpha_filtered[myCellId]>dep_cutoff&&mag(n_filtered[myCellId])<0.5) // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
                     {
                         if (debug)
                         {
@@ -291,7 +293,7 @@
 
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;
-                        Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
+                        Deposition[myCellId]+=(absorptivity*Q)/*yDim[myCellId]*/;
                         Q *= (1.0-absorptivity);
                     }
                     else {} //////////////////////////////////////////////////////////////Catch rays that get through

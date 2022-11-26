@@ -19,7 +19,7 @@
         const volTensorField gradU(fvc::grad(U));
         volTensorField tau(((mixture.mu()*gradU) + (mixture.mu()*gradU.T()))-((2.0/3.0)*mixture.mu()*(fvc::div(phi))*I));
 
-        Qv = min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*0.82*LatentHeatVap*Mm*p0*Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)))/Foam::pow(2*M_PI*Mm*R*T,0.5);
+        Qv = /*min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*/0.82*LatentHeatVap*Mm*p0*Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)))/Foam::pow(2*M_PI*Mm*R*T,0.5);
 
         if (damperSwitch)
         {
@@ -34,7 +34,7 @@
             - fvm::laplacian(kappa, T)
             //     -(tau && gradU) //Viscous dissipation
             ==
-            fvModels.source(rhoCp,T) + (Deposition) - Qv*mag(gradAlpha)*thermalDamper - (TRHS)
+            fvModels.source(rhoCp,T) + (Deposition*mag(gradAlpha)) - Qv*mag(gradAlpha)*thermalDamper - (TRHS)
         );
 
         TEqn.relax();

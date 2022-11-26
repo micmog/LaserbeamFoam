@@ -9,19 +9,44 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      phaseProperties;
+    location    "system";
+    object      fvSchemes;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-phases          (metal gas);
+ddtSchemes
+{
+    default         Euler;
+}
 
-sigma           1.2;
+gradSchemes
+{
+    default         Gauss linear;
+}
 
-dsigmadT	-0.1e-4;
+divSchemes
+{
+    div(rhoPhi,U)  Gauss linearUpwind grad(U);
+    div(phi,alpha)  Gauss interfaceCompression vanLeer 1;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+    div(rhoPhi,epsilon1)	Gauss linear;//Gauss vanLeer01;
+    div((interpolate(cp)*rhoPhi),T)   Gauss upwind;
+}
 
-p0		100000.0;
-Tvap 3068.0;
-Mm 5.58e-2;
-LatentHeatVap 7.45e6;
+laplacianSchemes
+{
+    default         Gauss linear uncorrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         uncorrected;
+}
+
+
 // ************************************************************************* //
