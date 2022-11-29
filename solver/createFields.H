@@ -193,6 +193,14 @@ dimensionedScalar LatentHeatVap("LatentHeatVap",dimensionSet(0, 2, -2, 0, 0),pha
 dimensionedScalar R ("R", dimensionSet(1,2,-2,-1,-1,0,0),8.314);
 
 
+Polynomial<8> polykappa_m(transportProperties_metal.lookup("poly_kappa"));
+Polynomial<8> polykappa_g(transportProperties_gas.lookup("poly_kappa"));
+
+// Polynomial<8> polycp_m(transportProperties_metal.lookup("poly_cp"));
+// Polynomial<8> polycp_g(transportProperties_gas.lookup("poly_cp"));
+
+
+
 volScalarField cp
 (
     IOobject
@@ -223,7 +231,33 @@ volScalarField kappa
     dimensionedScalar("kappa",dimensionSet(1, 1, -3, -1, 0),0.0)
 );
 
-kappa=alpha1*kappa1 + (1.0-alpha1)*kappa2;
+// kappa=alpha1*kappa1 + (1.0-alpha1)*kappa2;
+
+
+
+forAll( mesh.C(), celli)
+{
+kappa[celli]=(alpha1[celli]*(polykappa_m.value(T[celli])))+((1.0-alpha1[celli])*polykappa_g.value(T[celli]));
+// cp[celli]=(alpha1[celli]*(polycp_m.value(T[celli])))+((1.0-alpha1[celli])*polycp_g.value(T[celli]));
+
+
+
+}
+
+
+volScalarField dist_out
+(
+    IOobject
+    (
+        "dist_out",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("dist_out",dimensionSet(0, 1, 0, 0, 0),0.0)
+);
 
 
 volScalarField TSolidus

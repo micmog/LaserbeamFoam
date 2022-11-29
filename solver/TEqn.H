@@ -34,7 +34,7 @@
             - fvm::laplacian(kappa, T)
             //     -(tau && gradU) //Viscous dissipation
             ==
-            fvModels.source(rhoCp,T) + (Deposition*mag(gradAlpha)) - Qv*mag(gradAlpha)*thermalDamper - (TRHS)
+            fvModels.source(rhoCp,T) + (Deposition*mag(gradAlpha)/*thermalDamper*/) - Qv*mag(gradAlpha)*thermalDamper - (TRHS)
         );
 
         TEqn.relax();
