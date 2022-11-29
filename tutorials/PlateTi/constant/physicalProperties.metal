@@ -22,8 +22,8 @@ rho             4420;
 
     cp  1100;
     cpsolid 650.0;
-    kappa  40.0;
-	kappasolid  30.0; 
+    kappa  35.0;
+	kappasolid  25.0; 
 	Tsolidus 1890;
 	Tliquidus 1941.15;
     LatentHeat 2.95653e5;

@@ -330,6 +330,20 @@ volVectorField gradT
     dimensionedVector("gradT",dimensionSet(0, -1, 0, 1, 0),vector::zero)
 );
 
+volVectorField gradAlpha
+(
+    IOobject
+    (
+        "gradAlpha",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedVector("gradAlpha",dimensionSet(0, -1, 0, 0, 0),vector::zero)
+);
+
 volScalarField LatentHeat
 (
     IOobject

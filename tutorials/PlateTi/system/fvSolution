@@ -26,7 +26,7 @@ solvers
 
         solver          smoothSolver;
         smoother        symGaussSeidel;
-        tolerance       1e-9;
+        tolerance       1e-8;
         relTol          0;
     }
 
@@ -34,7 +34,7 @@ solvers
     {
         solver          PCG;
         preconditioner  DIC;
-        tolerance       1e-9;
+        tolerance       1e-5;
         relTol          0;
     }
 
@@ -42,8 +42,8 @@ solvers
     {
         solver          PCG;
         preconditioner  DIC;
-        tolerance       1e-09;
-        relTol          0.0;
+        tolerance       1e-07;
+        relTol          0.05;
     }
 
     p_rghFinal

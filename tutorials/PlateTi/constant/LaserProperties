@@ -23,7 +23,7 @@ HS_lg 200e-6;
 HS_Q 156.0;//
 
 wavelength	1.070e-6;
-e_num_density	2.22e29;//12.475e29;//
+e_num_density	12.475e29;//2.22e29;//
 elec_resistivity	2.2e-6;
 
 dep_cutoff	0.5;
