@@ -1,5 +1,5 @@
 
-cp=(epsilon1*(alpha1*cp1 + (1.0-alpha1)*cp2)) + ((1.0-epsilon1)*(alpha1*cp1solid + (1.0-alpha1)*cp2solid));
+// cp=(epsilon1*(alpha1*cp1 + (1.0-alpha1)*cp2)) + ((1.0-epsilon1)*(alpha1*cp1solid + (1.0-alpha1)*cp2solid));
 // kappa=(epsilon1*(alpha1*kappa1 + (1.0-alpha1)*kappa2)) + ((1.0-epsilon1)*(alpha1*kappa1solid + (1.0-alpha1)*kappa2solid));
 TSolidus=alpha1*Tsolidus1 + (1.0-alpha1)*Tsolidus2;
 TLiquidus=alpha1*Tliquidus1 + (1.0-alpha1)*Tliquidus2;
@@ -13,7 +13,7 @@ rhok.correctBoundaryConditions();
 forAll( mesh.C(), celli)
 {
 kappa[celli]=(alpha1[celli]*(polykappa_m.value(T[celli])))+((1.0-alpha1[celli])*polykappa_g.value(T[celli]));
-// cp[celli]=(alpha1[celli]*(polycp_m.value(T[celli])))+((1.0-alpha1[celli])*polycp_g.value(T[celli]));
+cp[celli]=(alpha1[celli]*(polycp_m.value(T[celli])))+((1.0-alpha1[celli])*polycp_g.value(T[celli]));
 
 
 }

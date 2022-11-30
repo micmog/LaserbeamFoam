@@ -21,10 +21,10 @@
 
         Qv = /*min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*/0.82*LatentHeatVap*Mm*p0*Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)))/Foam::pow(2*M_PI*Mm*R*T,0.5);
 
-        if (damperSwitch)
-        {
-            thermalDamper = 2.0*(rhoCp)/(rho1*cp1 + rho2*cp2);
-        }
+        // if (damperSwitch)
+        // {
+        //     thermalDamper = 2.0*(rhoCp)/(rho1*cp1 + rho2*cp2);
+        // }
 
         fvScalarMatrix  TEqn
         (
@@ -34,7 +34,7 @@
             - fvm::laplacian(kappa, T)
             //     -(tau && gradU) //Viscous dissipation
             ==
-            fvModels.source(rhoCp,T) + (Deposition*mag(gradAlpha)/*thermalDamper*/) - Qv*mag(gradAlpha)*thermalDamper - (TRHS)
+            fvModels.source(rhoCp,T) + (Deposition) - Qv*mag(gradAlpha)/*thermalDamper*/ - (TRHS)
         );
 
         TEqn.relax();
