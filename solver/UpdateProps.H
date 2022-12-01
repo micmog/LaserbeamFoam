@@ -12,8 +12,8 @@ rhok.correctBoundaryConditions();
 
 forAll( mesh.C(), celli)
 {
-kappa[celli]=(alpha1[celli]*(polykappa_m.value(T[celli])))+((1.0-alpha1[celli])*polykappa_g.value(T[celli]));
-cp[celli]=(alpha1[celli]*(polycp_m.value(T[celli])))+((1.0-alpha1[celli])*polycp_g.value(T[celli]));
+kappa[celli]=(max(min(alpha1[celli],1.0),0.0)*(polykappa_m.value(T[celli])))+((1.0-max(min(alpha1[celli],1.0),0.0))*polykappa_g.value(T[celli]));
+cp[celli]=(max(min(alpha1[celli],1.0),0.0)*(polycp_m.value(T[celli])))+((1.0-max(min(alpha1[celli],1.0),0.0))*polycp_g.value(T[celli]));
 
 
 }

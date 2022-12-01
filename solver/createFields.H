@@ -245,19 +245,6 @@ cp[celli]=(alpha1[celli]*(polycp_m.value(T[celli])))+((1.0-alpha1[celli])*polycp
 }
 
 
-volScalarField dist_out
-(
-    IOobject
-    (
-        "dist_out",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("dist_out",dimensionSet(0, 1, 0, 0, 0),0.0)
-);
 
 
 volScalarField TSolidus
