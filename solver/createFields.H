@@ -337,6 +337,19 @@ volScalarField epsilon1mask
     dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
 );
 
+// volScalarField e1temp
+// (
+//     IOobject
+//     (
+//         "e1temp",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("e1temp",dimensionSet(0,0,0,0,0),0.0)
+// );
 
 volVectorField gradT
 (

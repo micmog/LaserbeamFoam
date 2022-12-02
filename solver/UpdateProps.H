@@ -51,13 +51,19 @@ alpha_filtered.correctBoundaryConditions();
 
 LatentHeat=alpha_filtered*LatentHeat1 + (1.0-alpha_filtered)*LatentHeat2;
 
-const volVectorField gradepsilon1(fvc::grad(alpha_filtered));
+volVectorField gradepsilon1(fvc::grad(alpha_filtered));
+
+gradepsilon1.correctBoundaryConditions();
 
 n_filtered = fvc::grad(alpha_filtered)/((mag(gradepsilon1) + deltaN));
 
-const volScalarField e1temp(fvc::average(epsilon1));
+n_filtered.correctBoundaryConditions();
 
+// volScalarField 
+epsilon1.correctBoundaryConditions();
+volScalarField e1temp(fvc::average(epsilon1));
 
+e1temp.correctBoundaryConditions();
 
 forAll( mesh.C(), celli)
 {
