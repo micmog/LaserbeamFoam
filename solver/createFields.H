@@ -190,7 +190,8 @@ dimensionedScalar p0("p0",dimensionSet(1,-1,-2,0,0,0,0),phaseProperties.lookup("
 dimensionedScalar Tvap("Tvap",dimensionSet(0, 0, 0, 1, 0),phaseProperties.lookup("Tvap"));
 dimensionedScalar Mm("Mm",dimensionSet(1, 0, 0, 0, -1),phaseProperties.lookup("Mm"));
 dimensionedScalar LatentHeatVap("LatentHeatVap",dimensionSet(0, 2, -2, 0, 0),phaseProperties.lookup("LatentHeatVap"));
-dimensionedScalar R ("R", dimensionSet(1,2,-2,-1,-1,0,0),8.314);
+
+dimensionedScalar R ("R", dimensionSet(1,2,-2,-1,-1,0,0),phaseProperties.lookup("R"));
 
 
 Polynomial<8> polykappa_m(transportProperties_metal.lookup("poly_kappa"));
