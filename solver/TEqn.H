@@ -55,6 +55,7 @@ thermalDamper[celli]=2.0*rhoCp[celli]/((rho1.value()*polycp_m.value(T[celli]))+(
         Tcorr = (TLiquidus-TSolidus)*epsilon1+TSolidus;
 
         epsilon1 = max(min(epsilon1+(epsilonRel*cp/LatentHeat)*(T-Tcorr),scalar(1)),scalar(0));
+        epsilon1.correctBoundaryConditions();
 
         residual = gMax(mag(epsilon1.primitiveField()-epsilon1.prevIter().primitiveField()));
 
