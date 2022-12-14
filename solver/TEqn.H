@@ -19,6 +19,12 @@
         const volTensorField gradU(fvc::grad(U));
         volTensorField tau(((mixture.mu()*gradU) + (mixture.mu()*gradU.T()))-((2.0/3.0)*mixture.mu()*(fvc::div(phi))*I));
 
+//         forAll( mesh.C(), celli)
+// {
+// kappa[celli]=(max(min(alpha1[celli],1.0),0.0)*(polykappa_m.value(T[celli])))+((1.0-max(min(alpha1[celli],1.0),0.0))*polykappa_g.value(T[celli]));
+// cp[celli]=(max(min(alpha1[celli],1.0),0.0)*(polycp_m.value(T[celli])))+((1.0-max(min(alpha1[celli],1.0),0.0))*polycp_g.value(T[celli]));
+// }
+
         Qv = /*min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*/0.82*LatentHeatVap*Mm*p0*Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)))/Foam::pow(2*M_PI*Mm*R*T,0.5);
 
         if (damperSwitch)
@@ -70,6 +76,7 @@ thermalDamper[celli]=2.0*rhoCp[celli]/((rho1.value()*polycp_m.value(T[celli]))+(
     while ((iter < minTCorr || (residual > epsilonTol) ) && iter <= maxTCorr );
 
     T.correctBoundaryConditions();
+
     gradT = fvc::grad(T);
 }
 
