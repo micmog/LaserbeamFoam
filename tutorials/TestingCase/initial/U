@@ -31,11 +31,8 @@ boundaryField
     }
     atmosphere
     {
-type pressureInletOutletVelocity;
-phi phi;
-rho rho;
-tangentialVelocity uniform (0 0 0);
-value uniform (0 0 0.5);
+        type            pressureInletOutletVelocity;
+        value           uniform (0 0 0);
     }
     defaultFaces
     {

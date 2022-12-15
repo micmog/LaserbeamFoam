@@ -10,18 +10,24 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      phaseProperties;
+    object      physicalProperties.water;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-phases          (metal gas);
+viscosityModel  constant;
 
-sigma           1.522;
+nu              2.35e-06;
 
-dsigmadT	-5.1e-4;//Surface Tension and Viscosity of Industrial Alloys from Parabolic Flight Experiments - Results of the ThermoLab Project
+rho             4420;
 
-p0		100000.0;
-Tvap 3560.0;
-Mm 4.786e-2;
-LatentHeatVap 8.88e6;
+
+	Tsolidus 1880;
+	Tliquidus 1928.15;
+    LatentHeat 2.95653e5;
+    beta    5.0e-4;
+    
+    poly_kappa   (5 0.012 0 0 0 0 0 0);
+    poly_cp   (520 0.05 0 0 0 0 0 0);
+
+
 // ************************************************************************* //

@@ -16,13 +16,12 @@ FoamFile
 
 dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 300.0;
+internalField   uniform 1800.0;
 
 boundaryField
 {
 	frontAndBack{
-type fixedGradient;
-gradient uniform -50.0;
+type zeroGradient;
 	}
 
     lowerWall

@@ -10,24 +10,23 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      physicalProperties.water;
+    object      physicalProperties.air;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 viscosityModel  constant;
 
-nu              2.35e-06;
+nu              1.0e-05;
 
-rho             4420;
+rho             1.78;
 
 
-	Tsolidus 1890;
-	Tliquidus 1928.15;
-    LatentHeat 2.95653e5;
-    beta    5.0e-6;
+    Tsolidus    1.0;
+    Tliquidus   10.0;
+    LatentHeat  1;
+    beta    1.0e-5;
     
-    poly_kappa   (5 1.0e-2 0 0 0 0 0 0);
-    poly_cp   (500 0.2 0 0 0 0 0 0);
-
+    poly_kappa   (0.016 0.0 0 0 0 0 0 0);
+    poly_cp   (520 0.0 0 0 0 0 0 0);
 
 // ************************************************************************* //

@@ -17,7 +17,7 @@ FoamFile
 
 defaultFieldValues
 (
-    volScalarFieldValue alpha.metal 0
+    volScalarFieldValue alpha.metal 1
 );
 
 regions
@@ -25,14 +25,16 @@ regions
 
 
 
-    boxToCell
-    {
-        box (-0.085 0.001 -0.05) (0.085 0.004 0.05);
-        fieldValues
-        (
-    volScalarFieldValue alpha.metal 1
-        );
-    }
+cylinderToCell
+{
+p1 	 (-1 	 0.0005 	 0.0005);
+p2 	 (51 	 0.0005 	 0.0005);
+radius 2.4e-4;
+fieldValues
+(
+    volScalarFieldValue alpha.metal 0.0
+);
+}
 
 /*
 cylinderToCell

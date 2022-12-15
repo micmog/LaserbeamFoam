@@ -16,9 +16,9 @@ FoamFile
 
 viscosityModel  constant;
 
-nu              5e-07;
+nu              1e-06;
 
-rho             8000;
+rho             997;
 
     cp  800;
     cpsolid 600.0;
@@ -27,7 +27,10 @@ rho             8000;
 	Tsolidus 1658;
 	Tliquidus 1723;
     LatentHeat 2.7e5;
-    beta    5.0e-6;
+    beta    0.0;//5.0e-6;
+    
+        poly_kappa   (2 1.5e-2 0 0 0 0 0 0);
+    poly_cp   (520 0.15 0 0 0 0 0 0);
 
 
 // ************************************************************************* //

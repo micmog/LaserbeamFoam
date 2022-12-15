@@ -337,6 +337,20 @@ volScalarField epsilon1mask
     dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
 );
 
+volScalarField epsilon1mask2
+(
+    IOobject
+    (
+        "epsilon1mask2",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("epsilon1mask2",dimensionSet(0,0,0,0,0),0.0)
+);
+
 // volScalarField e1temp
 // (
 //     IOobject

@@ -9,6 +9,13 @@ beta=alpha1*beta1 + (1.0-alpha1)*beta2;
 rhok=(1.0-max(epsilon1*(beta)*(T-TSolidus),0.0));
 rhok.correctBoundaryConditions();
 
+forAll( mesh.C(), celli)
+{
+if(alpha1[celli]>0.05){
+TSolidus[celli]=Tsolidus1.value();
+TLiquidus[celli]=Tliquidus1.value();
+}
+}
 
 forAll( mesh.C(), celli)
 {
@@ -78,6 +85,20 @@ forAll( mesh.C(), celli)
 
 epsilon1mask.correctBoundaryConditions();
 
+volScalarField e2temp(fvc::average(epsilon1mask));
+epsilon1mask2*=0.0;
+forAll( mesh.C(), celli)
+{
+    if(e2temp[celli]<=0.95)
+    {
+        epsilon1mask2[celli]=0.0;
+    }
+    else
+    {
+        epsilon1mask2[celli]=epsilon1mask[celli];
+    }
+
+}
 
 gh=epsilon1mask*(g & mesh.C());
 ghf= fvc::interpolate(epsilon1mask)*(g & mesh.Cf());

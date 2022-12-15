@@ -22,7 +22,8 @@ ddtSchemes
 gradSchemes
 {
     default         Gauss linear;
-    //grad(alpha1)	fourth;
+    grad(alpha_filtered)	fourth;//
+    grad(alpha)	fourth;//
 }
 
 divSchemes
@@ -36,7 +37,7 @@ divSchemes
 
 laplacianSchemes
 {
-    default         Gauss linear corrected;
+    default         Gauss linear uncorrected;
 }
 
 interpolationSchemes
@@ -46,7 +47,7 @@ interpolationSchemes
 
 snGradSchemes
 {
-    default         corrected;
+    default         uncorrected;
 }
 
 
