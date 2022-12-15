@@ -29,3 +29,5 @@ elec_resistivity	1.0e-6;
 debug false;
 
 PowderSim true;
+
+Radius_Flavour	3.0;

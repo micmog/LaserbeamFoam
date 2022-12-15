@@ -16,11 +16,19 @@ else{
 DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1),2)/(Foam::pow(epsilon1,3)+DarcyConstantsmall));
 DC.correctBoundaryConditions();
 }
-const volVectorField gradAlpha(fvc::grad(alpha1));
+const volVectorField gradAlpha = (fvc::grad(alpha1));
 
 const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
-Marangoni = Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
+Marangoni = epsilon1mask2*Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
 
+forAll( mesh.C(), celli)
+{
+if(T[celli]<Tliquidus1.value()){
+
+    Marangoni[celli]*=0.0;
+}
+
+}
 if(damperSwitch)
 {
     damper = 2.0 * rho /(rho1+rho2); //To account for high density difference

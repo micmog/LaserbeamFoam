@@ -20,7 +20,7 @@ HS_a 0.001;
 HS_bg 0.0;//20
 HS_velocity 0.025;//6.0;
 HS_lg 1e-3;
-HS_Q 1000;//2000.0;//
+HS_Q 0;//2000.0;//
 
 wavelength	1.064e-6;
 e_num_density	5.83e29;

@@ -161,17 +161,17 @@ IOdictionary phaseProperties
     )
 );
 
-dimensionedScalar cp1("cp1",dimensionSet(0, 2, -2, -1, 0),transportProperties_metal.lookup("cp"));
-dimensionedScalar cp2("cp2",dimensionSet(0, 2, -2, -1, 0),transportProperties_gas.lookup("cp"));
+// dimensionedScalar cp1("cp1",dimensionSet(0, 2, -2, -1, 0),transportProperties_metal.lookup("cp"));
+// dimensionedScalar cp2("cp2",dimensionSet(0, 2, -2, -1, 0),transportProperties_gas.lookup("cp"));
 
-dimensionedScalar cp1solid("cp1solid",dimensionSet(0, 2, -2, -1, 0),transportProperties_metal.lookup("cpsolid"));
-dimensionedScalar cp2solid("cp2solid",dimensionSet(0, 2, -2, -1, 0),transportProperties_gas.lookup("cpsolid"));
+// dimensionedScalar cp1solid("cp1solid",dimensionSet(0, 2, -2, -1, 0),transportProperties_metal.lookup("cpsolid"));
+// dimensionedScalar cp2solid("cp2solid",dimensionSet(0, 2, -2, -1, 0),transportProperties_gas.lookup("cpsolid"));
 
-dimensionedScalar kappa1("kappa1",dimensionSet(1, 1, -3, -1, 0),transportProperties_metal.lookup("kappa"));
-dimensionedScalar kappa2("kappa2",dimensionSet(1, 1, -3, -1, 0),transportProperties_gas.lookup("kappa"));
+// dimensionedScalar kappa1("kappa1",dimensionSet(1, 1, -3, -1, 0),transportProperties_metal.lookup("kappa"));
+// dimensionedScalar kappa2("kappa2",dimensionSet(1, 1, -3, -1, 0),transportProperties_gas.lookup("kappa"));
 
-dimensionedScalar kappa1solid("kappa1solid",dimensionSet(1, 1, -3, -1, 0),transportProperties_metal.lookup("kappasolid"));
-dimensionedScalar kappa2solid("kappa2solid",dimensionSet(1, 1, -3, -1, 0),transportProperties_gas.lookup("kappasolid"));
+// dimensionedScalar kappa1solid("kappa1solid",dimensionSet(1, 1, -3, -1, 0),transportProperties_metal.lookup("kappasolid"));
+// dimensionedScalar kappa2solid("kappa2solid",dimensionSet(1, 1, -3, -1, 0),transportProperties_gas.lookup("kappasolid"));
 
 dimensionedScalar Tsolidus1("Tsolidus1",dimensionSet(0, 0, 0, 1, 0),transportProperties_metal.lookup("Tsolidus"));
 dimensionedScalar Tsolidus2("Tsolidus2",dimensionSet(0, 0, 0, 1, 0),transportProperties_gas.lookup("Tsolidus"));
@@ -190,7 +190,16 @@ dimensionedScalar p0("p0",dimensionSet(1,-1,-2,0,0,0,0),phaseProperties.lookup("
 dimensionedScalar Tvap("Tvap",dimensionSet(0, 0, 0, 1, 0),phaseProperties.lookup("Tvap"));
 dimensionedScalar Mm("Mm",dimensionSet(1, 0, 0, 0, -1),phaseProperties.lookup("Mm"));
 dimensionedScalar LatentHeatVap("LatentHeatVap",dimensionSet(0, 2, -2, 0, 0),phaseProperties.lookup("LatentHeatVap"));
+
 dimensionedScalar R ("R", dimensionSet(1,2,-2,-1,-1,0,0),8.314);
+
+
+Polynomial<8> polykappa_m(transportProperties_metal.lookup("poly_kappa"));
+Polynomial<8> polykappa_g(transportProperties_gas.lookup("poly_kappa"));
+
+Polynomial<8> polycp_m(transportProperties_metal.lookup("poly_cp"));
+Polynomial<8> polycp_g(transportProperties_gas.lookup("poly_cp"));
+
 
 
 volScalarField cp
@@ -206,7 +215,7 @@ volScalarField cp
     mesh,
     dimensionedScalar("cp",dimensionSet(0, 2, -2, -1, 0),0.0)
 );
-cp=alpha1*cp1 + (1.0-alpha1)*cp2;
+// cp=alpha1*cp1 + (1.0-alpha1)*cp2;
 
 
 volScalarField kappa
@@ -223,7 +232,20 @@ volScalarField kappa
     dimensionedScalar("kappa",dimensionSet(1, 1, -3, -1, 0),0.0)
 );
 
-kappa=alpha1*kappa1 + (1.0-alpha1)*kappa2;
+// kappa=alpha1*kappa1 + (1.0-alpha1)*kappa2;
+
+
+
+forAll( mesh.C(), celli)
+{
+kappa[celli]=(alpha1[celli]*(polykappa_m.value(T[celli])))+((1.0-alpha1[celli])*polykappa_g.value(T[celli]));
+cp[celli]=(alpha1[celli]*(polycp_m.value(T[celli])))+((1.0-alpha1[celli])*polycp_g.value(T[celli]));
+
+
+
+}
+
+
 
 
 volScalarField TSolidus
@@ -315,6 +337,33 @@ volScalarField epsilon1mask
     dimensionedScalar("epsilon1mask",dimensionSet(0,0,0,0,0),0.0)
 );
 
+volScalarField epsilon1mask2
+(
+    IOobject
+    (
+        "epsilon1mask2",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("epsilon1mask2",dimensionSet(0,0,0,0,0),0.0)
+);
+
+// volScalarField e1temp
+// (
+//     IOobject
+//     (
+//         "e1temp",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("e1temp",dimensionSet(0,0,0,0,0),0.0)
+// );
 
 volVectorField gradT
 (
@@ -329,6 +378,20 @@ volVectorField gradT
     mesh,
     dimensionedVector("gradT",dimensionSet(0, -1, 0, 1, 0),vector::zero)
 );
+
+// volVectorField gradAlpha
+// (
+//     IOobject
+//     (
+//         "gradAlpha",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedVector("gradAlpha",dimensionSet(0, -1, 0, 0, 0),vector::zero)
+// );
 
 volScalarField LatentHeat
 (
@@ -576,9 +639,10 @@ volScalarField Deposition
         IOobject::AUTO_WRITE
     ),
     mesh,
-    // dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
-    dimensionedScalar("Deposition",dimensionSet(1, 0, -3, -0, 0),-1.0)
+    dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
+    // dimensionedScalar("Deposition",dimensionSet(1, 0, -3, -0, 0),-1.0)
 );
+
 
 volScalarField Ray_Q
 (

@@ -53,6 +53,8 @@ Description
 #include "fvcSmooth.H"
 #include "findLocalCell.H"
 
+#include "Polynomial.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])

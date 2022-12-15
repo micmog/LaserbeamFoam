@@ -33,10 +33,9 @@ boundaryField
 
     atmosphere
     {
-        type            totalPressure;
+        type            prghTotalPressure;
         p0              uniform 0;
-        U               U;
-        phi             phi;
+        */
     }
 
     defaultFaces
