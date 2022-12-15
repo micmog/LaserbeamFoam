@@ -31,3 +31,5 @@ elec_resistivity	1.0e-6;
 
 // Print extra debug information: defaults to no
 debug no;
+
+Radius_Flavour	3.0;
