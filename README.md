@@ -102,14 +102,7 @@ Philip Cardiff and Gowthaman Parivendhan authors gratefully acknowledge financia
 ## Citing This Work
 If you use laserbeamFoam in your work. Please use the following to cite our work until a more appropriate reference is available (manuscript is currently under review at SoftwareX):
 
-Thomas F. Flint, Gowthaman Parivendhan, Alojz Ivankovic, Michael C. Smith, Philip Cardiff,
-beamWeldFoam: Numerical simulation of high energy density fusion and vapourisation-inducing processes,
-SoftwareX,
-Volume 18,
-2022,
-101065,
-ISSN 2352-7110,
-https://doi.org/10.1016/j.softx.2022.101065
+ Flint, Thomas and Cardiff, Philip and Parivendhan, Gowthaman and Robson, Joseph D., LaserbeamFoam: Laser Ray-Tracing and Thermally Induced State Transition Simulation Toolkit. Available at SSRN: https://ssrn.com/abstract=4243377 or http://dx.doi.org/10.2139/ssrn.4243377 
 
 ## References
 * Kay Wittig and Petr A Nikrityuk 2012 IOP Conf. Ser.: Mater. Sci. Eng. 27 012054
