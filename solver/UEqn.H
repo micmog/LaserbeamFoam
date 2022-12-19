@@ -19,7 +19,7 @@ DC.correctBoundaryConditions();
 const volVectorField gradAlpha = (fvc::grad(alpha1));
 
 const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
-Marangoni = epsilon1mask2*Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
+Marangoni = epsilon1*Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
 
 forAll( mesh.C(), celli)
 {
