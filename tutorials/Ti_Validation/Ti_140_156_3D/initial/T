@@ -22,7 +22,7 @@ boundaryField
 {
 	frontAndBack{
 type fixedGradient;
-gradient uniform -5.0;
+gradient uniform -500.0;
 	}
 
     lowerWall
@@ -37,12 +37,12 @@ type zeroGradient;
 rightWall
     {
 type fixedGradient;
-gradient uniform -5.0;
+gradient uniform -500.0;
     }
     leftWall
     {
 type fixedGradient;
-gradient uniform -5.0;
+gradient uniform -500.0;
     }
 
     defaultFaces

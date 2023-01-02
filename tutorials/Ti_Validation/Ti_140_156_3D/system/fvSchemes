@@ -22,8 +22,7 @@ ddtSchemes
 gradSchemes
 {
     default         Gauss linear;
-    grad(alpha_filtered)	fourth;//
-    grad(alpha)	fourth;//
+
 }
 
 divSchemes

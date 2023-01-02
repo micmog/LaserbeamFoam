@@ -16,13 +16,12 @@ FoamFile
 
 phases          (metal gas);
 
-sigma           1.78;
+sigma           1.7;
 
-dsigmadT	-2.5e-4;//Surface Tension and Viscosity of Industrial Alloys from Parabolic Flight Experiments - Results of the ThermoLab Project
+dsigmadT	-3.6e-4;//Surface Tension and Viscosity of Industrial Alloys from Parabolic Flight Experiments - Results of the ThermoLab Project
 
 p0		101325.0;
-Tvap 3133.0;
+Tvap 3558.0;
 Mm 4.786e-2;
 LatentHeatVap 8.88e6;
-R	8.314;
 // ************************************************************************* //
