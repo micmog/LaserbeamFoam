@@ -100,9 +100,10 @@ Tom Flint and Joe Robson thank the EPSRC for financial support through the assoc
 Philip Cardiff and Gowthaman Parivendhan authors gratefully acknowledge financial support from I-Form, funded by Science Foundation Ireland (SFI) Grant Number 16/RC/3872, co-funded under European Regional Development Fund and by I-Form industry partners. The fourth author additionally acknowledges financial support from the Irish Research Council through the Laureate programme, grant number IRCLA/2017/45, and Bekaert, through the Bekaert University Technology Centre (UTC) at University College Dublin (www.ucd.ie/bekaert). 
 
 ## Citing This Work
-If you use laserbeamFoam in your work. Please use the following to cite our work until a more appropriate reference is available (manuscript is currently under review at SoftwareX):
+If you use laserbeamFoam in your work. Please use the following to cite our work:
 
- Flint, Thomas and Cardiff, Philip and Parivendhan, Gowthaman and Robson, Joseph D., LaserbeamFoam: Laser Ray-Tracing and Thermally Induced State Transition Simulation Toolkit. Available at SSRN: https://ssrn.com/abstract=4243377 or http://dx.doi.org/10.2139/ssrn.4243377 
+laserbeamFoam: Laser ray-tracing and thermally induced state transition simulation toolkit
+TF Flint, JD Robson, G Parivendhan, P Cardiff - SoftwareX, 2023 - https://doi.org/10.1016/j.softx.2022.101299
 
 ## References
 * Kay Wittig and Petr A Nikrityuk 2012 IOP Conf. Ser.: Mater. Sci. Eng. 27 012054
