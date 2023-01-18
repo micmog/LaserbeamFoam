@@ -45,6 +45,16 @@
     //needed for cases with spherical particles or spurious currents will smear out the particle interface un-physically
     const Switch PowderSim(LaserProperties.lookupOrDefault<Switch>("PowderSim", false));
 
+    const Switch ConstAbsorptivity(LaserProperties.lookupOrDefault<Switch>("ConstAbsorptivity", false));
+
+    const scalar Const_Abs_Value(0.0);
+    if(ConstAbsorptivity){
+    Const_Abs_Value(readScalar(LaserProperties.lookup("Const_Abs_Value")));
+    }
+    Info<<"Constant Absorptivity Value = \t"<<Const_Abs_Value<<endl;
+
+
+
     const scalar dep_cutoff(LaserProperties.lookupOrDefault<scalar>("dep_cutoff", 0.5));
 
     const scalar Radius_Flavour(LaserProperties.lookupOrDefault<scalar>("Radius_Flavour", 2.0));
@@ -253,7 +263,12 @@
                     scalar beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
                     scalar R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
                     scalar R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
+                    
                     scalar absorptivity = 1.0-((R_s+R_p)/2.0);//1.0;//
+                    
+                    if(ConstAbsorptivity){
+                    absorptivity=Const_Abs_Value;    
+                    }
 
 
                     // }
@@ -299,6 +314,10 @@
 
 
                         scalar absorptivity = 1.0-((R_s+R_p)/2.0);
+                        
+                        if(ConstAbsorptivity){
+                        absorptivity=Const_Abs_Value;    
+                        }
 
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;
