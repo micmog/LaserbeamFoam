@@ -2,22 +2,32 @@
 
 
 ## Overview
-Presented here is the extensible open-source volume-of-fluid (VOF) solver laserbeamFoam, for studying high energy density laser based advanced manufacturing processes and laser-substrate interactions. In this implementation the metallic substrate, and shielding gas phase, are treated as in-compressible. The solver fully captures the fusion/melting state transition of the metallic substrate. For the vapourisation of the substrate, the explicit volumetric dilation due to the vapourisation state transition is neglected, instead, a phenomenological recoil pressure term is used to capture the contribution to the momentum and energy fields due to vaporisation events. laserbeamFoam also captures surface tension effects, the temperature dependence of surface tension (Marangoni) effects, latent heat effects due to melting/fusion (and vapourisation), buoyancy effects due to the thermal expansion of the phases using a Boussinesq approximation, and momentum damping due to solidification.
+Presented here is a growing suite of solvers that describe laser-substrate interaction. This repository begn with the laserbeamFoam solver. Additional solvers are being added incrementally.
 
-A ray-tracing algorithm is implemented that permits the incident Gaussian laser beam to be discretised into a number of 'Rays' based on the computational grid resolution. The 'Rays' of this incident laser beam are then tracked through the domain through their multiple reflections; with the energy deposited by each ray determined through the Fresnel equations.
+Currently this repository contains:
+### laserbeamFoam
+A volume-of-fluid (VOF) solver for studying high energy density laser based advanced manufacturing processes and laser-substrate interactions. In this implementation the metallic substrate, and shielding gas phase, are treated as in-compressible. The solver fully captures the fusion/melting state transition of the metallic substrate. For the vapourisation of the substrate, the explicit volumetric dilation due to the vapourisation state transition is neglected, instead, a phenomenological recoil pressure term is used to capture the contribution to the momentum and energy fields due to vaporisation events. laserbeamFoam also captures surface tension effects, the temperature dependence of surface tension (Marangoni) effects, latent heat effects due to melting/fusion (and vapourisation), buoyancy effects due to the thermal expansion of the phases using a Boussinesq approximation, and momentum damping due to solidification.
+A ray-tracing algorithm is implemented that permits the incident Gaussian laser beam to be discretised into a number of 'Rays' based on the computational grid resolution. The 'Rays' of this incident laser beam are then tracked through the domain through their multiple reflections; with the energy deposited by each ray determined through the Fresnel equations. The solver approach is extended from the adiabatic two-phase interFoam code developed by [OpenCFD Ltd.](http://openfoam.com/) to include non-isothermal state transition physics and ray-tracing heat source application.
+
+### array_laserbeamFoam
+
+An extension of laserbeamFoam to N-laser sources that can each have their parameters set independently.
+
+
  
-The solver approach is extended from the adiabatic two-phase interFoam code developed by [OpenCFD Ltd.](http://openfoam.com/) to include non-isothermal state transition physics and ray-tracing heat source application. Target applications for laserbeamFoam include:
+ Target applications for the solvers included in this repository include:
 
 * Laser Welding
 * Laser Drilling
 * Laser Powder Bed Fusion
 * Selective Laser Melting
+* Diode Array Additive Manufacturing
 
 The laserbeamFoam solver is effectively an extension of the beamWeldFoam solver previously released, with the implementation of the Ray-Tracing functionality and the Fresnel absorptivity model.
 
 ## Installation
 
-The current version of the code utilises the [OpenFoam10 libraries](https://openfoam.org/version/10/). A branch is provided that compiles against the older [OpenFoam6 libraries](https://openfoam.org/version/6/). The code has been developed and tested using an Ubuntu installation, but should work on any operating system capable of installing OpenFoam. To install the laserbeamFoam solver, first follow the instructions on this page: [OpenFoam 6 Install](https://openfoam.org/download/6-ubuntu/) to install the OpenFoam 6 libraries.
+The current version of the code utilises the [OpenFoam10 libraries](https://openfoam.org/version/10/). A branch is provided that compiles against the older [OpenFoam6 libraries](https://openfoam.org/version/6/). The code has been developed and tested using an Ubuntu installation, but should work on any operating system capable of installing OpenFoam. To install the laserbeamFoam solver, first follow the instructions on this page: [OpenFoam 10 Install](https://openfoam.org/download/10-ubuntu/) to install the OpenFoam 6 libraries.
 
 
 
