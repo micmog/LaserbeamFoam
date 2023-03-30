@@ -1,0 +1,66 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      PhaseFieldProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+N_sources	4;
+
+laser.0{
+bg -100e-6;//20
+lg 100e-6;
+velocity 50.0;
+Q 1.0;
+wavelength 1.070e-6;
+radius 70e-6;
+V_incident (0 1 0);//(0 1 0);//NORMALISED IN CODE
+}
+
+laser.1{
+bg 100.0e-6;//20
+lg 100e-6;
+velocity 40.0;
+Q 1.0;
+wavelength 1.070e-6;
+radius 70e-6;
+V_incident (0 1 0);//(0 1 0);//NORMALISED IN CODE
+}
+
+laser.2{
+bg 100.0e-6;//20
+lg -100e-6;
+velocity 30.0;
+Q 1.0;
+wavelength 1.070e-6;
+radius 70e-6;
+V_incident (0 1 0);//(0 1 0);//NORMALISED IN CODE
+}
+
+laser.3{
+bg -100.0e-6;//20
+lg -100e-6;
+velocity 20.0;
+Q 1.0;
+wavelength 1.070e-6;
+radius 70e-6;
+V_incident (0 1 0);//(0 1 0);//NORMALISED IN CODE
+}
+
+e_num_density	12.475e29;
+elec_resistivity	1920e-9;//
+
+
+debug	false;//true;
+
+PowderSim	false;

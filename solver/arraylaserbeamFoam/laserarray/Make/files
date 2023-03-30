@@ -1,0 +1,3 @@
+laser_array.C
+
+LIB = $(FOAM_USER_LIBBIN)/libarray_laserbeamFoam
