@@ -8,6 +8,8 @@
 for(label L = 0; L < N_sources; L++)
 {
 
+    Info<<"Tracing Laser Source: "<<L<<endl;
+
     const dimensionedScalar pi = constant::mathematical::pi;
     const dimensionedScalar a_cond("a_cond",dimensionSet(0, 1, 0, 0, 0),laserList[L].radius);
     const dimensionedScalar b_g("b_g",dimensionSet(0, 1, 0, 0, 0),laserList[L].bg);
@@ -144,7 +146,7 @@ for(label L = 0; L < N_sources; L++)
     // int countbeams=0;
     forAll(pointslistGlobal1, i)
     {
-        Info<<"Beam: "<<i<<endl;
+        // Info<<"Beam: "<<i<<endl;
 
         vector V2(laserList[L].V_incident/mag(laserList[L].V_incident));
         // Pout<<"TEST_HERE2"<<endl;
