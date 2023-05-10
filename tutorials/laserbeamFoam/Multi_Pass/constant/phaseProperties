@@ -18,7 +18,7 @@ phases          (metal gas);
 
 sigma           1.7;
 
-dsigmadT	-3.6e-4;//Surface Tension and Viscosity of Industrial Alloys from Parabolic Flight Experiments - Results of the ThermoLab Project
+dsigmadT	-1.2e-4;//Surface Tension and Viscosity of Industrial Alloys from Parabolic Flight Experiments - Results of the ThermoLab Project
 
 p0		100000.0;
 Tvap 3068.0;
