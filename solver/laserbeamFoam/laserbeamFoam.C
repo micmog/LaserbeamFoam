@@ -54,6 +54,7 @@ Description
 #include "findLocalCell.H"
 
 #include "Polynomial.H"
+// #include "Random.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -66,8 +67,10 @@ int main(int argc, char *argv[])
     #include "createMesh.H"
     #include "initContinuityErrs.H"
     #include "createDyMControls.H"
+    
     #include "createFields.H"
     #include "createFieldRefs.H"
+    #include "UpdateProps.H"
     #include "initCorrectPhi.H"
     #include "createUfIfPresent.H"
 
@@ -82,7 +85,7 @@ int main(int argc, char *argv[])
 
     while (pimple.run(runTime))
     {
-        #include "readControls.H"
+        // #include "readControls.H"
         #include "readDyMControls.H"
 
         if (LTS)

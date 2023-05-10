@@ -17,7 +17,11 @@
     const scalar HS_velocity(readScalar(LaserProperties.lookup("HS_velocity")));
     const scalar HS_lg(readScalar(LaserProperties.lookup("HS_lg")));
     const scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
-    const vector V_incident(LaserProperties.lookup("V_incident"));
+
+   // const scalar y1(readScalar(LaserProperties.lookup("y1")));
+    const scalar y2(readScalar(LaserProperties.lookup("y2")));
+    const scalar plane_rot(readScalar(LaserProperties.lookup("plane_rotation")));
+    label N_sub_divisions(readLabel(LaserProperties.lookup("N_sub_divisions")));
 
     const scalar wavelength(readScalar(LaserProperties.lookup("wavelength")));
     const scalar e_num_density(readScalar(LaserProperties.lookup("e_num_density")));
@@ -78,12 +82,12 @@
     Laser_boundary = fvc::average(Laser_boundary);
 
 
-    const vector normal_interface(0,1,0);//laser comes in on top y boundary
+    // const vector normal_interface(0,1,0);//laser comes in on top y boundary
 
-    const scalar beam_radius = a_cond.value()/Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
+    const scalar beam_radius = a_cond.value();///Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
     // Adjust sample radius for if beam is not normal too top boundary
-    const scalar CosTheta_incident = Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
-    Info<< "cos (theta): \t" << CosTheta_incident<<endl;
+    //const scalar CosTheta_incident = Foam::cos(Foam::acos((normal_interface & (V_incident/mag(V_incident)))/(mag(normal_interface)*mag(V_incident/mag(V_incident)))));
+    //Info<< "cos (theta): \t" << CosTheta_incident<<endl;
 
     scalar listLength(0);
 
@@ -97,6 +101,7 @@
     ErrorTrack *= 0.0;
     //ErrorTrack2 *= 0.0;
 
+    Beam_Profile *=0.0;
     Deposition *= 0.0;
     Ray_Number *= 0.0;
     Ray_Q *= 0.0;
@@ -120,13 +125,41 @@
                         2.0
                     )
                 )
-             <= Foam::pow(1.5*beam_radius, 2.0)
+             <= Foam::pow(2.0*beam_radius, 2.0)
             )
         && (Laser_boundary[celli] > SMALL)
         )
         {
-            // Ray_Number[celli]=1.0;
-            initial_points.append(mesh.C()[celli]);
+
+        //label N_sub_divisions = 10;
+            for(label Ray_j=0; Ray_j <N_sub_divisions; Ray_j++){
+                for(label Ray_k=0; Ray_k <N_sub_divisions; Ray_k++){
+                point p_1(mesh.C()[celli].x()-(yDim[celli]/2.0)+((yDim[celli]/(N_sub_divisions+1))*(Ray_j+1)),mesh.C()[celli].y(),mesh.C()[celli].z()-(yDim[celli]/2.0)+((yDim[celli]/(N_sub_divisions+1))*(Ray_k+1)));
+                initial_points.append(p_1);
+                }
+
+                
+
+                
+            }
+            
+            
+
+// Random randObj(clock::getTime()+pid ());
+// Info << randObj.scalar01()<< endl;
+
+
+            // Info<<"RAND_"<<rng<<endl;
+            // point p_1(mesh.C()[celli].x()+yDim[celli]/4.0,mesh.C()[celli].y(),mesh.C()[celli].z());
+            // point p_2(mesh.C()[celli].x()-yDim[celli]/4.0,mesh.C()[celli].y(),mesh.C()[celli].z());
+            // point p_3(mesh.C()[celli].x(),mesh.C()[celli].y(),mesh.C()[celli].z()+yDim[celli]/4.0);
+            // point p_4(mesh.C()[celli].x(),mesh.C()[celli].y(),mesh.C()[celli].z()-yDim[celli]/4.0);
+            
+            // initial_points.append(mesh.C()[celli]);
+            // initial_points.append(p_1);
+            // initial_points.append(p_2);
+            // initial_points.append(p_3);
+            // initial_points.append(p_4);
         }
     }
 
@@ -154,13 +187,39 @@
 
     scalar iterator_distance = (0.5/pi.value())*gMin(yDim);//gMin(xcoord);
     Info<<"iterator_distance \t"<<iterator_distance<<endl;
+    Info<<"Total Number of Rays = : "<<pointslistGlobal1.size()<<endl;
     //then loop over all starting points
     // int countbeams=0;
     forAll(pointslistGlobal1, i)
     {
-        Info<<"Beam: "<<i<<endl;
+        //Info<<"Beam: "<<i<<endl;
 
-        vector V2(V_incident/mag(V_incident));
+        point p1_ = pointslistGlobal1[i];
+
+        // Info<<"p1"<<p1_<<endl;
+        // Info<<"p1_x"<<p1_.x()<<endl;
+        // Info<<"p1_y"<<p1_.y()<<endl;
+        // Info<<"p1_z"<<p1_.z()<<endl;
+
+        point p2_(p1_.x()*Foam::cos(plane_rot)-p1_.z()*Foam::sin(plane_rot),p1_.y()+y2,p1_.x()*Foam::sin(plane_rot)+p1_.z()*Foam::cos(plane_rot));
+
+        //  Info<<"p2"<<p2_<<endl;
+        // Info<<"p2_x"<<p2_.x()<<endl;
+        // Info<<"p2_y"<<p2_.y()<<endl;
+        // Info<<"p2_z"<<p2_.z()<<endl;
+
+        // Info<<"cos_THETA"<<Foam::cos(plane_rot)<<endl;
+
+        vector Vscrew(p2_-p1_);//(V_incident/mag(V_incident));
+
+        vector V2(Vscrew/mag(Vscrew));
+        // Info<<"V2"<<V2<<endl;
+        // Info<<"mag_V2"<<mag(V2)<<endl;
+
+        // const vector normal_interface(0,1,0);//laser comes in on top y boundary
+        // const scalar CosTheta_incident = Foam::cos(Foam::acos((normal_interface & (Vscrew/mag(Vscrew)))/(mag(normal_interface)*mag(Vscrew/mag(Vscrew)))));
+
+
         // Pout<<"TEST_HERE2"<<endl;
         //    Info<<i<<"\t"<<pointslistGlobal1[i]<<endl;
 
@@ -168,12 +227,12 @@
         point V1_tip(pointslistGlobal1[i]);
 
         point mid(b_g.value(),pointslistGlobal1[i].y(),lg.value()+(v_arc.value()*time.value()));
-        vector x1 = mid-(10.0*V2);
-        vector x2 = mid+(10.0*V2);
+        //vector x1 = mid-(10.0*V2);
+        //vector x2 = mid+(10.0*V2);
 
         vector x0(pointslistGlobal1[i].x(),pointslistGlobal1[i].y(),pointslistGlobal1[i].z());
 
-        scalar dist=mag(((x0-x1) ^ (x0-x2)))/mag(x2-x1);//cross product to find distance to beam central axis
+        scalar dist=mag(x0-mid);//cross product to find distance to beam central axis
 
 // Info<<"x0: \t"<<x0<<endl;
 
@@ -184,7 +243,7 @@
         //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
         //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
 
-        scalar Q = CosTheta_incident*((Radius_Flavour*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-Radius_Flavour*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
+        scalar Q = /*CosTheta_incident*/(1.0/(N_sub_divisions*N_sub_divisions))*((Radius_Flavour*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-Radius_Flavour*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
 
 
 
@@ -231,6 +290,7 @@
             {
                 Ray_Number[myCellId]=i+1;//set test field to beam flavour
                 Ray_Q[myCellId]=Q;
+                Beam_Profile[myCellId]=max(Beam_Profile[myCellId],Q);
 
                 if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=dep_cutoff)
                 {
@@ -253,7 +313,7 @@
                     scalar beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
                     scalar R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
                     scalar R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
-                    scalar absorptivity = 1.0-((R_s+R_p)/2.0);//1.0;//
+                    scalar absorptivity = 1.0;//1.0-((R_s+R_p)/2.0);//1.0;//
 
 
                     // }
@@ -298,7 +358,7 @@
                         scalar R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
 
 
-                        scalar absorptivity = 1.0-((R_s+R_p)/2.0);
+                        scalar absorptivity = 1.0;//1.0-((R_s+R_p)/2.0);
 
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;

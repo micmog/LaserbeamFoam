@@ -1,4 +1,5 @@
 #include "createRDeltaT.H"
+#include "readControls.H"
 
 dimensionedScalar deltaN=1e-8/pow(average(mesh.V()), 1.0/3.0);
 
@@ -643,6 +644,21 @@ volScalarField Deposition
     // dimensionedScalar("Deposition",dimensionSet(1, 0, -3, -0, 0),-1.0)
 );
 
+volScalarField Beam_Profile
+(
+    IOobject
+    (
+        "Beam_Profile",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("Beam_Profile",dimensionSet(0, 0, 0, 0, 0),-1.0)
+    // dimensionedScalar("Deposition",dimensionSet(1, 0, -3, -0, 0),-1.0)
+);
+
 
 volScalarField Ray_Q
 (
@@ -739,4 +755,4 @@ incompressibleInterPhaseTransportModel turbulence
 #include "createFvConstraints.H"
 
 
-#include "UpdateProps.H"
+

@@ -6,7 +6,7 @@
 
     TRHS *= 0.0;
 
-    const volScalarField rhoCp(rho*cp);
+    
     const surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
 
     do
@@ -27,20 +27,7 @@
 
         Qv = /*min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*/0.82*LatentHeatVap*Mm*p0*Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)))/Foam::pow(2*M_PI*Mm*R*T,0.5);
 
-        if (damperSwitch)
-        {
-        //     thermalDamper = 2.0*(rhoCp)/(rho1*cp1 + rho2*cp2);
 
-        forAll( mesh.C(), celli)
-{
-
-thermalDamper[celli]=2.0*rhoCp[celli]/((rho1.value()*polycp_m.value(T[celli]))+(rho2.value()*polycp_g.value(T[celli])));
-
-
-}
-
-
-        }
 
         fvScalarMatrix  TEqn
         (

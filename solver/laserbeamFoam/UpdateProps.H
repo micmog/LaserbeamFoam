@@ -9,6 +9,26 @@ beta=alpha1*beta1 + (1.0-alpha1)*beta2;
 rhok=(1.0-max(epsilon1*(beta)*(T-TSolidus),0.0));
 rhok.correctBoundaryConditions();
 
+
+const volScalarField rhoCp(rho*cp);
+
+
+        if (damperSwitch)
+        {
+        damper = 2.0 * rho /(rho1+rho2); //To account for high density difference
+
+        forAll( mesh.C(), celli)
+{
+
+thermalDamper[celli]=2.0*rhoCp[celli]/((rho1.value()*polycp_m.value(T[celli]))+(rho2.value()*polycp_g.value(T[celli])));
+
+
+}
+
+
+        }
+
+
 forAll( mesh.C(), celli)
 {
 if(alpha1[celli]>0.05){
@@ -99,6 +119,16 @@ forAll( mesh.C(), celli)
     }
 
 }
+
+
+
+const volVectorField gradAlpha = (fvc::grad(alpha1));
+
+const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
+Marangoni = epsilon1*Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
+
+
+
 
 gh=epsilon1mask*(g & mesh.C());
 ghf= fvc::interpolate(epsilon1mask)*(g & mesh.Cf());
