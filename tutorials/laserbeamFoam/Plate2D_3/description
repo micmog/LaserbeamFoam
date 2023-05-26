@@ -1,0 +1,3 @@
+scalar psi(Foam::sign(pointslistGlobal1[i].z())*phi + pi.value()); sign of z involved so algorithm understands which side the phi is comming through
+This creates the necassity of defining the computational domain such that ROF is at the centre
+atan2

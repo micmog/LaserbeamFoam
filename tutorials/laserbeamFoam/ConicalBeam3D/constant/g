@@ -8,35 +8,14 @@
 FoamFile
 {
     format      ascii;
-    class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    class       uniformDimensionedVectorField;
+    location    "constant";
+    object      g;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 32;
-
-method          simple;
-
-simpleCoeffs
-{
-    n               (1 8 4);
-}
-
-hierarchicalCoeffs
-{
-    n               (1 1 1);
-    order           xyz;
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
+dimensions      [0 1 -2 0 0 0 0];
+value           (0 -9.81 0);
 
 
 // ************************************************************************* //
