@@ -21,7 +21,7 @@ HS_dsf 0.0015;
 HS_a 0.0005;
 HS_bg 0.0;//20
 HS_velocity 0.0;//6.0;
-HS_lg 1e-3;
+HS_lg 0.0;
 HS_Q 2000;//2000.0;//
 
 wavelength	1.064e-6;

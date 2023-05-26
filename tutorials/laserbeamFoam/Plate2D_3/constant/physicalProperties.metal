@@ -9,34 +9,23 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    location    "constant";
+    object      physicalProperties.water;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 32;
+viscosityModel  constant;
 
-method          simple;
+nu              5e-07;
 
-simpleCoeffs
-{
-    n               (1 8 4);
-}
+rho             8000;
 
-hierarchicalCoeffs
-{
-    n               (1 1 1);
-    order           xyz;
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
+	Tsolidus 1658;
+	Tliquidus 1723;
+    LatentHeat 2.7e5;
+    beta    5.0e-6;
+    poly_kappa   (25 0.0 0 0 0 0 0 0);
+    poly_cp   (700 0.0 0 0 0 0 0 0);
 
 
 // ************************************************************************* //

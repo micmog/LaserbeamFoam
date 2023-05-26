@@ -9,34 +9,24 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    location    "constant";
+    object      physicalProperties.air;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 32;
+viscosityModel  constant;
 
-method          simple;
+nu              0.5e-05;
 
-simpleCoeffs
-{
-    n               (1 8 4);
-}
+rho             1.78;
 
-hierarchicalCoeffs
-{
-    n               (1 1 1);
-    order           xyz;
-}
 
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
-
+    Tsolidus    1.0;
+    Tliquidus   10.0;
+    LatentHeat  1;
+    beta    4.0e-5;
+    
+    poly_kappa   (0.4 0.0 0 0 0 0 0 0);
+    poly_cp   (520 0.0 0 0 0 0 0 0);
 
 // ************************************************************************* //

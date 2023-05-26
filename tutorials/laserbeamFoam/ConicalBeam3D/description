@@ -1,0 +1,1 @@
+In constant/LaserProperties two constants of HS_dls (lens to surface distance) and HS_dsf (surface to focal point distance) must be defined for the cone.

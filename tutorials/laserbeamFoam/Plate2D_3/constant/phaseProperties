@@ -9,34 +9,19 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    location    "constant";
+    object      phaseProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 32;
+phases          (metal gas);
 
-method          simple;
+sigma           0.07;
 
-simpleCoeffs
-{
-    n               (1 8 4);
-}
+dsigmadT	-0.5e-4;
 
-hierarchicalCoeffs
-{
-    n               (1 1 1);
-    order           xyz;
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
-
-
+p0		100000.0;
+Tvap 3068.0;
+Mm 5.58e-2;
+LatentHeatVap 7.45e6;
 // ************************************************************************* //

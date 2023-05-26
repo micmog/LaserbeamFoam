@@ -1,0 +1,68 @@
+# Solution Files
+log 
+0*
+1*
+2*
+3*
+4*
+5*
+6*
+7*
+8*
+9*
+*e-*
+processor*
+boundary
+faces
+neighbour
+owner
+points
+
+# editor and misc backup files - anywhere
+*~
+.*~
+*.bak
+*.bak[0-9][0-9]
+*.orig[0-9][0-9]
+\#*\#
+.DS_Store
+
+# file-browser settings - anywhere
+.directory
+
+# CVS recovered versions - anywhere
+.#*
+
+# objects and archives - anywhere
+*.[oa]
+*.la
+*.so
+*.jar
+*.dylib
+
+# derived files
+lex.yy.c
+
+# Corefiles
+core
+
+# dependency files - anywhere
+*.dep
+
+# lnInclude (symlink) folders - anywhere
+lnInclude
+
+# A hidden file created by the Mac OS X Finder.
+.DS_Store
+
+# build folders - anywhere
+linux*Gcc*/
+linux*Icc*/
+darwin*Gcc*/
+darwin*Intel*/
+darwin*Arm*/
+darwin*Clang*/
+linuxming*/
+SiCortex*Gcc*/
+solaris*Gcc*/
+SunOS*Gcc*/
