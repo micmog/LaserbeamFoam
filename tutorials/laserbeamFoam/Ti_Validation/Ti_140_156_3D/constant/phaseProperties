@@ -22,6 +22,6 @@ dsigmadT	-3.6e-4;//Surface Tension and Viscosity of Industrial Alloys from Parab
 
 p0		101325.0;
 Tvap 3558.0;
-Mm 4.786e-2;
+Mm 4.786e-1;
 LatentHeatVap 8.88e6;
 // ************************************************************************* //
