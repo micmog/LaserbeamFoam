@@ -1,5 +1,6 @@
 # laserbeamFoam
 
+![alt text](https://github.com/micmog/LaserbeamFoam/blob/main/images/Powder.png?raw=true)
 
 ## Overview
 Presented here is a growing suite of solvers that describe laser-substrate interaction. This repository begn with the laserbeamFoam solver. Additional solvers are being added incrementally.
