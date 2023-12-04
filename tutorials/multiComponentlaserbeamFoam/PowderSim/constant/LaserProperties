@@ -1,0 +1,34 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      PhaseFieldProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+V_incident	(0 1 0);//(0 1 0);//NORMALISED IN CODE
+
+HS_a 10e-5;
+HS_bg 0.0;//20
+HS_velocity 0.05;//6.0;
+HS_lg 15e-5;
+HS_Q 200.0;//
+
+wavelength	1.064e-6;
+
+
+// Use local search: defaults to yes
+//useLocalSearch yes;
+
+// Print extra debug information: defaults to no
+debug no;
+
+PowderSim true;
