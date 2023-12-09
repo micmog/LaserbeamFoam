@@ -29,8 +29,8 @@ elec_resistivity	1.0e-6;
 //For linear path set oscAmpX=oscAmpz=0
 //For sine path set oscAmpz=0
 //For circular path set amplitude and frequency in both X and Z
-HS_oscAmpX 1;
-HS_oscAmpZ 1;
+HS_oscAmpX 0.001;
+HS_oscAmpZ 0.001;
 
 HS_oscFreqX 180;
 HS_oscFreqZ 180;
