@@ -31,7 +31,6 @@
     const dimensionedScalar Q_cond("Q_cond",dimensionSet(1, 2, -3, 0, 0),HS_Q);
     const dimensionedScalar lg("lg",dimensionSet(0, 1, 0, 0, 0),HS_lg);
 
-    const string oscMode(LaserProperties.lookupOrDefault<string>("HS_oscMode", "linear"));
     const scalar oscAmpX(readScalar(LaserProperties.lookup("HS_oscAmpX")));
     const scalar oscAmpZ(readScalar(LaserProperties.lookup("HS_oscAmpZ")));
     const scalar oscFreqX(readScalar(LaserProperties.lookup("HS_oscFreqX")));
@@ -177,7 +176,7 @@
 
         point V1_tip(pointslistGlobal1[i]);
 
-        point mid(b_g.value(),pointslistGlobal1[i].y(),lg.value()+(v_arc.value()*time.value()));
+        point mid(bg_effective.value(),pointslistGlobal1[i].y(),lg_effective.value()+(v_arc.value()*time.value()));
         vector x1 = mid-(10.0*V2);
         vector x2 = mid+(10.0*V2);
 

@@ -22,18 +22,18 @@ HS_velocity 0.0;//6.0;
 HS_lg 1e-3;
 HS_Q 2000;//2000.0;//
 
-wavelength	1.064e-6;
-e_num_density	5.83e29;
-elec_resistivity	1.0e-6;
-
 //For linear path set oscAmpX=oscAmpz=0
 //For sine path set oscAmpz=0
 //For circular path set amplitude and frequency in both X and Z
-HS_oscAmpX 0.001;
-HS_oscAmpZ 0.001;
+HS_oscAmpX 0.002;
+HS_oscAmpZ 0.002;
 
 HS_oscFreqX 180;
 HS_oscFreqZ 180;
+
+wavelength	1.064e-6;
+e_num_density	5.83e29;
+elec_resistivity	1.0e-6;
 
 
 // Use local search: defaults to yes
