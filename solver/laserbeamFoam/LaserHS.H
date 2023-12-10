@@ -31,6 +31,12 @@
     const dimensionedScalar Q_cond("Q_cond",dimensionSet(1, 2, -3, 0, 0),HS_Q);
     const dimensionedScalar lg("lg",dimensionSet(0, 1, 0, 0, 0),HS_lg);
 
+    const scalar oscAmpX(readScalar(LaserProperties.lookup("HS_oscAmpX")));
+    const scalar oscAmpZ(readScalar(LaserProperties.lookup("HS_oscAmpZ")));
+    const scalar oscFreqX(readScalar(LaserProperties.lookup("HS_oscFreqX")));
+    const scalar oscFreqZ(readScalar(LaserProperties.lookup("HS_oscFreqZ")));
+
+    
     const dimensionedScalar time("time",dimensionSet(0, 0, 1, 0, 0),runTime.time().value());
 
 
@@ -101,6 +107,9 @@
     Ray_Number *= 0.0;
     Ray_Q *= 0.0;
 
+    dimensionedScalar bg_effective = b_g.value() + oscAmpX*sin(2*pi*oscFreqX*time.value());
+    dimensionedScalar lg_effective = lg.value() + oscAmpZ*cos(2*pi*oscFreqZ*time.value());
+
     forAll(mesh.C(), celli)
     {
         const scalar x_coord = mesh.C()[celli].x();
@@ -112,11 +121,11 @@
         if
         (
             (
-                (Foam::pow(x_coord-b_g.value(),2.0))
+                (Foam::pow(x_coord-bg_effective.value(),2.0))
               + (
                     Foam::pow
                     (
-                        z_coord-(lg.value()+(v_arc.value()*time.value())),
+                        z_coord-(lg_effective.value()+(v_arc.value()*time.value())),
                         2.0
                     )
                 )
@@ -167,7 +176,7 @@
 
         point V1_tip(pointslistGlobal1[i]);
 
-        point mid(b_g.value(),pointslistGlobal1[i].y(),lg.value()+(v_arc.value()*time.value()));
+        point mid(bg_effective.value(),pointslistGlobal1[i].y(),lg_effective.value()+(v_arc.value()*time.value()));
         vector x1 = mid-(10.0*V2);
         vector x2 = mid+(10.0*V2);
 
