@@ -444,7 +444,16 @@ if (runTime.outputTime() && Pstream::master())
     // https://docs.vtk.org/en/latest/design_documents/VTKFileFormats.html
 
     // Create a directory for the VTK files
-    const fileName vtkDir(runTime.path()/"VTKs");
+    fileName vtkDir;
+    if (Pstream::parRun())
+    {
+        vtkDir = runTime.path()/".."/"VTKs";
+    }
+    else
+    {
+        vtkDir = runTime.path()/"VTKs";
+    }
+
     mkDir(vtkDir);
 
     // Create a VTK file
