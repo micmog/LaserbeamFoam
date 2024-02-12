@@ -1,0 +1,104 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      setFieldsDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+defaultFieldValues
+(
+    volScalarFieldValue alpha.air 1
+    volScalarFieldValue alpha.Ni 0
+    volScalarFieldValue alpha.Mn 0
+    volScalarFieldValue alpha.Fe 0
+    volVectorFieldValue U (0 0 0)
+);
+
+regions
+(
+
+    boxToCell
+    {
+        box (-200e-6 -200e-6 -0.5) (200e-6 25 -150e-6);
+        fieldValues
+        (
+    volScalarFieldValue alpha.Ni 1.0
+    volScalarFieldValue alpha.Fe 0
+    volScalarFieldValue alpha.Mn 0
+    volScalarFieldValue alpha.air 0.0
+        );
+    }
+    
+        boxToCell
+    {
+        box (-200e-6 -200e-6 -150e-6) (200e-6 25 150e-6);
+        fieldValues
+        (
+    volScalarFieldValue alpha.Fe 1.0
+    volScalarFieldValue alpha.Ni 0
+    volScalarFieldValue alpha.Mn 0
+    volScalarFieldValue alpha.air 0.0
+        );
+    }
+    
+            boxToCell
+    {
+        box (-200e-6 -200e-6 150e-6) (200e-6 256 0.5);
+        fieldValues
+        (
+    volScalarFieldValue alpha.Mn 1.0
+    volScalarFieldValue alpha.Ni 0
+    volScalarFieldValue alpha.Fe 0
+    volScalarFieldValue alpha.air 0.0
+        );
+    }
+    
+/*
+    boxToCell
+    {
+        box (0 0 -1) (0.1461 0.292 1);
+        fieldValues
+        (
+            volScalarFieldValue alpha.Ni 1
+            volScalarFieldValue alpha.Mn 0
+            volScalarFieldValue alpha.Fe 0
+            volScalarFieldValue alpha.air 0
+        );
+    }
+    boxToCell
+    {
+        box (0.1461 0 -1) (0.2922 0.292 1);
+        fieldValues
+        (
+            volScalarFieldValue alpha.Ni 0
+            volScalarFieldValue alpha.Mn 1
+            volScalarFieldValue alpha.Fe 0
+            volScalarFieldValue alpha.air 0
+        );
+    }
+    boxToCell
+    {
+        box (0 0 -1) (0.1461 0.1 1);
+        fieldValues
+        (
+            volScalarFieldValue alpha.Ni 0
+            volScalarFieldValue alpha.Mn 0
+            volScalarFieldValue alpha.Fe 1
+            volScalarFieldValue alpha.air 0
+        );
+    }
+    
+    */
+);
+
+
+// ************************************************************************* //

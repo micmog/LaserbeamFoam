@@ -1,5 +1,6 @@
 # laserbeamFoam
 
+![alt text](https://github.com/micmog/LaserbeamFoam/blob/main/images/Powder.png?raw=true)
 
 ## Overview
 Presented here is a growing suite of solvers that describe laser-substrate interaction. This repository begn with the laserbeamFoam solver. Additional solvers are being added incrementally.
@@ -23,7 +24,23 @@ An extension of laserbeamFoam to N-laser sources that can each have their parame
 * Selective Laser Melting
 * Diode Array Additive Manufacturing
 
-The laserbeamFoam solver is effectively an extension of the beamWeldFoam solver previously released, with the implementation of the Ray-Tracing functionality and the Fresnel absorptivity model.
+
+Users should run the ./Allwclean and ./Allwmake scripts to build the library and solver excecutables
+
+
+### multiComponentlaserbeamFoam
+
+An extension of the laserbeamfoam solver to multi-component metallic substrates. This solver can simulate M-Component metallic substrates in the prescense of gas-phases. Diffusion is treated through a Fickian diffusion model with the diffusivity specified through 'diffusion pairs', and the interface compression again specified in a pair-wise manner. The miscible phases in the simulation should have diffusivity specified between them., and ine immiscible phase pairs should have an interface compression term specified between them (typically 1).
+
+Target applications for the solvers included in this repository include:
+
+* Dissimilar Laser Welding
+* Dissimilar Laser Drilling
+* Dissimilar Laser Powder Bed Fusion
+* Dissimilar Selective Laser Melting
+
+Users should run the ./Allwclean and ./Allwmake scripts to build the library and solver excecutables
+
 
 ## Installation
 
@@ -115,10 +132,21 @@ If you use laserbeamFoam in your work. Please use the following to cite our work
 laserbeamFoam: Laser ray-tracing and thermally induced state transition simulation toolkit
 TF Flint, JD Robson, G Parivendhan, P Cardiff - SoftwareX, 2023 - https://doi.org/10.1016/j.softx.2022.101299
 
+Once the SoftwareX 'Software Update' Manuscript is accepted, please cite that if you use the multi-component versions
+
+
+
 ## References
-* Kay Wittig and Petr A Nikrityuk 2012 IOP Conf. Ser.: Mater. Sci. Eng. 27 012054
-* Sen, A., & Davis, S. (1982). Steady thermocapillary flows in two-dimensional slots. Journal of Fluid Mechanics, 121, 163-186. doi:10.1017/S0022112082001840
-* Sabina L. Campanelli, Giuseppe Casalino, Michelangelo Mortello, Andrea Angelastro, Antonio Domenico Ludovico, Microstructural Characteristics and Mechanical Properties of Ti6Al4V Alloy Fiber Laser Welds
+
+Flint, T. F., Robson, J. D., Parivendhan, G., & Cardiff, P. (2023). laserbeamFoam: Laser ray-tracing and thermally induced state transition simulation toolkit. SoftwareX, 21, 101299.
+
+Flint, T. F., Parivendhan, G., Ivankovic, A., Smith, M. C., & Cardiff, P. (2022). beamWeldFoam: Numerical simulation of high energy density fusion and vapourisation-inducing processes. SoftwareX, 18, 101065.
+
+Flint, T. F., et al. "A fundamental analysis of factors affecting chemical homogeneity in the laser powder bed fusion process." International Journal of Heat and Mass Transfer 194 (2022): 122985.
+
+Flint, T. F., T. Dutilleul, and W. Kyffin. "A fundamental investigation into the role of beam focal point, and beam divergence, on thermo-capillary stability and evolution in electron beam welding applications." International Journal of Heat and Mass Transfer 212 (2023): 124262.
+
+
 
 
 
