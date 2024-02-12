@@ -147,6 +147,25 @@
         )
     );
 
+    // For each beam, store the starting point and locations at which the rays
+    // change direction
+    PtrList<DynamicList<vector>> beamDirectionChangePoints
+    (
+        pointslistGlobal1.size()
+    );
+    // Initialise: beams will likely change direction less than 100 times
+    forAll(beamDirectionChangePoints, rayI)
+    {
+        beamDirectionChangePoints.set
+        (
+            rayI,
+            new DynamicList<vector>(100)
+        );
+
+        // Add initial point
+        beamDirectionChangePoints[rayI].append(pointslistGlobal1[rayI]);
+    }
+
     // Store the list of cell indices where the ray tips are located; these will
     // be used by the the findLocalSearch function when looking for the new tip
     // cell indices
@@ -193,6 +212,9 @@
 
         while (Q > 1.0e-9)
         {
+            // Track when the tip changes direction for post-processing the rays
+            bool beamChangedDirection = false;
+
             // Pout<<V1_tip<<endl;
             point DUMMYMAX(-GREAT,-GREAT,-GREAT);
             scalar DUMMYSCAL(-GREAT);
@@ -270,6 +292,7 @@
                         // ErrorTrack2[myCellId]=1.0;//
                         //Pout<<"theta \t"<<theta_in<<", absorptivity \t"<<absorptivity<<endl;
                         // V2=-V2;//DUMMYMAX;
+                        beamChangedDirection = true;
                     }
                     // else{}
                     else
@@ -278,6 +301,7 @@
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                         Q *= (1.0-absorptivity);
                         V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
+                        beamChangedDirection = true;
                         // Pout<<"TEST_HERE_reflec"<<endl;
                     }
                 }
@@ -302,6 +326,7 @@
 
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;
+                        beamChangedDirection = true;
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                         Q *= (1.0-absorptivity);
                     }
@@ -321,6 +346,7 @@
                 // 2. the tip is on another processor
                 V2 = DUMMYMAX;
                 Q = DUMMYSCAL;
+                beamChangedDirection = true;
             }
 
             reduce(V2, maxOp<vector>());
@@ -340,6 +366,13 @@
                 {
                     while (myCellIdnext == myCellId)
                     {
+                        if (beamChangedDirection)
+                        {
+                            // Write current tip position to array
+                            beamDirectionChangePoints[i].append(V1_tip);
+                            beamChangedDirection = false;
+                        }
+
                         V1_tip += (iterator_distance*V2);
                         //myCellIdnext = mesh.findCell(V1_tip);
                         myCellIdnext =
@@ -381,3 +414,103 @@
     const scalar TotalQ = gSum(Deposition)*mesh.V()[0];
     Info<<"Total Q deposited this timestep: \t"<<TotalQ<<endl;
 // }
+
+// Write rays
+if (runTime.outputTime() && Pstream::master())
+{
+    if (debug)
+    {
+        forAll(beamDirectionChangePoints, rayI)
+        {
+            Info<< "ray " << rayI << endl;
+            forAll(beamDirectionChangePoints[rayI], i)
+            {
+                Info<< "    " << beamDirectionChangePoints[rayI][i] << endl;
+            }
+        }
+    }
+
+    // Write rays in VTK format
+    // See
+    // https://docs.vtk.org/en/latest/design_documents/VTKFileFormats.html
+
+    // Create a directory for the VTK files
+    const fileName vtkDir(runTime.path()/"VTKs");
+    mkDir(vtkDir);
+
+    // Create a VTK file
+    OFstream rayVtkFile
+    (
+        vtkDir/"rays_" //+ runTime.timeName() + "_"
+      + Foam::name(runTime.timeIndex()) + ".vtk"
+    );
+
+    Info<< "Writing rays to " << rayVtkFile.name() << endl;
+
+    // Write header
+    rayVtkFile
+        << "# vtk DataFile Version 2.0" << nl
+        << "Rays" << nl
+        << "ASCII" << endl;
+
+    // Count the number of points and calculate the offset for each ray
+    label nRayPoints = 0;
+    labelList pointIdOffset(beamDirectionChangePoints.size(), 0);
+    forAll(beamDirectionChangePoints, rayI)
+    {
+        nRayPoints += beamDirectionChangePoints[rayI].size();
+
+        if (rayI > 0)
+        {
+            pointIdOffset[rayI] =
+                pointIdOffset[rayI - 1]
+              + beamDirectionChangePoints[rayI - 1].size();
+        }
+    }
+
+    // Write points
+    rayVtkFile
+        << "DATASET POLYDATA" << nl
+        << "POINTS " << nRayPoints << " double" << endl;
+
+    forAll(beamDirectionChangePoints, rayI)
+    {
+        forAll(beamDirectionChangePoints[rayI], i)
+        {
+            rayVtkFile
+                << beamDirectionChangePoints[rayI][i].x() << " "
+                << beamDirectionChangePoints[rayI][i].y() << " "
+                << beamDirectionChangePoints[rayI][i].z() << endl;
+        }
+    }
+
+    // Count the number of lines
+    label nRayLines = 0;
+    forAll(beamDirectionChangePoints, rayI)
+    {
+        // Note: we must add 1 as the VTK format requires it
+        nRayLines += beamDirectionChangePoints[rayI].size() + 1;
+    }
+
+    // Write lines
+    rayVtkFile
+        << "LINES " << beamDirectionChangePoints.size() << " " << nRayLines
+        << endl;
+
+    forAll(beamDirectionChangePoints, rayI)
+    {
+        // Write the number of points in the line
+        rayVtkFile
+            << beamDirectionChangePoints[rayI].size();
+
+        // Write indices of points
+        forAll(beamDirectionChangePoints[rayI], i)
+        {
+            rayVtkFile
+                << " " << pointIdOffset[rayI] + i;
+        }
+
+        rayVtkFile
+            << endl;
+    }
+}
