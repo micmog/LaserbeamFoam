@@ -90,28 +90,28 @@ In this example, a two-dimensional domain is seeded with many small powder parti
 
 ## Algorithm
 
-Initially, the solver loads the mesh, reads in fields and boundary conditions, and selects the turbulence model (if specified). The main solver loop is then initiated. First, the time step is dynamically modified to ensure numerical stability. Next, the two-phase fluid mixture properties and turbulence quantities are updated. The discretised phase-fraction equation is then solved for a user-defined number of subtime steps (typically 3) using the multidimensional universal limiter with explicit solution solver [MULES](https://openfoam.org/release/2-3-0/multiphase/). This solver is included in the OpenFOAM library and performs conservative solutions of hyperbolic convective transport equations with defined bounds (0 and 1 for $$α_1$$). Once the updated phase field is obtained, the program enters the pressure–velocity loop, where p and u are corrected alternatingly. $$T$$ is also solved in this loop so that the buoyancy predictions are correct for the $$U$$ and $$p$$ fields. Correcting the pressure and velocity fields in the sequence is known as pressure implicit with the splitting of operators (PISO). In the OpenFOAM environment, PISO is repeated for multiple iterations at each time step. This process is called the merged PISO- semi-implicit method for pressure-linked equations (SIMPLE) or the pressure-velocity loop (PIMPLE) process, where SIMPLE is an iterative pressure–velocity solution algorithm. PIMPLE continues for a user-specified number of iterations. 
+Initially, the solver loads the mesh, reads in fields and boundary conditions, and selects the turbulence model (if specified). The main solver loop is then initiated. First, the time step is dynamically modified to ensure numerical stability. Next, the two-phase fluid mixture properties and turbulence quantities are updated. The discretised phase-fraction equation is then solved for a user-defined number of subtime steps (typically 3) using the multidimensional universal limiter with explicit solution solver [MULES](https://openfoam.org/release/2-3-0/multiphase/). This solver is included in the OpenFOAM library and performs conservative solutions of hyperbolic convective transport equations with defined bounds (0 and 1 for $α_1$). Once the updated phase field is obtained, the program enters the pressure–velocity loop, where p and u are corrected alternatingly. $T$ is also solved in this loop so that the buoyancy predictions are correct for the $U$ and $p$ fields. Correcting the pressure and velocity fields in the sequence is known as pressure implicit with the splitting of operators (PISO). In the OpenFOAM environment, PISO is repeated for multiple iterations at each time step. This process is called the merged PISO- semi-implicit method for pressure-linked equations (SIMPLE) or the pressure-velocity loop (PIMPLE) process, where SIMPLE is an iterative pressure–velocity solution algorithm. PIMPLE continues for a user-specified number of iterations. 
 The main solver loop iterates until program termination. A summary of the simulation algorithm is presented below:
 
 * `laserbeamFoam` Simulation Algorithm Summary:
   
   * Initialize simulation data and mesh 
-  * WHILE $$t<t_{\text{end}}$$ DO
-  * 1. Update $$\Delta t$$ for stability
+  * WHILE $t < t_{\text{end}}$ DO
+  * 1. Update $\Delta t$ for stability
   * 2. Phase equation sub-cycle
   * 3. Update interface location for the heat source application
   * 4. Update fluid properties
   * 5. Ray-tracing for Heat Source application at the surface
   * 6. PISO Loop
-    * 1. Form $$U$$ equation
+    * 1. Form $U$ equation
     * 2. Energy Transport Loop
-      * 1. Solve $$T$$ equation
+      * 1. Solve $T$ equation
       * 2. Update fluid fraction field
       * 3. Re-evaluate source terms due to latent heat
     * 3. PISO
         * 1. Obtain and correct face fluxes
-        * 2. Solve $$p$$ Poisson equation
-        * 3. Correct $$U$$
+        * 2. Solve $p$ Poisson equation
+        * 3. Correct $U$
   * 7. Write fields
   
 
