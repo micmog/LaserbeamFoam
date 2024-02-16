@@ -308,6 +308,20 @@ volScalarField DC
 
 // refineflag=fvc::average(alpha1);
 
+volScalarField metalaverage
+(
+    IOobject
+    (
+        "metalaverage",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("metalaverage",dimensionSet(0,0,0,0,0),0.0)
+);
+metalaverage = fvc::average(alpha1);
 
 volScalarField refineflag2
 (
@@ -322,7 +336,7 @@ volScalarField refineflag2
     mesh,
     dimensionedScalar("refineflag2",dimensionSet(0,0,0,0,0),0.0)
 );
-refineflag2=fvc::average(alpha1);
+// refineflag2=fvc::average(alpha1);
 
 
 
@@ -455,32 +469,32 @@ volScalarField yDim
     dimensionedScalar("yDim", dimensionSet(0, 1, 0, 0, 0), 1.0)
 );
 
-const faceList & ff = mesh.faces();
-const pointField & pp = mesh.points();
+// const faceList & ff = mesh.faces();
+// const pointField & pp = mesh.points();
 
-forAll( mesh.C(), celli)
-{
-    // vector XYZ = mesh.C()[celli];
-    // xcoord[celli]=XYZ.x();
-    // zcoord[celli]=XYZ.z();
+// forAll( mesh.C(), celli)
+// {
+//     // vector XYZ = mesh.C()[celli];
+//     // xcoord[celli]=XYZ.x();
+//     // zcoord[celli]=XYZ.z();
 
-    const cell & cc = mesh.cells()[celli];
-    labelList pLabels(cc.labels(ff));
-    pointField pLocal(pLabels.size(), vector::zero);
+//     const cell & cc = mesh.cells()[celli];
+//     labelList pLabels(cc.labels(ff));
+//     pointField pLocal(pLabels.size(), vector::zero);
 
-    forAll (pLabels, pointi)
-    {
-        pLocal[pointi] = pp[pLabels[pointi]];
-    }
+//     forAll (pLabels, pointi)
+//     {
+//         pLocal[pointi] = pp[pLabels[pointi]];
+//     }
 
-    // xDim[celli] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
-    yDim[celli] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
-    // zDim[celli] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
-}
+//     // xDim[celli] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
+//     yDim[celli] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
+//     // zDim[celli] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
+// }
 
-// xDim.correctBoundaryConditions();
-yDim.correctBoundaryConditions();
-// zDim.correctBoundaryConditions();
+// // xDim.correctBoundaryConditions();
+// yDim.correctBoundaryConditions();
+// // zDim.correctBoundaryConditions();
 
 
 
@@ -521,7 +535,7 @@ volScalarField beta
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     mesh,
     dimensionedScalar("beta",dimensionSet(0, 0, 0, -1, 0),0.0)
@@ -536,7 +550,7 @@ volScalarField rhok
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     mesh,
     dimensionedScalar("rhok",dimensionSet(0,0,0,0,0),0.0)
@@ -565,7 +579,7 @@ volVectorField Marangoni
         runTime.timeName(),
         mesh,
         IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     mesh,
     dimensionedVector("Marangoni",dimensionSet(1, -2, -2, 0, 0),vector::zero)
@@ -579,7 +593,7 @@ volScalarField pVap
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
-        IOobject::AUTO_WRITE
+        IOobject::NO_WRITE
     ),
     mesh,
     dimensionedScalar("0", dimensionSet(1,-1,-2,0,0,0,0), 0.0)

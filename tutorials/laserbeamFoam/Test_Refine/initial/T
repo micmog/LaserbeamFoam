@@ -20,6 +20,10 @@ internalField   uniform 300.0;
 
 boundaryField
 {
+
+    #includeEtc "caseDicts/setConstraintTypes"
+    
+    
 	frontAndBack{
 type fixedGradient;
 gradient uniform -50.0;

@@ -122,23 +122,23 @@
 
         // scalar beam_radius_adjusted_for_initial_incidence_angle = a_cond.value()/Foam::cos(Foam::acos(((V_incident/mag(V_incident)) & normal_interface)/(mag(V_incident/mag(V_incident))*mag(normal_interface))));
 
-        if
-        (
-            (
-                (Foam::pow(x_coord-bg_effective.value(),2.0))
-              + (
-                    Foam::pow
-                    (
-                        z_coord-(lg_effective.value()+(v_arc.value()*time.value())),
-                        2.0
-                    )
-                )
-             <= Foam::pow(1.5*beam_radius, 2.0)
-            )
-        )
-        {
-            refineflag2[celli]=0.5;
-        }
+        // if
+        // (
+        //     (
+        //         (Foam::pow(x_coord-bg_effective.value(),2.0))
+        //       + (
+        //             Foam::pow
+        //             (
+        //                 z_coord-(lg_effective.value()+(v_arc.value()*time.value())),
+        //                 2.0
+        //             )
+        //         )
+        //      <= Foam::pow(1.5*beam_radius, 2.0)
+        //     )
+        // )
+        // {
+        //     refineflag2[celli]=0.5;
+        // }
 
 
         if
@@ -169,11 +169,15 @@
 
            
         }
+        // if(metalaverage[celli]>1.0-SMALL)
+        // {
+        //     refineflag2[celli]=0.0;
+        //     }
     }
-    refineflag2.correctBoundaryConditions();
+    // refineflag2.correctBoundaryConditions();
 
-    refineflag2+=fvc::average(alpha1);
-    refineflag2.correctBoundaryConditions();
+    // refineflag2+=fvc::average(alpha1);
+    // refineflag2.correctBoundaryConditions();
 
     
     //  Populate and gather the list onto the master processor.
@@ -250,7 +254,7 @@
 
         scalar Q = CosTheta_incident*((Radius_Flavour*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-Radius_Flavour*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
 
-
+        label N_Hits = 0;//store number of collisions;
 
         // ID of the processor that contains the beam tip
         label tipProcID = -1;
@@ -298,6 +302,10 @@
             {
                 Ray_Number[myCellId]=i+1;//set test field to beam flavour
                 Ray_Q[myCellId]=Q;
+
+                if(N_Hits<1){
+                    refineflag2[myCellId]=0.5;
+                }
 
                 if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=dep_cutoff)
                 {
@@ -347,6 +355,7 @@
                         Q *= (1.0-absorptivity);
                         V2=V2-(((((2.0*V2) & n_filtered[myCellId])/(mag(n_filtered[myCellId])*mag(n_filtered[myCellId]))))*n_filtered[myCellId]);//;
                         beamChangedDirection = true;
+                        N_Hits+=1;
                         // Pout<<"TEST_HERE_reflec"<<endl;
                     }
                 }
@@ -374,6 +383,7 @@
                         beamChangedDirection = true;
                         Deposition[myCellId]+=(absorptivity*Q)/yDim[myCellId];
                         Q *= (1.0-absorptivity);
+                        N_Hits+=1;
                     }
                     else {} //////////////////////////////////////////////////////////////Catch rays that get through
 
@@ -392,10 +402,12 @@
                 V2 = DUMMYMAX;
                 Q = DUMMYSCAL;
                 beamChangedDirection = true;
+                N_Hits=DUMMYSCAL;
             }
 
             reduce(V2, maxOp<vector>());
             reduce(Q, maxOp<scalar>());
+            reduce(N_Hits, maxOp<label>());
 
             // Update seed cells for local search
             rayCellIDs[i] = myCellId;
@@ -455,9 +467,17 @@
     }
 
 
+    forAll( mesh.C(), celli)
+{
+    if((metalaverage[celli]>0.01&&metalaverage[celli]<0.99)||refineflag2[celli]>0.1){
+    refineflag2[celli]=0.5;
+    }
+}
+
+
     // assumes all cells in mesh are same volume - this code only works on regular meshes anyway
-    const scalar TotalQ = gSum(Deposition)*mesh.V()[0];
-    Info<<"Total Q deposited this timestep: \t"<<TotalQ<<endl;
+    // const scalar TotalQ = gSum(Deposition)*mesh.V()[0];
+    // Info<<"Total Q deposited this timestep: \t"<<TotalQ<<endl;
 // }
 
 // Write rays

@@ -58,6 +58,20 @@ topoChanger
 
     // Write the refinement level as a volScalarField
     dumpLevel       true;
+    
+    
+    
+    distributor
+{
+    type            distributor;
+
+    libs            ("libfvMeshDistributors.so");
+
+    redistributionInterval  100;
+}
+
+
+
 }
 
 
