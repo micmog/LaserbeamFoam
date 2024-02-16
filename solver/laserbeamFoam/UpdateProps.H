@@ -26,6 +26,10 @@ cp[celli]=(max(min(alpha1[celli],1.0),0.0)*(polycp_m.value(T[celli])))+((1.0-max
 kappa.correctBoundaryConditions();
 
 
+
+// refineflag=fvc::average(alpha1);
+
+
 alpha_filtered=alpha1;
 
 forAll( mesh.C(), celli)

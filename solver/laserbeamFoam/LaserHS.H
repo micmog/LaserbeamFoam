@@ -19,6 +19,8 @@
     const scalar HS_Q(readScalar(LaserProperties.lookup("HS_Q")));
     const vector V_incident(LaserProperties.lookup("V_incident"));
 
+    // label N_sub_divisions(readLabel(LaserProperties.lookup("N_sub_divisions")));
+
     const scalar wavelength(readScalar(LaserProperties.lookup("wavelength")));
     const scalar e_num_density(readScalar(LaserProperties.lookup("e_num_density")));
     const scalar elec_resistivity(readScalar(LaserProperties.lookup("elec_resistivity"))); // this is temperature dependent - will include this in future versions
@@ -110,6 +112,8 @@
     dimensionedScalar bg_effective = b_g.value() + oscAmpX*sin(2*pi*oscFreqX*time.value());
     dimensionedScalar lg_effective = lg.value() + oscAmpZ*cos(2*pi*oscFreqZ*time.value());
 
+    refineflag2*=0.0;
+
     forAll(mesh.C(), celli)
     {
         const scalar x_coord = mesh.C()[celli].x();
@@ -131,15 +135,47 @@
                 )
              <= Foam::pow(1.5*beam_radius, 2.0)
             )
+        )
+        {
+            refineflag2[celli]=0.5;
+        }
+
+
+        if
+        (
+            (
+                (Foam::pow(x_coord-bg_effective.value(),2.0))
+              + (
+                    Foam::pow
+                    (
+                        z_coord-(lg_effective.value()+(v_arc.value()*time.value())),
+                        2.0
+                    )
+                )
+             <= Foam::pow(1.5*beam_radius, 2.0)
+            )
         && (Laser_boundary[celli] > SMALL)
         )
         {
             // Ray_Number[celli]=1.0;
             initial_points.append(mesh.C()[celli]);
+
+        //    for(label Ray_j=0; Ray_j <N_sub_divisions; Ray_j++){
+        //         for(label Ray_k=0; Ray_k <N_sub_divisions; Ray_k++){
+        //         point p_1(mesh.C()[celli].x()-(yDim[celli]/2.0)+((yDim[celli]/(N_sub_divisions+1))*(Ray_j+1)),mesh.C()[celli].y(),mesh.C()[celli].z()-(yDim[celli]/2.0)+((yDim[celli]/(N_sub_divisions+1))*(Ray_k+1)));
+        //         initial_points.append(p_1);
+        //         }
+        //    }
+
+           
         }
     }
+    refineflag2.correctBoundaryConditions();
 
+    refineflag2+=fvc::average(alpha1);
+    refineflag2.correctBoundaryConditions();
 
+    
     //  Populate and gather the list onto the master processor.
     gatheredData1[Pstream::myProcNo()] = initial_points;
     Pstream::gatherList(gatheredData1);

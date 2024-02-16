@@ -292,6 +292,39 @@ volScalarField DC
     dimensionedScalar("DC",dimensionSet(1,-3,-1,0,0),1.0e14)
 );
 
+// volScalarField refineflag
+// (
+//     IOobject
+//     (
+//         "refineflag",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("refineflag",dimensionSet(0,0,0,0,0),0.0)
+// );
+
+// refineflag=fvc::average(alpha1);
+
+
+volScalarField refineflag2
+(
+    IOobject
+    (
+        "refineflag2",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("refineflag2",dimensionSet(0,0,0,0,0),0.0)
+);
+refineflag2=fvc::average(alpha1);
+
+
 
 volScalarField epsilon1
 (

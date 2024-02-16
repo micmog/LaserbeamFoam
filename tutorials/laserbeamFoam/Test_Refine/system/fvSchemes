@@ -9,23 +9,44 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      physicalProperties.air;
+    location    "system";
+    object      fvSchemes;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-viscosityModel  constant;
+ddtSchemes
+{
+    default         Euler;
+}
 
-nu              1.48e-05;
+gradSchemes
+{
+    default         Gauss linear;
+}
 
-rho             1;
+divSchemes
+{
+    div(rhoPhi,U)  Gauss linearUpwind grad(U);
+    div(phi,alpha)  Gauss interfaceCompression vanLeer 1;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+    div(rhoPhi,epsilon1)	Gauss linear;//Gauss vanLeer01;
+    div((interpolate(cp)*rhoPhi),T)   Gauss upwind;
+}
 
-    poly_kappa   (0.04 0 0 0 0 0 0 0);
-    poly_cp   (520 0.0 0 0 0 0 0 0);
-    
-    Tsolidus    1.0;
-    Tliquidus   10.0;
-    LatentHeat  1;
-    beta    4.0e-5;
+laplacianSchemes
+{
+    default         Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
+}
+
 
 // ************************************************************************* //

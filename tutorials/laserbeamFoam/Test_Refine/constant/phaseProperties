@@ -10,22 +10,18 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      physicalProperties.air;
+    object      phaseProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-viscosityModel  constant;
+phases          (metal gas);
 
-nu              1.48e-05;
+sigma           0.07;
 
-rho             1;
+dsigmadT	-0.5e-4;
 
-    poly_kappa   (0.04 0 0 0 0 0 0 0);
-    poly_cp   (520 0.0 0 0 0 0 0 0);
-    
-    Tsolidus    1.0;
-    Tliquidus   10.0;
-    LatentHeat  1;
-    beta    4.0e-5;
-
+p0		100000.0;
+Tvap 3068.0;
+Mm 5.58e-2;
+LatentHeatVap 7.45e6;
 // ************************************************************************* //
