@@ -9,23 +9,33 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      physicalProperties.air;
+    location    "system";
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-viscosityModel  constant;
+numberOfSubdomains 8;
 
-nu              1.48e-05;
+decomposer      hierarchical;
+distributor     hierarchical;
+// distributor     zoltan;
+// libs            ("libzoltanDecomp.so");
 
-rho             1;
+hierarchicalCoeffs
+{
+    n               (2 2 2);
+    order           xyz;
+}
 
-    poly_kappa   (0.04 0 0 0 0 0 0 0);
-    poly_cp   (520 0.0 0 0 0 0 0 0);
-    
-    Tsolidus    1.0;
-    Tliquidus   10.0;
-    LatentHeat  1;
-    beta    4.0e-5;
+constraints
+{
+   refinementHistory
+   {
+       //- Decompose cells such that all cell originating from single cell
+       //  end up on same processor
+       type    refinementHistory;
+   }
+}
+
 
 // ************************************************************************* //

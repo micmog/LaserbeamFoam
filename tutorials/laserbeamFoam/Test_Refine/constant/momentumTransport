@@ -10,22 +10,11 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      physicalProperties.air;
+    object      momentumTransport;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-viscosityModel  constant;
+simulationType  laminar;
 
-nu              1.48e-05;
-
-rho             1;
-
-    poly_kappa   (0.04 0 0 0 0 0 0 0);
-    poly_cp   (520 0.0 0 0 0 0 0 0);
-    
-    Tsolidus    1.0;
-    Tliquidus   10.0;
-    LatentHeat  1;
-    beta    4.0e-5;
 
 // ************************************************************************* //
