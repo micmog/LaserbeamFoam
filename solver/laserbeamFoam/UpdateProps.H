@@ -70,12 +70,15 @@ yDim.correctBoundaryConditions();
 // refineflag=fvc::average(alpha1);
 metalaverage = fvc::average(alpha1);
 
-forAll( mesh.C(), celli)
-{
-if((metalaverage[celli]>0.1&&metalaverage[celli]<0.9)||refineflag2[celli]>0.1){
-refineflag2[celli]=0.5;
-}
-}
+refineflag2*=0.0;
+refineflag2+=metalaverage;
+
+// forAll( mesh.C(), celli)
+// {
+// if((metalaverage[celli]>0.1&&metalaverage[celli]<0.9)||refineflag2[celli]>0.1){
+// refineflag2[celli]=0.5;
+// }
+// }
 
 alpha_filtered=alpha1;
 

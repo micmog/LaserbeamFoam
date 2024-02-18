@@ -112,7 +112,7 @@
     dimensionedScalar bg_effective = b_g.value() + oscAmpX*sin(2*pi*oscFreqX*time.value());
     dimensionedScalar lg_effective = lg.value() + oscAmpZ*cos(2*pi*oscFreqZ*time.value());
 
-    refineflag2*=0.0;
+    // refineflag2*=0.0;
 
     forAll(mesh.C(), celli)
     {
@@ -137,7 +137,7 @@
         //     )
         // )
         // {
-        //     refineflag2[celli]=0.5;
+        //     refineflag2[celli]+=0.5;
         // }
 
 
@@ -158,6 +158,7 @@
         )
         {
             // Ray_Number[celli]=1.0;
+            refineflag2[celli]+=0.5;
             initial_points.append(mesh.C()[celli]);
 
         //    for(label Ray_j=0; Ray_j <N_sub_divisions; Ray_j++){
@@ -303,9 +304,9 @@
                 Ray_Number[myCellId]=i+1;//set test field to beam flavour
                 Ray_Q[myCellId]=Q;
 
-                if(N_Hits<1){
-                    refineflag2[myCellId]=0.5;
-                }
+                // if(N_Hits<1){
+                //     refineflag2[myCellId]=0.5;
+                // }
 
                 if(mag(n_filtered[myCellId])>0.5&&alpha_filtered[myCellId]>=dep_cutoff)
                 {
@@ -467,12 +468,12 @@
     }
 
 
-    forAll( mesh.C(), celli)
-{
-    if((metalaverage[celli]>0.01&&metalaverage[celli]<0.99)||refineflag2[celli]>0.1){
-    refineflag2[celli]=0.5;
-    }
-}
+//     forAll( mesh.C(), celli)
+// {
+//     if((metalaverage[celli]>0.01&&metalaverage[celli]<0.99)||refineflag2[celli]>0.1){
+//     refineflag2[celli]=0.5;
+//     }
+// }
 
 
     // assumes all cells in mesh are same volume - this code only works on regular meshes anyway
