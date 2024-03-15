@@ -117,6 +117,11 @@ The main solver loop iterates until program termination. A summary of the simula
 
 There are no constraints on how the computational domain is discretised.
 
+## Visualising the rays in ParaView
+
+`laserbeamFoam` writes the individual ray beams to `VTK/rays_<TIME_INDEX>.vtk`, where `<TIME_INDEX>` is the time-step index, i.e. 1, 2, 3, etc. ParaView recognises that these files are in a sequence, so they can all be loaded together: `File` -> `Open...` -> Select `rays_..vtk`. As the VTK files do not store time-step information, by default, ParaView assumes the time-step size for the rays is 1 s; however, you can use the ParaView “Temporal Shift Scale” filter on the rays object to sync the ray time with the OpenFOAM model time, where the OpenFOAM time-step value (e.g. 1e-5) is used as the `Scale`.
+
+
 ## License
 OpenFOAM, and by extension, the `laserbeamFoam` application, is licensed free and open source only under the [GNU General Public Licence version 3](https://www.gnu.org/licenses/gpl-3.0.en.html). One reason for OpenFOAM’s popularity is that its users are granted the freedom to modify and redistribute the software and have a right to continued free use within the terms of the GPL.
 
