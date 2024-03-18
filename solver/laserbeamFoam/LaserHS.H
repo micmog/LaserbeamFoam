@@ -136,6 +136,7 @@
         )
         {
             // Ray_Number[celli] = 1.0;
+            refineflag2[celli]+=0.5;
             initial_points.append(mesh.C()[celli]);
         }
     }
@@ -445,9 +446,10 @@
     }
 
 
-    // assumes all cells in mesh are same volume - this code only works on regular meshes anyway
-    const scalar TotalQ = gSum(Deposition)*mesh.V()[0];
-    Info<< "Total Q deposited this timestep: \t" << TotalQ <<endl;
+    //  gSum(mesh.V()*Deposition);
+    // const scalar TotalQ = gSum(Deposition*mesh.V().value());
+
+    // Info<< "Total Q deposited this timestep: \t" << TotalQ <<endl;
 // }
 
 // Combine rays across procs
