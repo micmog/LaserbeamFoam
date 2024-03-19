@@ -306,6 +306,7 @@
                     scalar R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
                     scalar R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
                     scalar absorptivity = 1.0-((R_s+R_p)/2.0);//1.0;//
+                    // scalar absorptivity = 1.0;//1.0;//
 
 
                     // }
@@ -353,6 +354,7 @@
 
 
                         scalar absorptivity = 1.0-((R_s+R_p)/2.0);
+                        // scalar absorptivity = 1.0;//
 
                         V2=-V2;//if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
                         //Q=DUMMYSCAL;
@@ -448,8 +450,8 @@
 
     //  gSum(mesh.V()*Deposition);
     // const scalar TotalQ = gSum(Deposition*mesh.V().value());
-
-    // Info<< "Total Q deposited this timestep: \t" << TotalQ <<endl;
+   const scalar TotalQ = fvc::domainIntegrate(Deposition).value();
+    Info<< "Total Q deposited this timestep: \t" << TotalQ <<endl;
 // }
 
 // Combine rays across procs
