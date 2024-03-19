@@ -33,7 +33,7 @@ topoChanger
     upperRefineLevel 0.999;
 
     // Have slower than 2:1 refinement
-    nBufferLayers   1;
+    nBufferLayers   2;
 
     // Refine cells only up to maxRefinement levels
     maxRefinement   2;

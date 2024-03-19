@@ -11,6 +11,7 @@
         )
     );
 
+    label N_sub_divisions(readLabel(LaserProperties.lookup("N_sub_divisions")));
 
     const scalar HS_a(readScalar(LaserProperties.lookup("HS_a")));
     const scalar HS_bg(readScalar(LaserProperties.lookup("HS_bg")));
@@ -137,7 +138,15 @@
         {
             // Ray_Number[celli] = 1.0;
             refineflag2[celli]+=0.5;
-            initial_points.append(mesh.C()[celli]);
+            // initial_points.append(mesh.C()[celli]);
+
+            for(label Ray_j=0; Ray_j <N_sub_divisions; Ray_j++){
+                for(label Ray_k=0; Ray_k <N_sub_divisions; Ray_k++){
+                point p_1(mesh.C()[celli].x()-(yDim[celli]/2.0)+((yDim[celli]/(N_sub_divisions+1))*(Ray_j+1)),mesh.C()[celli].y(),mesh.C()[celli].z()-(yDim[celli]/2.0)+((yDim[celli]/(N_sub_divisions+1))*(Ray_k+1)));
+                initial_points.append(p_1);
+                }
+           }
+
         }
     }
 
@@ -234,7 +243,7 @@
         //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
         //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
 
-        scalar Q = CosTheta_incident*((Radius_Flavour*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-Radius_Flavour*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
+        scalar Q = (CosTheta_incident/(N_sub_divisions*N_sub_divisions))*((Radius_Flavour*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-Radius_Flavour*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
 
 
 

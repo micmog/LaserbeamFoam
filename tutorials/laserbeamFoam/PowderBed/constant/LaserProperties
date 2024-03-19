@@ -22,6 +22,9 @@ HS_velocity 0.25;//6.0;
 HS_lg -1.0e-4;
 HS_Q 400.0;//
 
+
+N_sub_divisions	1;
+
 //For linear path set oscAmpX=oscAmpz=0
 //For sine path set oscAmpz=0
 //For circular path set amplitude and frequency in both X and Z
