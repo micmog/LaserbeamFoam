@@ -787,3 +787,16 @@ incompressibleInterPhaseTransportModel turbulence
 
 
 #include "UpdateProps.H"
+
+// Read laser properties
+const IOdictionary LaserProperties
+(
+    IOobject
+    (
+        "LaserProperties",    // dictionary name
+        runTime.constant(),     // dict is found in "constant"
+        mesh,                   // registry for the dict
+        IOobject::MUST_READ,    // must exist, otherwise failure
+        IOobject::NO_WRITE      // dict is only read by the solver
+    )
+);

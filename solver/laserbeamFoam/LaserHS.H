@@ -1,15 +1,16 @@
 // {
-    IOdictionary LaserProperties
-    (
-        IOobject
-        (
-            "LaserProperties",    // dictionary name
-            runTime.constant(),     // dict is found in "constant"
-            mesh,                   // registry for the dict
-            IOobject::MUST_READ,    // must exist, otherwise failure
-            IOobject::NO_WRITE      // dict is only read by the solver
-        )
-    );
+    // PC: move to createFields.H to avoid IO overhead per time-step
+    // IOdictionary LaserProperties
+    // (
+    //     IOobject
+    //     (
+    //         "LaserProperties",    // dictionary name
+    //         runTime.constant(),     // dict is found in "constant"
+    //         mesh,                   // registry for the dict
+    //         IOobject::MUST_READ,    // must exist, otherwise failure
+    //         IOobject::NO_WRITE      // dict is only read by the solver
+    //     )
+    // );
 
     label N_sub_divisions(readLabel(LaserProperties.lookup("N_sub_divisions")));
 
