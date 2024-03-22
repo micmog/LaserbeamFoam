@@ -51,9 +51,8 @@ Description
 #include "fvConstraints.H"
 #include "CorrectPhi.H"
 #include "fvcSmooth.H"
-#include "findLocalCell.H"
 #include "Polynomial.H"
-#include "SortableList.H"
+#include "laserHeatSource.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -196,7 +195,9 @@ int main(int argc, char *argv[])
             #include "alphaEqnSubCycle.H"
 
             #include "UpdateProps.H"
-            #include "LaserHS.H"
+
+            // Update the laser deposition field
+            laser.updateDeposition(alpha_filtered, n_filtered);
 
             turbulence.correctPhasePhi();
 
