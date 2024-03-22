@@ -33,28 +33,31 @@ kappa.correctBoundaryConditions();
 const faceList & ff = mesh.faces();
 const pointField & pp = mesh.points();
 
-forAll( mesh.C(), celli)
+const vectorField& CI = mesh.C();
+scalarField& yDimI = laser.yDim();
+
+forAll(CI, celli)
 {
     // vector XYZ = mesh.C()[celli];
     // xcoord[celli]=XYZ.x();
     // zcoord[celli]=XYZ.z();
 
-    const cell & cc = mesh.cells()[celli];
+    const cell& cc = mesh.cells()[celli];
     labelList pLabels(cc.labels(ff));
     pointField pLocal(pLabels.size(), vector::zero);
 
-    forAll (pLabels, pointi)
+    forAll(pLabels, pointi)
     {
         pLocal[pointi] = pp[pLabels[pointi]];
     }
 
     // xDim[celli] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
-    yDim[celli] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
+    yDimI[celli] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
     // zDim[celli] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
 }
 
 // xDim.correctBoundaryConditions();
-yDim.correctBoundaryConditions();
+laser.yDim().correctBoundaryConditions();
 // zDim.correctBoundaryConditions();
 //update the cell size fields
 
@@ -70,8 +73,8 @@ yDim.correctBoundaryConditions();
 // refineflag=fvc::average(alpha1);
 metalaverage = fvc::average(alpha1);
 
-refineflag2*=0.0;
-refineflag2+=metalaverage;
+laser.refineFlag() *= 0.0;
+laser.refineFlag() += metalaverage;
 
 // forAll( mesh.C(), celli)
 // {
@@ -82,9 +85,9 @@ refineflag2+=metalaverage;
 
 alpha_filtered=alpha1;
 
-forAll( mesh.C(), celli)
+forAll(CI, celli)
 {
-    if(alpha1[celli]>0.99)
+    if (alpha1[celli] > 0.99)
     {
 
         alpha_filtered[celli]=1.0;
@@ -124,7 +127,7 @@ volScalarField e1temp(fvc::average(epsilon1));
 
 e1temp.correctBoundaryConditions();
 
-forAll( mesh.C(), celli)
+forAll(CI, celli)
 {
     if(e1temp[celli]<=0.95)
     {
@@ -141,7 +144,7 @@ epsilon1mask.correctBoundaryConditions();
 
 volScalarField e2temp(fvc::average(epsilon1mask));
 epsilon1mask2*=0.0;
-forAll( mesh.C(), celli)
+forAll(CI, celli)
 {
     if(e2temp[celli]<=0.95)
     {
@@ -154,5 +157,5 @@ forAll( mesh.C(), celli)
 
 }
 
-gh=epsilon1mask*(g & mesh.C());
-ghf= fvc::interpolate(epsilon1mask)*(g & mesh.Cf());
+gh = epsilon1mask*(g & mesh.C());
+ghf = fvc::interpolate(epsilon1mask)*(g & mesh.Cf());

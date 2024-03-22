@@ -1,4 +1,5 @@
 EXE_INC = \
+    -I./laserHeatSource \
     -IincompressibleInterPhaseTransportModel/lnInclude \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/twoPhaseMixture/lnInclude \

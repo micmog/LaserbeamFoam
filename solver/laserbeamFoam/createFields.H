@@ -455,19 +455,6 @@ volScalarField LatentHeat
 );
 LatentHeat=alpha1*LatentHeat1 + (1.0-alpha1)*LatentHeat2;
 
-volScalarField yDim
-(
-    IOobject
-    (
-        "yDim",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::NO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("yDim", dimensionSet(0, 1, 0, 0, 0), 1.0)
-);
 
 // const faceList & ff = mesh.faces();
 // const pointField & pp = mesh.points();
@@ -659,69 +646,6 @@ volScalarField thermalDamper
     zeroGradientFvPatchScalarField::typeName
 );
 
-
-
-volScalarField Ray_Number
-(
-    IOobject
-    (
-        "Ray_Number",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Ray_Number",dimensionSet(0, 0, 0, -0, 0),-1.0)
-);
-
-volScalarField Deposition
-(
-    IOobject
-    (
-        "Deposition",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
-    // dimensionedScalar("Deposition",dimensionSet(1, 0, -3, -0, 0),-1.0)
-);
-
-
-volScalarField Ray_Q
-(
-    IOobject
-    (
-        "Ray_Q",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Ray_Q",dimensionSet(1, 0, -3, 0, 0),scalar(0.0))
-);
-
-volScalarField Laser_boundary
-(
-    IOobject
-    (
-        "Laser_boundary",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
-
-Laser_boundary=fvc::average(Laser_boundary);
-
-
-
 volScalarField alpha_filtered
 (
     IOobject
@@ -735,39 +659,6 @@ volScalarField alpha_filtered
     mesh,
     dimensionedScalar("alpha_filtered",dimensionSet(0, 0, 0, -0, 0),0.0)
 );
-
-
-volScalarField ErrorTrack
-(
-    IOobject
-    (
-        "ErrorTrack",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("ErrorTrack",dimensionSet(0, 0, 0, -0, 0),0.0)
-);
-
-volScalarField ErrorTrack2
-(
-    IOobject
-    (
-        "ErrorTrack2",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("ErrorTrack2",dimensionSet(0, 0, 0, -0, 0),0.0)
-);
-
-
-
-
 
 #include "createAlphaFluxes.H"
 
@@ -785,18 +676,7 @@ incompressibleInterPhaseTransportModel turbulence
 #include "createFvModels.H"
 #include "createFvConstraints.H"
 
+// Create laser heat source
+laserHeatSource laser(mesh);
 
 #include "UpdateProps.H"
-
-// Read laser properties
-const IOdictionary LaserProperties
-(
-    IOobject
-    (
-        "LaserProperties",    // dictionary name
-        runTime.constant(),     // dict is found in "constant"
-        mesh,                   // registry for the dict
-        IOobject::MUST_READ,    // must exist, otherwise failure
-        IOobject::NO_WRITE      // dict is only read by the solver
-    )
-);
