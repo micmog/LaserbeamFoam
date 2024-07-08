@@ -45,12 +45,15 @@ thermalDamper[celli]=2.0*rhoCp[celli]/((rho1.value()*polycp_m.value(T[celli]))+(
         fvScalarMatrix  TEqn
         (
             fvm::ddt(rhoCp,T)
-            + fvm::div(rhophicp, T)
-            - fvm::Sp(fvc::ddt(rhoCp) + fvc::div(rhophicp), T)
-            - fvm::laplacian(kappa, T)
-            //     -(tau && gradU) //Viscous dissipation
-            ==
-            fvModels.source(rhoCp,T) + (Deposition) - Qv*mag(gradAlpha)*thermalDamper - (TRHS)
+          + fvm::div(rhophicp, T)
+          - fvm::Sp(fvc::ddt(rhoCp) + fvc::div(rhophicp), T)
+          - fvm::laplacian(kappa, T)
+          //- (tau && gradU) // Viscous dissipation
+         ==
+            fvModels.source(rhoCp,T)
+          + laser.deposition()
+          - Qv*mag(gradAlpha)*thermalDamper
+          - TRHS
         );
 
         TEqn.relax();

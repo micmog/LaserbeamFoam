@@ -7,14 +7,13 @@ dimensionedScalar DarcyConstantsmall("DarcyConstantsmall",dimensionSet(0,0,0,0,0
 
 
 
-if(PowderSim){
-
-DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)/(Foam::pow(epsilon1mask,3)+DarcyConstantsmall));
-DC.correctBoundaryConditions();
+if (laser.powderSim())
+{
+    DC = (DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)/(Foam::pow(epsilon1mask,3)+DarcyConstantsmall));
 }
-else{
-DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1),2)/(Foam::pow(epsilon1,3)+DarcyConstantsmall));
-DC.correctBoundaryConditions();
+else
+{
+    DC = (DarcyConstantlarge*Foam::pow((1.0-epsilon1),2)/(Foam::pow(epsilon1,3)+DarcyConstantsmall));
 }
 const volVectorField gradAlpha(fvc::grad(alpha1));
 
