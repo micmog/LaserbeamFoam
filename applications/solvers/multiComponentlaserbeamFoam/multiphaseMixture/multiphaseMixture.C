@@ -796,26 +796,23 @@ const volScalarField& Temperature
             {
                 FatalErrorInFunction
                     << "Cannot find interface " << interfacePair(alpha1, alpha2)
-                    << " in list of dsigmadT values"
-                    << exit(FatalError);
+                        << " in list of dsigmadT values"
+                        << exit(FatalError);
             }
 
-                // Cell gradient of alpha
-        volVectorField gradAlpha =
-        alpha2*fvc::grad(alpha1) - alpha1*fvc::grad(alpha2);
+            // Cell gradient of alpha
+            const volVectorField gradAlpha
+            (
+                alpha2*fvc::grad(alpha1) - alpha1*fvc::grad(alpha2)
+            );
 
-        volVectorField nHatM = gradAlpha/(mag(gradAlpha) + deltaN_);
+            const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN_));
 
-        volVectorField gradT = fvc::grad(Temperature);
+            const volVectorField gradT(fvc::grad(Temperature));
 
-
-
-        sMf -=dimensionedScalar("dsigmadT", dimdSigmadT_, dsigmadT())*
+            sMf -=dimensionedScalar("dsigmadT", dimdSigmadT_, dsigmadT())*
                 (gradT-(nHatM*(nHatM & gradT)))
                 *mag(gradAlpha);
-
- 
-
         }
     }
 
@@ -969,8 +966,8 @@ void Foam::multiphaseMixture::solveAlphas
     const volScalarField& epsilon1
 )
 {
-    static label nSolves=-1;
-    nSolves++;
+    // static label nSolves=-1;
+    // nSolves++;
 
     word alphaScheme("div(phi,alpha)");
     word alpharScheme("div(phirb,alpha)");
@@ -1082,12 +1079,12 @@ void Foam::multiphaseMixture::solveAlphas
                     (mag(phi_) + mag(phir))/mesh_.magSf()
                 );
 
-                
+
 // Add the optional shear compression contribution
 
         // phic2 +=
         //     1.0*mag(mesh_.delta() & fvc::interpolate(symm(fvc::grad(U_))));
-    
+
 
                 phir +=(min(cAlpha()*phic2, max(phic2))*(nHatf(alpha, alpha2)));
 
@@ -1111,9 +1108,9 @@ void Foam::multiphaseMixture::solveAlphas
 
 
             phirD-= fvc::interpolate(coefffield)*mesh_.magSf()*((fvc::interpolate(alpha2)*fvc::snGrad(alpha))-(fvc::interpolate(alpha)*fvc::snGrad(alpha2)));;
-         
 
-         
+
+
             }
 
 

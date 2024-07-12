@@ -32,38 +32,24 @@ License
 #include "fvcSnGrad.H"
 #include "fvcDiv.H"
 #include "fvcFlux.H"
-
-
-#include "fvCFD.H"
-
 #include "fvmDdt.H"
 #include "fvmLaplacian.H"
 #include "fvmSup.H"
 
 
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-Foam::laser::laser ()
-{
-
-
-
-}
+Foam::laser::laser()
+{}
 
 // Foam::laser::laser (const int N_comp)
 // {
 // N_comp_=N_comp;
-
-
 // }
 
 
-
-Foam::laser::laser (const laser& M1)
-{
-
-
-
-}
+Foam::laser::laser(const laser& M1)
+{}
 
 
 

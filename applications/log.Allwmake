@@ -1,0 +1,33 @@
+wmake solvers
+wmake arraylaserbeamFoam
+Allwmake /Users/philipc/code/laserbeamfoam/applications/solvers/arraylaserbeamFoam
+wmake laserarray
+make[1]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/arraylaserbeamFoam/laserarray'
+make[1]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/arraylaserbeamFoam/laserarray'
+make[1]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/arraylaserbeamFoam'
+make[1]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/arraylaserbeamFoam'
+wmake laserbeamFoam
+make[1]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam'
+wmake VoFTurbulenceDamping
+make[2]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/VoFTurbulenceDamping'
+wmake lnInclude
+make[2]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/VoFTurbulenceDamping'
+make[2]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/VoFTurbulenceDamping'
+make[2]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/VoFTurbulenceDamping'
+wmake incompressibleInterPhaseTransportModel
+make[2]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/incompressibleInterPhaseTransportModel'
+wmake lnInclude
+make[2]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/incompressibleInterPhaseTransportModel'
+make[2]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/incompressibleInterPhaseTransportModel'
+make[2]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam/incompressibleInterPhaseTransportModel'
+wmake laserHeatSource
+make[1]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam'
+make[1]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam'
+make[1]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/laserbeamFoam'
+wmake multiComponentlaserbeamFoam
+Allwmake /Users/philipc/code/laserbeamfoam/applications/solvers/multiComponentlaserbeamFoam
+wmake multiphaseMixture
+make[1]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/multiComponentlaserbeamFoam/multiphaseMixture'
+make[1]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/multiComponentlaserbeamFoam/multiphaseMixture'
+make[1]: Entering directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/multiComponentlaserbeamFoam'
+make[1]: Leaving directory '/Volumes/OpenFOAM-10/caseSensitiveUserCode/laserbeamfoam/applications/solvers/multiComponentlaserbeamFoam'
