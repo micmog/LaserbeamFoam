@@ -23,9 +23,6 @@ An extension of laserbeamFoam to N-laser sources that can each have their parame
 * Diode Array Additive Manufacturing
 
 
-Users should run the ./Allwclean and ./Allwmake scripts to build the library and solver executables.
-
-
 ### `multiComponentlaserbeamFoam`
 
 An extension of the laserbeamfoam solver to multi-component metallic substrates. This solver can simulate M-Component metallic substrates in the presence of gas-phases. Diffusion is treated through a Fickian diffusion model with the diffusivity specified through 'diffusion pairs', and the interface compression is again specified pair-wise. The miscible phases in the simulation should have diffusivity specified between them, and immiscible phase pairs should have an interface compression term specified between them (typically 1).
@@ -37,40 +34,39 @@ Target applications for the solvers included in this repository include:
 * Dissimilar Laser Powder Bed Fusion
 * Dissimilar Selective Laser Melting
 
-Users should run the ./Allwclean and ./Allwmake scripts to build the library and solver executables.
-
 
 ## Installation
 
-The current version of the code utilises the [OpenFOAM-10 libraries](https://openfoam.org/version/10/). A branch that compiles against the older OpenFoam6 libraries is providedhttps://openfoam.org/version/6/). The code has been developed and tested using an Ubuntu installation but should work on any operating system capable of installing OpenFOAM. To install the laserbeamFoam solver, follow the instructions on this page: [OpenFOAM-10 Install](https://openfoam.org/download/10-ubuntu/) to install the OpenFoam 6 libraries.
-
-Then, navigate to a working folder in a shell terminal, clone the git code repository, and build.
+The current version of the code utilises the [OpenFOAM-10 libraries](https://openfoam.org/version/10/). A branch that compiles against the older OpenFOAM-6 libraries is provided. The code has been developed and tested using an Ubuntu installation but should work on any operating system capable of installing OpenFOAM. To install the laserbeamFoam solvers, first, install and load [OpenFOAM-10](https://openfoam.org/download/10-ubuntu/), then clone and build the laserbeamFoam library:
 
 ```
 $ git clone https://github.com/micmog/laserbeamFoam.git laserbeamFoam
-$ cd solver
-$ wclean
-$ wmake
+$ ./Allwmake -j
 ```
+where the `-j` option uses all CPU cores available for building.
+
 The installation can be tested using the tutorial cases described below.
 
 ## Tutorial cases
-To run any of the tutorials in serial mode:
+The mesh and fields can be prepared in any of the tutorials with:
 ```
-delete any old simulation files, e.g.
+# Remove any old simulation files, e.g.
 $ rm -r 0* 1* 2* 3* 4* 5* 6* 7* 8* 9*
-Then:
+# Then:
 $ cp -r initial 0
 $ blockMesh
 $ setFields
+```
+The solver can then be run in serial with
+```
 $ laserbeamFoam
 ```
-For parallel deployment using MPI, following the `setFields` command:
+or in parallel deployment using MPI (6 cores are used here) with
 ```
 $ decomposePar
 $ mpirun -np 6 laserbeamFoam -parallel >log &
 ```
-for deployment on 6 cores.
+
 
 ### 2D Plate Examples
 
@@ -138,7 +134,7 @@ If you use `laserbeamFoam` in your work. Please use the following to cite our wo
 - laserbeamFoam: Laser ray-tracing and thermally induced state transition simulation toolkit
   TF Flint, JD Robson, G Parivendhan, P Cardiff - SoftwareX, 2023 - https://doi.org/10.1016/j.softx.2022.101299
 
-Once the SoftwareX 'Software Update' Manuscript is accepted, please cite that if you use the multi-component versions.
+Once the SoftwareX 'Software Update' Manuscript is accepted, please cite it if you use the multi-component versions.
 
 ## References
 
