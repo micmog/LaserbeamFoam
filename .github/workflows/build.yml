@@ -12,7 +12,7 @@ jobs:
       matrix:
         container-image:
           - name: "OpenFOAM-10"
-            image: "philippic/openfoam-10-ubuntu20.04:latest"
+            image: "openfoam/openfoam10-paraview56:latest"
             source: "/opt/openfoam10/etc/bashrc"
             buildflags: "-j"
 
