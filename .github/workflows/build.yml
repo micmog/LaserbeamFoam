@@ -1,0 +1,29 @@
+# Check the laserbeamFoam solvers compile correctly
+name: Build
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        container-image:
+          - name: "OpenFOAM-10"
+            image: "philippic/openfoam-10-ubuntu20.04:latest"
+            source: "/opt/openfoam10/etc/bashrc"
+            buildflags: "-j"
+
+    container:
+      image: ${{ matrix.container-image.image }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Allwmake
+        shell: bash -l {0}
+        run: |
+          source ${{ matrix.container-image.source }}
+          ./Allwmake ${{ matrix.container-image.buildflags }}
