@@ -45,6 +45,11 @@
     //needed for cases with spherical particles or spurious currents will smear out the particle interface un-physically
     const Switch PowderSim(LaserProperties.lookupOrDefault<Switch>("PowderSim", false));
 
+    const scalar Radius_Flavour
+    (
+        LaserProperties.lookupOrDefault<scalar>("Radius_Flavour", 2.0)
+    );
+
     const Switch debug(LaserProperties.lookupOrDefault<Switch>("debug", false));
     const Switch useLocalSearch
     (
@@ -175,7 +180,7 @@
         //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
         //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
 
-        scalar Q = CosTheta_incident*((2.0*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-2.0*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
+        scalar Q = CosTheta_incident*((Radius_Flavour*Q_cond.value())/(Foam::pow(a_cond.value(),2.0)*pi.value()))*Foam::exp(-Radius_Flavour*((Foam::pow(dist,2.0))/(Foam::pow(a_cond.value(),2.0))));
 
         // ID of the processor that contains the beam tip
         label tipProcID = -1;
