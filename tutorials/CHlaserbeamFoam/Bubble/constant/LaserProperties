@@ -14,7 +14,7 @@ FoamFile
     object      PhaseFieldProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-V_incident	(0 1 1);//(0 1 0);//NORMALISED IN CODE
+V_incident	(0 1 0);//(0 1 0);//NORMALISED IN CODE
 
 HS_a 0.0005;
 HS_bg 0.0;//20
@@ -22,27 +22,12 @@ HS_velocity 0.0;//6.0;
 HS_lg 1e-3;
 HS_Q 2000;//2000.0;//
 
-
-N_sub_divisions	1;
-
-//For linear path set oscAmpX=oscAmpz=0
-//For sine path set oscAmpz=0
-//For circular path set amplitude and frequency in both X and Z
-HS_oscAmpX 0.0;
-HS_oscAmpZ 0.0;
-
-HS_oscFreqX 0;
-HS_oscFreqZ 0;
-
 wavelength	1.064e-6;
 e_num_density	5.83e29;
 elec_resistivity	1.0e-6;
-
 
 // Use local search: defaults to yes
 //useLocalSearch yes;
 
 // Print extra debug information: defaults to no
 debug no;
-
-Radius_Flavour	2.0;

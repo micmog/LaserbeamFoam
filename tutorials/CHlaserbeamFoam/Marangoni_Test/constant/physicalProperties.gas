@@ -1,0 +1,33 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      physicalProperties.air;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+viscosityModel  constant;
+
+nu              0.14;//1.185e-10;
+//mu	1.8372e-5;
+rho             1.0;//1.185e-6;
+
+
+
+    Tsolidus    1.0;
+    Tliquidus   10.0;
+    LatentHeat  1;
+    beta    4.0e-5;
+    
+    poly_kappa   (100e4 0.0 0 0 0 0 0 0);
+    poly_cp   (100 0.0 0 0 0 0 0 0);
+
+// ************************************************************************* //
