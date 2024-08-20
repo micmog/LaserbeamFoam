@@ -323,19 +323,19 @@ volScalarField metalaverage
 );
 metalaverage = fvc::average(alpha1);
 
-volScalarField refineflag2
-(
-    IOobject
-    (
-        "refineflag2",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("refineflag2",dimensionSet(0,0,0,0,0),0.0)
-);
+// volScalarField refineflag2
+// (
+//     IOobject
+//     (
+//         "refineflag2",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("refineflag2",dimensionSet(0,0,0,0,0),0.0)
+// );
 // refineflag2=fvc::average(alpha1);
 
 

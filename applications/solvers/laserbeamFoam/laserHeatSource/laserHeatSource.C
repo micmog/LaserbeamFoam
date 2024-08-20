@@ -132,14 +132,14 @@ laserHeatSource::laserHeatSource
     (
         IOobject
         (
-            "refineflag2", // rename refineFlag
+            "refineflag", // rename refineFlag
             mesh.time().timeName(),
             mesh,
             IOobject::READ_IF_PRESENT,
             IOobject::AUTO_WRITE
         ),
         mesh,
-        dimensionedScalar("refineflag2", dimensionSet(0,0,0,0,0), 0.0)
+        dimensionedScalar("refineflag", dimensionSet(0,0,0,0,0), 0.0)
     ),
     powderSim_(lookupOrDefault<Switch>("PowderSim", false))
 {
