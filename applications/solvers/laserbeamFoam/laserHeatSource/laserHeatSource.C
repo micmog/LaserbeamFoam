@@ -409,11 +409,11 @@ void laserHeatSource::updateDeposition
     // cell indices
     labelList rayCellIDs(pointslistGlobal1.size(), -1);
 
-    scalar iterator_distance = (0.5/pi.value())*gMin(yDim_);//gMin(xcoord);
-    if (debug)
-    {
-        Info<<"iterator_distance    "<< iterator_distance << endl;
-    }
+    // scalar iterator_distance = (0.5/pi.value())*gMin(yDim_);//gMin(xcoord);
+    // if (debug)
+    // {
+    //     Info<<"iterator_distance    "<< iterator_distance << endl;
+    // }
 
     // Loop over all starting points
     Info<<"Calculating laser beam rays" << endl;
@@ -608,8 +608,7 @@ void laserHeatSource::updateDeposition
              // Update seed cells for local search
              rayCellIDs[i] = myCellId;
 
-             // V1_tip+=(iterator_distance*V2);
-             //label myCellIdnext=mesh.findCell(V1_tip);
+
              if (tipProcID == Pstream::myProcNo())
              {
                  label myCellIdnext =
@@ -626,6 +625,14 @@ void laserHeatSource::updateDeposition
                              beamDirectionChangeOrder[i].append(directionChangeOrderI);
                              beamChangedDirection = false;
                          }
+
+                        //  V1_tip += (iterator_distance*V2);//OLD
+
+                            scalar iterator_distance = (0.5/pi.value())*yDimI[myCellId];//gMin(xcoord);
+                            if (debug)
+                            { 
+                                Info<<"iterator_distance    "<< iterator_distance << endl;
+                           }
 
                          V1_tip += (iterator_distance*V2);
                          //myCellIdnext = mesh.findCell(V1_tip);
