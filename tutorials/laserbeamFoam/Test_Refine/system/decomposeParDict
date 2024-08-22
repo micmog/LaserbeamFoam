@@ -14,18 +14,33 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains 8;
+numberOfSubdomains  8;
+
+//method              scotch;
 
 decomposer      hierarchical;
 distributor     hierarchical;
-// distributor     zoltan;
-// libs            ("libzoltanDecomp.so");
+
+simpleCoeffs
+{
+    n               (2 2 1);
+}
 
 hierarchicalCoeffs
 {
     n               (2 2 2);
     order           xyz;
 }
+
+manualCoeffs
+{
+    dataFile        "";
+}
+
+distributed     no;
+
+roots           ( );
+
 
 constraints
 {

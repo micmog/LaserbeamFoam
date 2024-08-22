@@ -36,7 +36,7 @@ topoChanger
     nBufferLayers   2;
 
     // Refine cells only up to maxRefinement levels
-    maxRefinement   2;
+    maxRefinement   3;
 
     // Stop refinement if maxCells reached
     maxCells        1000000;
@@ -58,21 +58,17 @@ topoChanger
 
     // Write the refinement level as a volScalarField
     dumpLevel       true;
-    
-    
-    
-    distributor
+
+
+
+}
+
+distributor
 {
     type            distributor;
 
     libs            ("libfvMeshDistributors.so");
 
-    redistributionInterval  100;
+    redistributionInterval  10;
 }
-
-
-
-}
-
-
 // ************************************************************************* //
