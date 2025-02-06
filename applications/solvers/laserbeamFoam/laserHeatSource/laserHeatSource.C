@@ -103,6 +103,19 @@ laserHeatSource::laserHeatSource
         mesh,
         dimensionedScalar("rayNumber",dimensionSet(0, 0, 0, -0, 0),-1.0)
     ),
+    elec_resistivity_
+    (
+        IOobject
+        (
+            "elec_resistivity",
+            mesh.time().timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("elec_resistivity",dimensionSet(0, 0, 0, -0, 0),0.0)
+    ),
     rayQ_
     (
         IOobject
@@ -166,6 +179,7 @@ void laserHeatSource::updateDeposition
     errorTrack_ *= 0.0;
     deposition_ *= 0.0;
     rayNumber_ *= 0.0;
+    elec_resistivity_*=0.0;
     rayQ_ *= 0.0;
 
     // Read laser properties and settings, and define constants
@@ -481,6 +495,7 @@ void laserHeatSource::updateDeposition
             if (myCellId != -1)
             {
                 rayNumber_[myCellId] = i+1;//set test field to beam flavour
+                elec_resistivity_[myCellId] = elec_resistivity.value(T[myCellId]);
                 rayQ_[myCellId] = Q;
 
                 if (mag(nFilteredI[myCellId]) > 0.5 && alphaFilteredI[myCellId] >= dep_cutoff)
@@ -600,7 +615,7 @@ void laserHeatSource::updateDeposition
             (Foam::sqrt((e_r*e_r) +(e_i*e_i)) - e_r)/2.0
         );
 
-        
+
                         if (debug)
                         {
                             errorTrack_[myCellId] += 1.0;

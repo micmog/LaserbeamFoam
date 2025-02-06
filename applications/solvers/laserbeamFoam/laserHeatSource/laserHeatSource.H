@@ -70,6 +70,9 @@ class laserHeatSource
         //- Field for tracking the latest ray to vist each cell
         volScalarField rayNumber_;
 
+        //- Field for tracking the electrical resistivity
+        volScalarField elec_resistivity_;
+
         //- Field for tracking the energy deposited in each cell
         volScalarField rayQ_;
 
