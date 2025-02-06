@@ -22,6 +22,7 @@ License
 #include "constants.H"
 #include "findLocalCell.H"
 #include "SortableList.H"
+#include "Polynomial.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -154,7 +155,8 @@ laserHeatSource::laserHeatSource
 void laserHeatSource::updateDeposition
 (
     const volScalarField& alphaFiltered,
-    const volVectorField& nFiltered
+    const volVectorField& nFiltered,
+            const volScalarField& T
 )
 {
     // Reset fields
@@ -181,7 +183,8 @@ void laserHeatSource::updateDeposition
     const scalar wavelength(readScalar(lookup("wavelength")));
     const scalar e_num_density(readScalar(lookup("e_num_density")));
     // elec_resistivity is temperature dependent - will include this in future versions
-    const scalar elec_resistivity(readScalar(lookup("elec_resistivity")));
+    // const scalar elec_resistivity(readScalar(lookup("elec_resistivity")));
+    const Polynomial<8> elec_resistivity(lookup("elec_resistivity"));
 
     const dimensionedScalar pi = constant::mathematical::pi;
     const dimensionedScalar a_cond("a_cond", dimensionSet(0, 1, 0, 0, 0), HS_a);
@@ -209,34 +212,7 @@ void laserHeatSource::updateDeposition
     );
     const scalar angular_frequency =
         2.0*pi.value()*constant::universal::c.value()/wavelength;
-    const scalar damping_frequency =
-        plasma_frequency*plasma_frequency
-       *constant::electromagnetic::epsilon0.value()*elec_resistivity;
-    const scalar e_r =
-        1.0
-      - (
-          sqr(plasma_frequency)/(sqr(angular_frequency)
-        + sqr(damping_frequency))
-      );
-    const scalar e_i =
-        (damping_frequency/angular_frequency)
-       *(
-           (plasma_frequency*plasma_frequency)
-          /(
-              angular_frequency*angular_frequency
-            + damping_frequency*damping_frequency
-           )
-       );
-    const scalar ref_index =
-        Foam::sqrt
-        (
-            (Foam::sqrt((e_r*e_r) +(e_i*e_i)) + e_r)/2.0
-        );
-    const scalar ext_coefficient =
-        Foam::sqrt
-        (
-            (Foam::sqrt((e_r*e_r) +(e_i*e_i)) - e_r)/2.0
-        );
+    
 
     const scalar dep_cutoff(lookupOrDefault<scalar>("dep_cutoff", 0.5));
     const scalar Radius_Flavour
@@ -255,13 +231,13 @@ void laserHeatSource::updateDeposition
     if (debug)
     {
         Info<< "useLocalSearch: " << useLocalSearch << nl << nl
-            << " plasma_frequency: " << plasma_frequency << nl
-            << " angular_frequency: " << angular_frequency << nl
-            << " damping_frequency: " << damping_frequency << nl
-            << " e_r: " << e_r << nl
-            << " e_i: " << e_i << nl
-            << " ref_index: " << ref_index << nl
-            << " ext_coefficient: " << ext_coefficient << nl
+            // << " plasma_frequency: " << plasma_frequency << nl
+            // << " angular_frequency: " << angular_frequency << nl
+            // << " damping_frequency: " << damping_frequency << nl
+            // << " e_r: " << e_r << nl
+            // << " e_i: " << e_i << nl
+            // << " ref_index: " << ref_index << nl
+            // << " ext_coefficient: " << ext_coefficient << nl
             << nl << endl;
     }
 
@@ -511,6 +487,36 @@ void laserHeatSource::updateDeposition
                 {
 
 
+                    const scalar damping_frequency =
+        plasma_frequency*plasma_frequency
+       *constant::electromagnetic::epsilon0.value()*elec_resistivity.value(T[myCellId]);
+    const scalar e_r =
+        1.0
+      - (
+          sqr(plasma_frequency)/(sqr(angular_frequency)
+        + sqr(damping_frequency))
+      );
+    const scalar e_i =
+        (damping_frequency/angular_frequency)
+       *(
+           (plasma_frequency*plasma_frequency)
+          /(
+              angular_frequency*angular_frequency
+            + damping_frequency*damping_frequency
+           )
+       );
+    const scalar ref_index =
+        Foam::sqrt
+        (
+            (Foam::sqrt((e_r*e_r) +(e_i*e_i)) + e_r)/2.0
+        );
+    const scalar ext_coefficient =
+        Foam::sqrt
+        (
+            (Foam::sqrt((e_r*e_r) +(e_i*e_i)) - e_r)/2.0
+        );
+
+
                     // for(scalar theta_in=0.0;theta_in<=1.57;theta_in+=0.01){ // to plot absorptivity as a function of incideince angle - a bit hacky
                     scalar argument = (V2 & nFilteredI[myCellId])/(mag(V2)*mag(nFilteredI[myCellId]));
                     if(argument>=1.0-SMALL)
@@ -564,6 +570,37 @@ void laserHeatSource::updateDeposition
                     // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
                     if (alphaFilteredI[myCellId] > dep_cutoff && mag(nFilteredI[myCellId]) < 0.5)
                     {
+
+                        const scalar damping_frequency =
+        plasma_frequency*plasma_frequency
+       *constant::electromagnetic::epsilon0.value()*elec_resistivity.value(T[myCellId]);
+    const scalar e_r =
+        1.0
+      - (
+          sqr(plasma_frequency)/(sqr(angular_frequency)
+        + sqr(damping_frequency))
+      );
+    const scalar e_i =
+        (damping_frequency/angular_frequency)
+       *(
+           (plasma_frequency*plasma_frequency)
+          /(
+              angular_frequency*angular_frequency
+            + damping_frequency*damping_frequency
+           )
+       );
+    const scalar ref_index =
+        Foam::sqrt
+        (
+            (Foam::sqrt((e_r*e_r) +(e_i*e_i)) + e_r)/2.0
+        );
+    const scalar ext_coefficient =
+        Foam::sqrt
+        (
+            (Foam::sqrt((e_r*e_r) +(e_i*e_i)) - e_r)/2.0
+        );
+
+        
                         if (debug)
                         {
                             errorTrack_[myCellId] += 1.0;

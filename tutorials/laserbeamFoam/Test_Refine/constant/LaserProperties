@@ -35,7 +35,8 @@ HS_oscFreqZ 180;
 
 wavelength	1.064e-6;
 e_num_density	5.83e29;
-elec_resistivity	1.0e-6;
+
+elec_resistivity	(1.0e-6	0.0	0.0	0.0	0.0	0.0	0.0	0.0);
 
 
 Radius_Flavour	3.0;

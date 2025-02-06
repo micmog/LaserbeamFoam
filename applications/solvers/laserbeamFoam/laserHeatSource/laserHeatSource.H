@@ -144,7 +144,8 @@ public:
         void updateDeposition
         (
             const volScalarField& alphaFiltered,
-            const volVectorField& nFiltered
+            const volVectorField& nFiltered,
+            const volScalarField& T
         );
 };
 
