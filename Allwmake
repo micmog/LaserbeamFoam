@@ -16,6 +16,9 @@ else
     fi
 fi
 
+# Compile libraries
+(cd src && ./Allwmake 2>&1 | tee log.Allwmake)
+
 # Compile applications
 (cd applications && ./Allwmake $* 2>&1 | tee log.Allwmake)
 

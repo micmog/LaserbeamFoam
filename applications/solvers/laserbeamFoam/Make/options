@@ -1,5 +1,5 @@
 EXE_INC = \
-    -I./laserHeatSource \
+    -I../../../src/laserHeatSource/lnInclude \
     -IincompressibleInterPhaseTransportModel/lnInclude \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/twoPhaseMixture/lnInclude \
@@ -13,9 +13,11 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude \
     -I$(LIB_SRC)/finiteVolume/lnInclude \
     -I$(LIB_SRC)/meshTools/lnInclude \
-    -I$(LIB_SRC)/sampling/lnInclude
+    -I$(LIB_SRC)/sampling/lnInclude \
+    -I$(LIB_SRC)/radiationModels/lnInclude
 
 EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) -llaserHeatSource \
     -limmiscibleIncompressibleTwoPhaseMixture \
     -ltwoPhaseChangeModels \
     -lmomentumTransportModels \
@@ -24,4 +26,5 @@ EXE_LIBS = \
     -lfiniteVolume \
     -lfvModels \
     -lfvConstraints \
-    -lmeshTools
+    -lmeshTools \
+    -lradiationModels

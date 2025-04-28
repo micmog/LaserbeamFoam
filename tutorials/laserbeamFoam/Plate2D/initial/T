@@ -35,7 +35,7 @@ type zeroGradient;
 type zeroGradient;
     }
 
-    defaultFaces
+    "defaultFaces|rightWall|leftWall"
     {
         type            empty;
     }

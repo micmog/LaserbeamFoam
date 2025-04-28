@@ -20,10 +20,11 @@ internalField   uniform 0;
 
 boundaryField
 {
-	frontAndBack{
+    frontAndBack
+    {
         type            fixedFluxPressure;
         value           uniform 0;
-	}
+    }
 
     lowerWall
     {
@@ -39,7 +40,7 @@ boundaryField
         phi             phi;
     }
 
-    defaultFaces
+    "defaultFaces|rightWall|leftWall"
     {
         type            empty;
     }

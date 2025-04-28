@@ -24,14 +24,15 @@ License
 Application
     laserbeamFoam
 
+Description
+    Ray-Tracing heat source implementation with two phase incompressible VoF
+    description of the metallic substrate and shielding gas phase.
+
 Authors
     Tom Flint, UoM.
     Philip Cardiff, UCD.
     Gowthaman Parivendhan, UCD.
     Joe Robson, UoM.
-
-Description
-    Ray-Tracing heat source implementation with two phase incompressible VoF description of the metallic substrate and shielding gas phase.
 
 \*---------------------------------------------------------------------------*/
 

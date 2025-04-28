@@ -24,7 +24,7 @@ Description
     Laser parameters are defined via the provided dictionary.
 
     It is assumed that the laser enters the domain at the boundary with an
-    outward-facing unit normal of (0 1 ).
+    outward-facing unit normal of (0 1 0).
 
     Laser rays are written as VTKs for visualisation.
 
@@ -42,6 +42,7 @@ SourceFiles
 
 #include "volFields.H"
 #include "dictionary.H"
+#include "interpolationTable.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -83,6 +84,12 @@ class laserHeatSource
         //  Needed for cases with spherical particles or spurious currents will
         //  smear out the particle interface un-physically
         const Switch powderSim_;
+
+        //- Time vs laser position interpolation series
+        interpolationTable<vector> timeVsLaserPosition_;
+
+        //- Time vs laser power interpolation series
+        interpolationTable<scalar> timeVsLaserPower_;
 
 
     // Private Member Functions

@@ -38,7 +38,7 @@ boundaryField
 //        value           uniform (0.0 0 0);
 	type            zeroGradient;//	type            noSlip;
     }
-    defaultFaces
+    "defaultFaces|rightWall|leftWall"
     {
         type            empty;
     }
