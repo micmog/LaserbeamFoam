@@ -176,9 +176,11 @@ void laserHeatSource::updateDeposition
     const Switch debug(lookupOrDefault<Switch>("debug", false));
 
     // Print the current laser position and power
-    const vector currentLaserPosition = timeVsLaserPosition_(time.value());
+    // Note: this is the mean laser position about which an oscillation can be
+    // prescribed via HS_oscAmpX, etc
+    vector currentLaserPosition = timeVsLaserPosition_(time.value());
     const scalar currentLaserPower = timeVsLaserPower_(time.value());
-    Info<< "Laser position = " << currentLaserPosition << nl
+    Info<< "Laser mean position = " << currentLaserPosition << nl
         << "Laser power = " << currentLaserPower << endl;
 
     const label N_sub_divisions(readLabel(lookup("N_sub_divisions")));
@@ -196,7 +198,7 @@ void laserHeatSource::updateDeposition
     }
     else if (found("laserRadius"))
     {
-        HS_a = readScalar(lookup("laserRadius"));        
+        HS_a = readScalar(lookup("laserRadius"));
     }
     else
     {
@@ -262,39 +264,28 @@ void laserHeatSource::updateDeposition
     );
     //const dimensionedScalar lg("lg", dimensionSet(0, 1, 0, 0, 0), HS_lg);
 
-    // const scalar oscAmpX(readScalar(lookup("HS_oscAmpX")));
-    // const scalar oscAmpZ(readScalar(lookup("HS_oscAmpZ")));
-    // const scalar oscFreqX(readScalar(lookup("HS_oscFreqX")));
-    // const scalar oscFreqZ(readScalar(lookup("HS_oscFreqZ")));
-
+    // If defined, add oscillation to laser position
     if (found("HS_oscAmpX"))
     {
-        FatalErrorInFunction
-            << "'HS_oscAmpX' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
+        const scalar oscAmpX(readScalar(lookup("HS_oscAmpX")));
+        const scalar oscFreqX(readScalar(lookup("HS_oscFreqX")));
+
+        currentLaserPosition[vector::X] +=
+            oscAmpX*sin(2*pi*oscFreqX*time.value()).value();
     }
+
+    // If defined, add oscillation to laser position
     if (found("HS_oscAmpZ"))
     {
-        FatalErrorInFunction
-            << "'HS_oscAmpZ' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
+        const scalar oscAmpZ(readScalar(lookup("HS_oscAmpZ")));
+        const scalar oscFreqZ(readScalar(lookup("HS_oscFreqZ")));
+
+        currentLaserPosition[vector::Z] +=
+            oscAmpZ*cos(2*pi*oscFreqZ*time.value()).value();
     }
-    if (found("HS_oscFreqX"))
-    {
-        FatalErrorInFunction
-            << "'HS_oscFreqX' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
-    }
-    if (found("HS_oscFreqZ"))
-    {
-        FatalErrorInFunction
-            << "'HS_oscFreqZ' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
-    }
+
+    Info<< "Laser position including any oscillation = "
+        << currentLaserPosition << endl;
 
     const scalar plasma_frequency = Foam::sqrt
     (
@@ -791,7 +782,7 @@ void laserHeatSource::updateDeposition
 
                             scalar iterator_distance = (0.5/pi.value())*yDimI[myCellId];//gMin(xcoord);
                             if (debug)
-                            { 
+                            {
                                 Info<<"iterator_distance    "<< iterator_distance << endl;
                            }
 
