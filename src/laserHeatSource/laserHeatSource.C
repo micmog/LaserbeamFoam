@@ -254,10 +254,39 @@ void laserHeatSource::updateDeposition
     );
     //const dimensionedScalar lg("lg", dimensionSet(0, 1, 0, 0, 0), HS_lg);
 
-    const scalar oscAmpX(readScalar(lookup("HS_oscAmpX")));
-    const scalar oscAmpZ(readScalar(lookup("HS_oscAmpZ")));
-    const scalar oscFreqX(readScalar(lookup("HS_oscFreqX")));
-    const scalar oscFreqZ(readScalar(lookup("HS_oscFreqZ")));
+    // const scalar oscAmpX(readScalar(lookup("HS_oscAmpX")));
+    // const scalar oscAmpZ(readScalar(lookup("HS_oscAmpZ")));
+    // const scalar oscFreqX(readScalar(lookup("HS_oscFreqX")));
+    // const scalar oscFreqZ(readScalar(lookup("HS_oscFreqZ")));
+
+    if (found("HS_oscAmpX"))
+    {
+        FatalErrorInFunction
+            << "'HS_oscAmpX' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+    if (found("HS_oscAmpZ"))
+    {
+        FatalErrorInFunction
+            << "'HS_oscAmpZ' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+    if (found("HS_oscFreqX"))
+    {
+        FatalErrorInFunction
+            << "'HS_oscFreqX' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+    if (found("HS_oscFreqZ"))
+    {
+        FatalErrorInFunction
+            << "'HS_oscFreqZ' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
 
     const scalar plasma_frequency = Foam::sqrt
     (
