@@ -84,7 +84,7 @@ MELTING
 {
     minTempCorrector 1;
     maxTempCorrector 150;
-    epsilonTolerance 1e-6;
+    epsilonTolerance 1e-4;
     epsilonRelaxation 0.95;
     
     damperSwitch true;//false;//true;

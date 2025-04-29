@@ -14,17 +14,33 @@ FoamFile
     object      PhaseFieldProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-V_incident	(0 1 1);//(0 1 0);//NORMALISED IN CODE
 
-HS_a 0.0005;
-HS_bg 0.0;//20
-HS_velocity 0.0;//6.0;
-HS_lg 1e-3;
-HS_Q 2000;//2000.0;//
+timeVsLaserPosition
+{
+    file    "$FOAM_CASE/constant/timeVsLaserPosition";
+    outOfBounds clamp;
+}
 
+timeVsLaserPower
+{
+    file    "$FOAM_CASE/constant/timeVsLaserPower";
+    outOfBounds clamp;
+}
 
+// Laser angle
+V_incident (0 1 1);//(0 1 0);//NORMALISED IN CODE
+
+// Laser radius
+laserRadius 0.0005;
+//HS_bg 0.0;//20
+//HS_velocity 0.0;//6.0;
+//HS_lg 1e-3;
+//HS_Q 2000;//2000.0;//
+
+// Laser discretisation
 N_sub_divisions	1;
 
+// Laser oscillations about the mean path
 //For linear path set oscAmpX=oscAmpz=0
 //For sine path set oscAmpz=0
 //For circular path set amplitude and frequency in both X and Z

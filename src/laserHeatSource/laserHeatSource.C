@@ -141,7 +141,9 @@ laserHeatSource::laserHeatSource
         mesh,
         dimensionedScalar("refineflag", dimensionSet(0,0,0,0,0), 0.0)
     ),
-    powderSim_(lookupOrDefault<Switch>("PowderSim", false))
+    powderSim_(lookupOrDefault<Switch>("PowderSim", false)),
+    timeVsLaserPosition_(subDict("timeVsLaserPosition")),
+    timeVsLaserPower_(subDict("timeVsLaserPower"))
 {
     // Update laserBoundary
     laserBoundary_ = fvc::average(laserBoundary_);
@@ -171,12 +173,70 @@ void laserHeatSource::updateDeposition
     const Time& runTime  = mesh.time();
     const dimensionedScalar time = runTime.time();
     const Switch debug(lookupOrDefault<Switch>("debug", false));
+
+    // Print the current laser position and power
+    const vector currentLaserPosition = timeVsLaserPosition_(time.value());
+    const scalar currentLaserPower = timeVsLaserPower_(time.value());
+    Info<< "Laser position = " << currentLaserPosition << nl
+        << "Laser power = " << currentLaserPower << endl;
+
     const label N_sub_divisions(readLabel(lookup("N_sub_divisions")));
-    const scalar HS_a(readScalar(lookup("HS_a")));
-    const scalar HS_bg(readScalar(lookup("HS_bg")));
-    const scalar HS_velocity(readScalar(lookup("HS_velocity")));
-    const scalar HS_lg(readScalar(lookup("HS_lg")));
-    const scalar HS_Q(readScalar(lookup("HS_Q")));
+    //const scalar HS_a(readScalar(lookup("HS_a")));
+    scalar HS_a = 0.0;
+    if (found("HS_a") && found("laserRadius"))
+    {
+        FatalErrorInFunction
+            << "The laser radius should be specified via 'laserRadius' or "
+            << "'HS_a', not both!" << exit(FatalError);
+    }
+    if (found("HS_a"))
+    {
+        HS_a = readScalar(lookup("HS_a"));
+    }
+    else if (found("laserRadius"))
+    {
+        HS_a = readScalar(lookup("laserRadius"));        
+    }
+    else
+    {
+        FatalErrorInFunction
+            << "The laser radius should be specified via 'laserRadius' or 'HS_a'"
+            << exit(FatalError);
+    }
+    // HS_bg, HS_lg, HS_velocity and HS_Q have been replaced by the
+    // laserPositionVsTime and laserPowerVsTime time series
+    //const scalar HS_bg(readScalar(lookup("HS_bg")));
+    //const scalar HS_velocity(readScalar(lookup("HS_velocity")));
+    //const scalar HS_lg(readScalar(lookup("HS_lg")));
+    //const scalar HS_Q(readScalar(lookup("HS_Q")));
+    if (found("HS_bg"))
+    {
+        FatalErrorInFunction
+            << "'HS_bg' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+    if (found("HS_lg"))
+    {
+        FatalErrorInFunction
+            << "'HS_lg' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+    if (found("HS_velocity"))
+    {
+        FatalErrorInFunction
+            << "'HS_velocity' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+    if (found("HS_Q"))
+    {
+        FatalErrorInFunction
+            << "'HS_Q' is deprecated: please instead specify the laser "
+            << "power in time via the laserPowereVsTime sub-dict"
+            << exit(FatalError);
+    }
     const vector V_incident(lookup("V_incident"));
     const scalar wavelength(readScalar(lookup("wavelength")));
     const scalar e_num_density(readScalar(lookup("e_num_density")));
@@ -185,10 +245,14 @@ void laserHeatSource::updateDeposition
 
     const dimensionedScalar pi = constant::mathematical::pi;
     const dimensionedScalar a_cond("a_cond", dimensionSet(0, 1, 0, 0, 0), HS_a);
-    const dimensionedScalar b_g("b_g", dimensionSet(0, 1, 0, 0, 0), HS_bg);
-    const dimensionedScalar v_arc("v_arc", dimensionSet(0, 1, -1, 0, 0), HS_velocity);
-    const dimensionedScalar Q_cond("Q_cond", dimensionSet(1, 2, -3, 0, 0), HS_Q);
-    const dimensionedScalar lg("lg", dimensionSet(0, 1, 0, 0, 0), HS_lg);
+    // b_g and v_arc have been replaced by the laserPositionVsTime time series
+    // const dimensionedScalar b_g("b_g", dimensionSet(0, 1, 0, 0, 0), HS_bg);
+    //const dimensionedScalar v_arc("v_arc", dimensionSet(0, 1, -1, 0, 0), HS_velocity);
+    const dimensionedScalar Q_cond
+    (
+        "Q_cond", dimensionSet(1, 2, -3, 0, 0), currentLaserPower
+    );
+    //const dimensionedScalar lg("lg", dimensionSet(0, 1, 0, 0, 0), HS_lg);
 
     const scalar oscAmpX(readScalar(lookup("HS_oscAmpX")));
     const scalar oscAmpZ(readScalar(lookup("HS_oscAmpZ")));
@@ -302,8 +366,9 @@ void laserHeatSource::updateDeposition
     // List with size equal to number of processors
     List<pointField> gatheredData1(Pstream::nProcs());
 
-    dimensionedScalar bg_effective = b_g.value() + oscAmpX*sin(2*pi*oscFreqX*time.value());
-    dimensionedScalar lg_effective = lg.value() + oscAmpZ*cos(2*pi*oscFreqZ*time.value());
+    // bg and lg have been replaced by currentLaserPosition
+    // dimensionedScalar bg_effective = b_g.value() + oscAmpX*sin(2*pi*oscFreqX*time.value());
+    // dimensionedScalar lg_effective = lg.value() + oscAmpZ*cos(2*pi*oscFreqZ*time.value());
 
     // Take a references for efficiency and brevity
     const vectorField& CI = mesh.C();
@@ -323,16 +388,11 @@ void laserHeatSource::updateDeposition
         if
         (
             (
-                Foam::pow(x_coord - bg_effective.value(), 2.0)
-                + Foam::pow
-                (
-                    z_coord
-                    - (lg_effective.value() + (v_arc.value()*time.value())),
-                    2.0
-                )
-                <= Foam::pow(1.5*beam_radius, 2.0)
+                Foam::pow(x_coord - currentLaserPosition.x(), 2.0)
+              + Foam::pow(z_coord - currentLaserPosition.z(), 2.0)
+             <= Foam::pow(1.5*beam_radius, 2.0)
             )
-            && (laserBoundary_[celli] > SMALL)
+         && (laserBoundary_[celli] > SMALL)
         )
         {
             // rayNumber_[celli] = 1.0;
@@ -427,22 +487,22 @@ void laserHeatSource::updateDeposition
         vector V2(V_incident/mag(V_incident));
         point V1_tip(pointslistGlobal1[i]);
         const point mid
-            (
-                bg_effective.value(),
-                pointslistGlobal1[i].y(),
-                lg_effective.value() + (v_arc.value()*time.value())
-            );
+        (
+            currentLaserPosition.x(),
+            pointslistGlobal1[i].y(),
+            currentLaserPosition.z()
+        );
         const vector x1 = mid - (10.0*V2);
         const vector x2 = mid + (10.0*V2);
         const vector x0
-            (
-                pointslistGlobal1[i].x(),
-                pointslistGlobal1[i].y(),
-                pointslistGlobal1[i].z()
-            );
+        (
+            pointslistGlobal1[i].x(),
+            pointslistGlobal1[i].y(),
+            pointslistGlobal1[i].z()
+        );
 
         // Cross product to find distance to beam central axis
-        const scalar dist = mag(((x0-x1) ^ (x0-x2)))/mag(x2 - x1);
+        const scalar dist = mag(((x0 - x1)^(x0 - x2)))/mag(x2 - x1);
 
         // Global index to track the order of the ray direction-changes
         // This is only used for post-processing to write VTKs of the beams

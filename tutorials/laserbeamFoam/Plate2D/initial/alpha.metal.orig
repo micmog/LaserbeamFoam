@@ -19,12 +19,13 @@ internalField   uniform 0;
 
 boundaryField
 {
-	frontAndBack{
+    frontAndBack
+    {
         type            zeroGradient;
-	}
+    }
     lowerWall
     {
-type            zeroGradient;
+        type            zeroGradient;
     }
     atmosphere
     {
@@ -32,7 +33,7 @@ type            zeroGradient;
         inletValue      uniform 0;
         value           uniform 0;
     }
-    defaultFaces
+    "defaultFaces|rightWall|leftWall"
     {
         type            empty;
     }
