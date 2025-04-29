@@ -151,7 +151,8 @@ public:
         void updateDeposition
         (
             const volScalarField& alphaFiltered,
-            const volVectorField& nFiltered
+            const volVectorField& nFiltered,
+            const volScalarField& resistivity_in    //read in electrical resistivity field to generalise laser_HS object to multi-component and temperature dependent resistivity solvers
         );
 };
 
