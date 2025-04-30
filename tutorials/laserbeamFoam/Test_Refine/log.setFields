@@ -1,0 +1,36 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+Build  : 10-c4cf895ad8fa
+Exec   : setFields
+Date   : Apr 30 2025
+Time   : 10:08:43
+Host   : "flint-hp"
+PID    : 9675
+I/O    : uncollated
+Case   : /home/tomflint/OpenFOAM/custom/LaserbeamFoam/tutorials/laserbeamFoam/Test_Refine
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 0
+
+Reading "setFieldsDict"
+
+Setting field default values
+    Setting internal values of volScalarField alpha.metal
+
+Setting field region values
+    Adding cells with center within boxes 1((-0.85 0.001 -0.5) (0.85 0.004 0.5))
+    Setting internal values of volScalarField alpha.metal
+
+End
+
