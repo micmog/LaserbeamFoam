@@ -1,3 +1,3 @@
-MClaserbeamFoam.C
+multiComponentlaserbeamFoam.C
 
-EXE = $(FOAM_USER_APPBIN)/MClaserbeamFoam
+EXE = $(FOAM_USER_APPBIN)/multiComponentlaserbeamFoam

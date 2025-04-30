@@ -34,7 +34,7 @@
           - fvm::laplacian(kappa, T)
          ==
             fvModels.source(rhoCp,T)
-          + Deposition
+          + laser.deposition()
           - TRHS
           - Qv*mag(gradAlpha)
         );

@@ -1,3 +1,7 @@
+# VTK files
+**/*.vtk
+**/*.VTK
+
 # Build files
 **/log.Allwmake
 

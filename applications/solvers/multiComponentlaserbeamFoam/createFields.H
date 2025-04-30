@@ -441,47 +441,47 @@ volScalarField condensate
     dimensionedScalar("condensate",dimensionSet(0, 0, 0, 0, 0),0.0)
 );
 
-volScalarField Ray_Number
-(
-    IOobject
-    (
-        "Ray_Number",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Ray_Number",dimensionSet(0, 0, 0, -0, 0),-1.0)
-);
+// volScalarField Ray_Number
+// (
+//     IOobject
+//     (
+//         "Ray_Number",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("Ray_Number",dimensionSet(0, 0, 0, -0, 0),-1.0)
+// );
 
-volScalarField Deposition
-(
-    IOobject
-    (
-        "Deposition",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
-);
+// volScalarField Deposition
+// (
+//     IOobject
+//     (
+//         "Deposition",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("Deposition",dimensionSet(1, -1, -3, -0, 0),-1.0)
+// );
 
-volScalarField Ray_Q
-(
-    IOobject
-    (
-        "Ray_Q",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("Ray_Q",dimensionSet(1, 0, -3, 0, 0),scalar(0.0))
-);
+// volScalarField Ray_Q
+// (
+//     IOobject
+//     (
+//         "Ray_Q",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::READ_IF_PRESENT,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("Ray_Q",dimensionSet(1, 0, -3, 0, 0),scalar(0.0))
+// );
 
 volScalarField Laser_boundary
 (
@@ -500,19 +500,19 @@ Laser_boundary=fvc::average(Laser_boundary);
 
 
 
-    volScalarField e_density
-    (
-        IOobject
-        (
-            "e_density",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh,
-        dimensionedScalar("e_density",dimensionSet(0, -3, 0, 0, 0),0.0)
-    );
+    // volScalarField e_density
+    // (
+    //     IOobject
+    //     (
+    //         "e_density",
+    //         runTime.timeName(),
+    //         mesh,
+    //         IOobject::NO_READ,
+    //         IOobject::AUTO_WRITE
+    //     ),
+    //     mesh,
+    //     dimensionedScalar("e_density",dimensionSet(0, -3, 0, 0, 0),0.0)
+    // );
 
 
     volScalarField resistivity
@@ -528,6 +528,8 @@ Laser_boundary=fvc::average(Laser_boundary);
         mesh,
         dimensionedScalar("resistivity",dimensionSet(1, 3, -3, 0, 0),0.0)
     );
+
+    resistivity=mixture.elec_resistivity();
 
 volScalarField alpha_filtered
 (
@@ -594,3 +596,6 @@ mesh.schemes().setFluxRequired(p_rgh.name());
 #include "createMRF.H"
 #include "createFvModels.H"
 #include "createFvConstraints.H"
+
+// Create laser heat source
+laserHeatSource laser(mesh);

@@ -7,7 +7,7 @@ cp = (epsilon1*mixture.Cp())+((1.0-epsilon1)*mixture.Cpsolid());
 
 molarmass = mixture.molarmass();
 resistivity = mixture.elec_resistivity();
-e_density = mixture.e_num_density();
+// e_density = mixture.e_num_density();
 
 beta = mixture.beta();
 LatentHeat = mixture.Latentheat();
@@ -15,6 +15,45 @@ LatentHeat = mixture.Latentheat();
 LatentHeatGas = mixture.Latentheatgas();
 
 rhok = (1.0 - max(epsilon1*(mixture.beta())*(T - (mixture.Tsolidus())), 0.0));
+
+
+
+
+
+//update the cell size fields
+const faceList & ff = mesh.faces();
+const pointField & pp = mesh.points();
+
+const vectorField& CI = mesh.C();
+scalarField& yDimI = laser.yDim();
+
+forAll(CI, celli)
+{
+    // vector XYZ = mesh.C()[celli];
+    // xcoord[celli]=XYZ.x();
+    // zcoord[celli]=XYZ.z();
+
+    const cell& cc = mesh.cells()[celli];
+    labelList pLabels(cc.labels(ff));
+    pointField pLocal(pLabels.size(), vector::zero);
+
+    forAll(pLabels, pointi)
+    {
+        pLocal[pointi] = pp[pLabels[pointi]];
+    }
+
+    // xDim[celli] = Foam::max(pLocal & vector(1,0,0)) - Foam::min(pLocal & vector(1,0,0));
+    yDimI[celli] = Foam::max(pLocal & vector(0,1,0)) - Foam::min(pLocal & vector(0,1,0));
+    // zDim[celli] = Foam::max(pLocal & vector(0,0,1)) - Foam::min(pLocal & vector(0,0,1));
+}
+
+// xDim.correctBoundaryConditions();
+laser.yDim().correctBoundaryConditions();
+// zDim.correctBoundaryConditions();
+//update the cell size fields
+
+
+
 
 condensate *= 0.0;
 
@@ -37,9 +76,9 @@ alpha_filtered = condensate;
 forAll(mesh.C(), celli)
 {
     // dont care about optical properties of the gas phase for absorptivity
-    resistivity[celli] = max(resistivity[celli],0.0)/(condensate[celli]+deltaN.value()); 
-    e_density[celli] = max(e_density[celli],0.0)/(condensate[celli]+deltaN.value());
-    Tvapourisation[celli] = Tvapourisation[celli]/(condensate[celli]+deltaN.value());
+    // resistivity[celli] = max(resistivity[celli],0.0)/(condensate[celli]+deltaN.value()); 
+    // e_density[celli] = max(e_density[celli],0.0)/(condensate[celli]+deltaN.value());
+    // Tvapourisation[celli] = Tvapourisation[celli]/(condensate[celli]+deltaN.value());
 
     if (condensate[celli] > 0.99)
     {
@@ -61,6 +100,8 @@ forAll(mesh.C(), celli)
 alpha_filtered.correctBoundaryConditions();
 
 
+laser.refineFlag() *= 0.0;
+laser.refineFlag() += fvc::average(condensate);
 
 
 
