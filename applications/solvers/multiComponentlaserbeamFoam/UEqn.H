@@ -7,7 +7,7 @@ dimensionedScalar DarcyConstantsmall("DarcyConstantsmall",dimensionSet(0,0,0,0,0
 
 
 
-if(PowderSim){
+if(laser.powderSim()){
 
 DC=(DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)/(Foam::pow(epsilon1mask,3)+DarcyConstantsmall));
 DC.correctBoundaryConditions();

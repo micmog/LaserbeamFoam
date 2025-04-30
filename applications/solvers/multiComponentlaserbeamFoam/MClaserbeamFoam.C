@@ -48,7 +48,8 @@ Authors
 #include "fvModels.H"
 #include "fvConstraints.H"
 #include "CorrectPhi.H"
-#include "findLocalCell.H"
+// #include "findLocalCell.H"
+#include "laserHeatSource.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -134,7 +135,7 @@ int main(int argc, char *argv[])
             mixture.solve(epsilon1);
             rho = mixture.rho();
             #include "UpdateProps.H"
-            #include "LaserHS.H"
+            laser.updateDeposition(alpha_filtered, n_filtered, resistivity);
 
             #include "UEqn.H"
             #include "TEqn.H"

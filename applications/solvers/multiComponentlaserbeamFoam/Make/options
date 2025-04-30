@@ -1,4 +1,5 @@
 EXE_INC = \
+    -I../../../src/laserHeatSource/lnInclude \
     -ImultiphaseMixture/lnInclude \
     -I$(LIB_SRC)/physicalProperties/lnInclude \
     -I$(LIB_SRC)/twoPhaseModels/twoPhaseMixture/lnInclude \
@@ -10,6 +11,7 @@ EXE_INC = \
     -I$(LIB_SRC)/sampling/lnInclude
 
 EXE_LIBS = \
+    -L$(FOAM_USER_LIBBIN) -llaserHeatSource \
     -linterfaceProperties \
     -lphysicalProperties \
     -lmomentumTransportModels \
