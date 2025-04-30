@@ -148,10 +148,14 @@ public:
         //- Update the deposition field
         //  The filtered volume frame field (alphaFiltered) and the filtered
         //  interface normal field are required to define the interface
+        //  The electrical resistivity field is passed as an argument, allowing
+        //  a general laser heat source for multi-component and temperature
+        //  dependent resistivity solvers
         void updateDeposition
         (
             const volScalarField& alphaFiltered,
-            const volVectorField& nFiltered
+            const volVectorField& nFiltered,
+            const volScalarField& resistivity_in
         );
 };
 

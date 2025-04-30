@@ -660,6 +660,42 @@ volScalarField alpha_filtered
     dimensionedScalar("alpha_filtered",dimensionSet(0, 0, 0, -0, 0),0.0)
 );
 
+
+    //    volScalarField eleccond
+    // (
+    //     IOobject
+    //     (
+    //         "eleccond",
+    //         runTime.timeName(),
+    //         mesh,
+    //         IOobject::READ_IF_PRESENT,
+    //         IOobject::AUTO_WRITE
+    //     ),
+    //     mesh,
+    //     dimensionedScalar("eleccond",dimensionSet(-1, -3, 3, 0, 0),0.0),
+    //             zeroGradientFvPatchScalarField::typeName
+    // );
+
+
+dimensionedScalar elec_resistivity_metal("elec_resistivity",dimensionSet(1,3,-3,0,0),transportProperties_metal.lookup("elec_resistivity"));
+
+
+        volScalarField electrical_resistivity//electrical resistivity of condensate only
+    (
+        IOobject
+        (
+            "electrical_resistivity",
+            runTime.timeName(),
+            mesh,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("electrical_resistivity",dimensionSet(1,3,-3,0,0),0.0)
+    );
+
+electrical_resistivity = elec_resistivity_metal;
+
 #include "createAlphaFluxes.H"
 
 // Construct incompressible turbulence model

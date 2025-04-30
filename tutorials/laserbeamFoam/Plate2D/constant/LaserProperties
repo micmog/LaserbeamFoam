@@ -44,15 +44,15 @@ N_sub_divisions	1;
 //For linear path set oscAmpX=oscAmpz=0
 //For sine path set oscAmpz=0
 //For circular path set amplitude and frequency in both X and Z
-HS_oscAmpX 0.0;
-HS_oscAmpZ 0.0;
+//HS_oscAmpX 0.0;
+//HS_oscAmpZ 0.0;
 
-HS_oscFreqX 0;
-HS_oscFreqZ 0;
+//HS_oscFreqX 0;
+//HS_oscFreqZ 0;
 
 wavelength	1.064e-6;
 e_num_density	5.83e29;
-elec_resistivity	1.0e-6;
+//elec_resistivity	1.0e-6; depricated
 
 
 // Use local search: defaults to yes
