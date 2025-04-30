@@ -100,6 +100,8 @@ forAll(mesh.C(), celli)
 alpha_filtered.correctBoundaryConditions();
 
 
+laser.refineFlag() *= 0.0;
+laser.refineFlag() += fvc::average(condensate);
 
 
 
