@@ -24,6 +24,8 @@ rho             8000;
     //poly_cp   (244.8 9.587e-1 -3.77e-4 6.5e-8 -4.14e-12 0 0 0);
     poly_cp   (520 0.075 0 0 0 0 0 0);
     
+    elec_resistivity	1e-6;
+    
 	Tsolidus 1658;
 	Tliquidus 1723;
     LatentHeat 2.7e5;
