@@ -111,6 +111,7 @@ laserbeamFoam
 # Or run the solver in parallel, e.g. on 6 cores
 #decomposePar
 #mpirun -np 6 laserbeamFoam -parallel &> log.laserbeamFoam
+```
 
 Cases can be cleaned and reset using the included `Allclean` scripts, i.e.
 
