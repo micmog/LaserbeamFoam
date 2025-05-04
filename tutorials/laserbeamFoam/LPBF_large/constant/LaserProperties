@@ -1,0 +1,41 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  6
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      PhaseFieldProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+V_incident	(0 1 0);//(0 1 0);//NORMALISED IN CODE
+
+HS_a 0.000025;
+HS_bg 0.0;//20
+HS_lg 0.000125;
+HS_velocity 1.0;//6.0;
+
+HS_Q 150.0;//
+
+N_sub_divisions	1;
+
+//For linear path set oscAmpX=oscAmpz=0
+//For sine path set oscAmpz=0
+//For circular path set amplitude and frequency in both X and Z
+HS_oscAmpX 0.0;
+HS_oscAmpZ 0.0;
+
+HS_oscFreqX 180;
+HS_oscFreqZ 180;
+
+wavelength	1.064e-6;
+e_num_density	5.83e29;
+elec_resistivity	1.0e-6;
+
+Radius_Flavour	3.0;
