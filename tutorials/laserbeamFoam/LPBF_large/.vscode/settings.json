@@ -1,9 +1,0 @@
-{
-  "files.associations": {
-    "*html": "html",
-    "setSolidFraction.C": "cpp",
-    "laserMeltFoam.C": "cpp",
-    "laminar.C": "cpp",
-    "turbulenceModelNew.C": "cpp"
-  }
-}
