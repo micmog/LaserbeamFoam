@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
   // Declare Scalar fields alpha for solid,liquid and gas fractions
   volScalarField alphaM(
       IOobject(
-          "alpha.material",
+          "alpha.metal",
           runTime.timeName(),
           mesh,
           IOobject::MUST_READ,
