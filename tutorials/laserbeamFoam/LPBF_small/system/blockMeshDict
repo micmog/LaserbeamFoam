@@ -41,7 +41,7 @@ boundary
 (
     back
     {
-        type wall;
+        type patch;
         faces
         (
             (0 4 7 3)
@@ -49,7 +49,7 @@ boundary
     }
     front
     {
-        type wall;
+        type patch;
         faces
         (
             (1 2 6 5)
@@ -57,7 +57,7 @@ boundary
     }
     leftWall
     {
-        type wall;
+        type patch;
         faces
         (
             (1 5 4 0)
@@ -81,7 +81,7 @@ boundary
     }
     bottomWall
     {   
-        type patch;
+        type wall;
         faces
         (
             (0 3 2 1)

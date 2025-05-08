@@ -28,7 +28,7 @@ timeVsLaserPower
     outOfBounds clamp;
 }
 
-laserRadius 0.002;
+laserRadius 10e-6;
 
 N_sub_divisions	1;
 
