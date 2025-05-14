@@ -7,7 +7,5 @@ echo "Copying 'initial' to 0"
 cp -r initial 0
 
 runApplication blockMesh
-runApplication setSolidFraction
-echo "Running transformPoints"
-transformPoints "rotate=((0 1 0) (0 0 1))" &> log.transformPoints
+runApplication setFields
 runApplication laserbeamFoam

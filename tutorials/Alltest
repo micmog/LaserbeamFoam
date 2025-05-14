@@ -1,0 +1,259 @@
+#!/bin/bash
+#------------------------------------------------------------------------------
+# License
+#     This file came from solids4foam and is licensed under GNU General Public
+#     License <http://www.gnu.org/licenses/>.
+#
+# Script
+#     Alltest
+#
+# Description
+#     Quickly test the tutorials and write out the scheme/solver information
+#     Adapted from foam-extend-4.0 and OpenFOAM-v2012 tutorials/Alltest scripts.
+#
+#------------------------------------------------------------------------------
+cd "${0%/*}" || exit  # Run from this directory
+
+#
+# FUNCTION DEFINITIONS
+#
+
+function usage()
+{
+    exec 1>&2
+    while [ "$#" -ge 1 ]; do echo "$1"; shift; done
+    cat<<USAGE
+
+usage: ${0##*/} [OPTION]
+
+options:
+  -help         Print the usage
+
+Quickly tests the tutorials and writes out the scheme/solver information.
+
+USAGE
+    exit 1
+}
+
+# Report error and exit
+function die()
+{
+    exec 1>&2
+    echo
+    echo "Error encountered:"
+    while [ "$#" -ge 1 ]; do echo "    $1"; shift; done
+    echo
+    echo "See '${0##*/} -help' for usage"
+    echo
+    exit 1
+}
+
+# logReport <logfile>
+# Extracts useful info from log file.
+function logReport()
+{
+    case=`dirname $1 | sed s/"\(.*\)\.\/"/""/g`
+    echo "${case}"
+    app=`echo $1 | sed s/"\(.*\)\."/""/g`
+    if [[ "${app}" == "solid" || "${app}" == "fluid" ]]
+    then
+        app=`echo $1 | rev | cut -d'.' -f 2,1 | rev`
+    fi
+    appAndCase="Application $app - case $case"
+
+    fatalError=`grep "FOAM FATAL" $1`
+    otherError=`grep "ERROR" $1`
+    completed=`grep -E "^[\t ]*[eE]nd" $1`
+
+    if [ "$fatalError" ]
+    then
+        echo "$appAndCase: ** FOAM FATAL ERROR **"
+        return
+    elif [ "$otherError" ]
+    then
+        echo "$appAndCase: ** ERROR **"
+        return
+    elif [ "$completed" ]
+    then
+        completionTime=`tail -20 $log | grep Execution | cut -d= -f2 | sed 's/^[ \t]*//'`
+        if [ "$completionTime" ]
+        then
+            completionTime="in $completionTime"
+        fi
+        echo "$appAndCase: completed $completionTime"
+        return
+    else
+        echo "$appAndCase: unconfirmed completion"
+    fi
+}
+
+# Run cases (similar to foamRunTutorials)
+function runCases()
+{
+    thisScript=$0
+    if [ "/${thisScript#/}" != "$thisScript" ]
+    then
+        thisScript="$PWD/$thisScript"
+    fi
+
+    # If an argument is supplied do not execute ./Allrun to avoid recursion
+    if [ $# = 0 -a -f "./Allrun" ]
+    then
+        echo; echo "execute $(pwd)/Allrun"
+        # Specialised script.
+        ./Allrun
+    else
+        # Loop over sub-directories and compile any applications
+        for case in *
+        do
+            if [ -d $case -a -d "$case/Make" ]
+            then
+                (compileApplication $case)
+            fi
+        done
+
+        # Recurse to subdirectories
+        for case in *
+        do
+            if [ -d $case ]
+            then
+                echo "cd $case and runCases"
+                (cd $case && runCases)
+            fi
+        done
+    fi
+}
+
+
+#
+# PRELIMINARIES
+#
+
+rootDir="./"
+
+# Parse options
+while [ "$#" -gt 0 ]
+do
+    case "$1" in
+    -h | -help)
+        usage
+        ;;
+    *)
+        die "Unknown option/argument: '$1'"
+        ;;
+    esac
+    shift
+done
+
+# Sets FOAM_TUTORIALS directory location, as required
+. "${WM_PROJECT_DIR:?}"/bin/tools/RunFunctions
+
+# Set test directory
+TEST_RUN_DIR=../tutorialsTest
+
+
+#
+# MAIN
+#
+
+if [ -d "$TEST_RUN_DIR" ]
+then
+    echo "Directory already exists: $TEST_RUN_DIR" 1>&2
+    echo "Please remove it" 1>&2
+    exit 1
+fi
+
+# Copy tutorials
+cp -a "$rootDir" "$TEST_RUN_DIR"
+
+# Enter test directory
+cd "$TEST_RUN_DIR" || exit
+
+# Modify controlDicts
+echo "Modifying the case controlDicts to run only one time step"
+for CD in $(find . -name "controlDict*" -type f)
+do
+    cp -f "${CD}" "${CD}.orig"
+    sed \
+        -e 's/\(stopAt[ \t]*\)\([a-zA-Z]*\);/\1 nextWrite;/g' \
+        -e 's/\(writeControl[ \t]*\)\([a-zA-Z]*\);/\1 timeStep;/g' \
+        -e 's/\(writeInterval[ \t]*\)\([0-9a-zA-Z.-]*\);/\1 1;/g' \
+        "${CD}.orig" > "${CD}"
+done
+
+# Modify fvSolution
+# Set maxIter to 1 for linear solvers
+echo "Modifying the fvSolution linear solvers to run only one iteration"
+for FVS in $(find . -name "fvSolution")
+do
+    mv ${FVS} ${FVS}.org
+    sed -e "s|maxIter.*;|maxIter 1;|g" ${FVS}.org > ${FVS}
+    sed \
+    -e "s|//nOuterCorrectors.*;|nOuterCorrectors 1;|g" \
+    -e "s|nOuterCorrectors.*;|nOuterCorrectors 1;|g" \
+    -e "s|nCorrectors.*;|nCorrectors 1;|g" \
+    ${FVS}.org > ${FVS}
+done
+
+# Source tutorial functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Remove high-level Allrun
+rm Allrun*
+
+# Run cases recursively
+echo "Running cases "; echo "    $PWD"; echo
+runCases
+
+# Prepare summary files
+echo; echo "Preparing testLoopReport"
+rm testLoopReport > /dev/null 2>&1 &
+touch testLoopReport
+for application in *
+do
+    if [ -d $application ]
+    then
+        cd $application
+        for log in `find . -name "log.*" | xargs ls -rt`
+        do
+            logReport $log >> ../testLoopReport
+        done
+        echo "" >> ../testLoopReport
+        cd ..
+    fi
+done
+
+# Create concatenated logs file
+echo; echo "Preparing logs"
+find . -name "log.*" -exec cat {} \; >> logs
+
+# Output summary statistics
+echo; echo "Summary statistics"
+N_RUN_CASES=$(grep "laserbeamFoam" ../tutorialsTest/testLoopReport | wc -l)
+N_FAILED_SOLVER=$(grep "ERROR" testLoopReport | grep "laserbeamFoam" | wc -l)
+N_FAILED_COMMANDS=$(grep "ERROR" testLoopReport | wc -l)
+N_FAILED_OTHER=$((N_FAILED_COMMANDS-N_FAILED_SOLVER))
+echo "    Number of cases where a run was attempted: ${N_RUN_CASES}"
+echo "    Number of cases where the solver failed: ${N_FAILED_SOLVER}"
+echo "    Number of cases where another command failed: ${N_FAILED_OTHER}"
+echo
+
+if [[ $N_FAILED_SOLVER -gt 0 || $N_FAILED_OTHER -gt 0 ]]
+then
+    if [[ $N_FAILED_SOLVER -gt 0 ]]
+    then
+        echo "The solver failed in the following cases:"
+        grep "ERROR" testLoopReport | grep "laserbeamFoam"
+        echo
+    fi
+    if [[ $N_FAILED_OTHER -gt 0 ]]
+    then
+        echo "The following commands failed:"
+        grep "ERROR" testLoopReport
+        echo
+    fi
+    exit 1
+else
+    echo "All tests passed: enjoy the laserbeamFoam solvers!"
+fi
+echo
