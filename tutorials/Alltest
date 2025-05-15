@@ -199,7 +199,7 @@ done
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 # Remove high-level Allrun
-rm Allrun*
+rm -f Allrun*
 
 # Run cases recursively
 echo "Running cases "; echo "    $PWD"; echo
