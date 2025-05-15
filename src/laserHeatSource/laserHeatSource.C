@@ -84,10 +84,13 @@ laserHeatSource::laserHeatSource
             mesh.time().timeName(),
             mesh,
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh,
-        dimensionedScalar("errorTrack", dimensionSet(0, 0, 0, -0, 0), 0.0)
+        dimensionedScalar
+        (
+            "errorTrack", dimensionSet(0, 0, 0, -0, 0), 0.0
+        )
     ),
     rayNumber_
     (
@@ -97,7 +100,7 @@ laserHeatSource::laserHeatSource
             mesh.time().timeName(),
             mesh,
             IOobject::NO_READ,
-            IOobject::AUTO_WRITE
+            IOobject::NO_WRITE
         ),
         mesh,
         dimensionedScalar("rayNumber",dimensionSet(0, 0, 0, -0, 0),-1.0)
@@ -142,11 +145,140 @@ laserHeatSource::laserHeatSource
         dimensionedScalar("refineflag", dimensionSet(0,0,0,0,0), 0.0)
     ),
     powderSim_(lookupOrDefault<Switch>("PowderSim", false)),
-    timeVsLaserPosition_(subDict("timeVsLaserPosition")),
-    timeVsLaserPower_(subDict("timeVsLaserPower"))
+    laserNames_(0),
+    laserDicts_(0),
+    timeVsLaserPosition_(0),
+    timeVsLaserPower_(0)
 {
+    // Initialise the laser power and position
+    if (found("lasers"))
+    {
+        const PtrList<entry> laserEntries(lookup("lasers"));
+
+        laserNames_.setSize(laserEntries.size());
+        laserDicts_.setSize(laserEntries.size());
+        timeVsLaserPosition_.setSize(laserEntries.size());
+        timeVsLaserPower_.setSize(laserEntries.size());
+
+        forAll(laserEntries, laserI)
+        {
+            laserNames_[laserI] = laserEntries[laserI].keyword();
+            Info<< "Reading laser " << laserNames_[laserI] << endl;
+
+            laserDicts_.set(laserI, new dictionary(laserEntries[laserI].dict()));
+
+            timeVsLaserPosition_.set
+            (
+                laserI,
+                new interpolationTable<vector>
+                (
+                    laserEntries[laserI].dict().subDict("timeVsLaserPosition")
+                )
+            );
+
+            timeVsLaserPower_.set
+            (
+                laserI,
+                new interpolationTable<scalar>
+                (
+                    laserEntries[laserI].dict().subDict("timeVsLaserPower")
+                )
+            );
+        }
+
+        // Check that a single laser is not also defined
+
+        if (found("timeVsLaserPosition"))
+        {
+            FatalErrorInFunction
+                << "timeVsLaserPosition should not be defined in the main dict"
+                << " if a list of lasers is provided" << exit(FatalError);
+        }
+
+        if (found("timeVsLaserPower"))
+        {
+            FatalErrorInFunction
+                << "timeVsLaserPower should not be defined in the main dict"
+                << " if a list of lasers is provided" << exit(FatalError);
+        }
+    }
+    else
+    {
+        // There is no lists of lasers, just one
+
+        laserNames_.setSize(1);
+        laserDicts_.setSize(1);
+        timeVsLaserPosition_.setSize(1);
+        timeVsLaserPower_.setSize(1);
+
+        laserNames_[0] = "laser0";
+
+        // Copy the main dict
+        laserDicts_.set(0, new dictionary(*this));
+
+        timeVsLaserPosition_.set
+        (
+            0,
+            new interpolationTable<vector>(subDict("timeVsLaserPosition"))
+        );
+
+        timeVsLaserPower_.set
+        (
+            0,
+            new interpolationTable<scalar>(subDict("timeVsLaserPower"))
+        );
+    }
+
     // Update laserBoundary
     laserBoundary_ = fvc::average(laserBoundary_);
+
+    if (debug)
+    {
+        errorTrack_.writeOpt() = IOobject::AUTO_WRITE;
+        rayNumber_.writeOpt() = IOobject::AUTO_WRITE;
+    }
+
+    // Give errors if the old input format is found
+
+    if (found("HS_bg"))
+    {
+        FatalErrorInFunction
+            << "'HS_bg' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+
+    if (found("HS_lg"))
+    {
+        FatalErrorInFunction
+            << "'HS_lg' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+
+    if (found("HS_velocity"))
+    {
+        FatalErrorInFunction
+            << "'HS_velocity' is deprecated: please instead specify the laser "
+            << "position in time via the laserPositionVsTime sub-dict"
+            << exit(FatalError);
+    }
+
+    if (found("HS_Q"))
+    {
+        FatalErrorInFunction
+            << "'HS_Q' is deprecated: please instead specify the laser "
+            << "power in time via the laserPowereVsTime sub-dict"
+            << exit(FatalError);
+    }
+
+    if (found("elec_resistivity"))
+    {
+        FatalErrorInFunction
+            << "'elec_resistivity' is deprecated: resistivity is now "
+            << "passed in from the solver as a field"
+            << exit(FatalError);
+    }
 }
 
 
@@ -161,132 +293,150 @@ void laserHeatSource::updateDeposition
 )
 {
     // Reset fields
-    // Do we need to update laserBoundary?
+    deposition_ *= 0.0;
     laserBoundary_ *= 0.0;
     laserBoundary_ = fvc::average(laserBoundary_);
     errorTrack_ *= 0.0;
-    deposition_ *= 0.0;
     rayNumber_ *= 0.0;
     rayQ_ *= 0.0;
 
-    // Read laser properties and settings, and define constants
+    const scalar time = deposition_.time().value();
+
+    forAll(laserNames_, laserI)
+    {
+        // Lookup the current laser position and power
+        vector currentLaserPosition =
+            timeVsLaserPosition_[laserI](time);
+        const scalar currentLaserPower =
+            timeVsLaserPower_[laserI](time);
+
+        Info<< "Laser " << laserNames_[laserI] << nl
+            << "Laser mean position = " << currentLaserPosition << nl
+            << "Laser power = " << currentLaserPower << endl;
+
+        // Dict for current laser
+        const dictionary& dict = laserDicts_[laserI];
+
+        // If defined, add oscillation to laser position
+        if (dict.found("HS_oscAmpX"))
+        {
+            const scalar oscAmpX(readScalar(dict.lookup("HS_oscAmpX")));
+            const scalar oscFreqX(readScalar(dict.lookup("HS_oscFreqX")));
+            const scalar pi = constant::mathematical::pi;
+
+            currentLaserPosition[vector::X] += oscAmpX*sin(2*pi*oscFreqX*time);
+        }
+
+        // If defined, add oscillation to laser position
+        if (dict.found("HS_oscAmpZ"))
+        {
+            const scalar oscAmpZ(readScalar(dict.lookup("HS_oscAmpZ")));
+            const scalar oscFreqZ(readScalar(dict.lookup("HS_oscFreqZ")));
+            const scalar pi = constant::mathematical::pi;
+
+            currentLaserPosition[vector::Z] += oscAmpZ*cos(2*pi*oscFreqZ*time);
+        }
+
+        Info<< "Laser position including any oscillation = "
+            << currentLaserPosition << endl;
+
+        scalar laserRadius = 0.0;
+        if (dict.found("HS_a") && dict.found("laserRadius"))
+        {
+            FatalErrorInFunction
+                << "The laser radius should be specified via 'laserRadius' or "
+                << "'HS_a', not both!" << exit(FatalError);
+        }
+
+        if (dict.found("HS_a"))
+        {
+            laserRadius = readScalar(dict.lookup("HS_a"));
+        }
+        else if (dict.found("laserRadius"))
+        {
+            laserRadius = readScalar(dict.lookup("laserRadius"));
+        }
+        else
+        {
+            FatalErrorInFunction
+                << "The laser radius should be specified via 'laserRadius' "
+                << "or 'HS_a'"
+                << exit(FatalError);
+        }
+
+        const label N_sub_divisions
+        (
+            dict.lookupOrDefault<label>("N_sub_divisions", 1)
+        );
+        const vector V_incident(dict.lookup("V_incident"));
+        const scalar wavelength(readScalar(dict.lookup("wavelength")));
+        const scalar e_num_density(readScalar(dict.lookup("e_num_density")));
+        const scalar dep_cutoff(dict.lookupOrDefault<scalar>("dep_cutoff", 0.5));
+        const scalar Radius_Flavour
+        (
+            dict.lookupOrDefault<scalar>("Radius_Flavour", 2.0)
+        );
+        const Switch useLocalSearch
+        (
+            dict.lookupOrDefault<Switch>("useLocalSearch", true)
+        );
+        const label maxLocalSearch
+        (
+            dict.lookupOrDefault<label>("maxLocalSearch", 100)
+        );
+
+        updateDeposition
+        (
+            alphaFiltered,
+            nFiltered,
+            resistivity_in,
+            laserNames_[laserI],
+            currentLaserPosition,
+            currentLaserPower,
+            laserRadius,
+            N_sub_divisions,
+            V_incident,
+            wavelength,
+            e_num_density,
+            dep_cutoff,
+            Radius_Flavour,
+            useLocalSearch,
+            maxLocalSearch
+        );
+    }
+}
+
+void laserHeatSource::updateDeposition
+(
+    const volScalarField& alphaFiltered,
+    const volVectorField& nFiltered,
+    const volScalarField& resistivity_in,
+    const word& laserName,
+    const vector& currentLaserPosition,
+    const scalar currentLaserPower,
+    const scalar laserRadius,
+    const label N_sub_divisions,
+    const vector& V_incident,
+    const scalar wavelength,
+    const scalar e_num_density,
+    const scalar dep_cutoff,
+    const scalar Radius_Flavour,
+    const Switch useLocalSearch,
+    const label maxLocalSearch
+)
+{
     const fvMesh& mesh  = deposition_.mesh();
     const Time& runTime  = mesh.time();
     const dimensionedScalar time = runTime.time();
-    const Switch debug(lookupOrDefault<Switch>("debug", false));
-
-    // Print the current laser position and power
-    // Note: this is the mean laser position about which an oscillation can be
-    // prescribed via HS_oscAmpX, etc
-    vector currentLaserPosition = timeVsLaserPosition_(time.value());
-    const scalar currentLaserPower = timeVsLaserPower_(time.value());
-    Info<< "Laser mean position = " << currentLaserPosition << nl
-        << "Laser power = " << currentLaserPower << endl;
-
-    const label N_sub_divisions(readLabel(lookup("N_sub_divisions")));
-    //const scalar HS_a(readScalar(lookup("HS_a")));
-    scalar HS_a = 0.0;
-    if (found("HS_a") && found("laserRadius"))
-    {
-        FatalErrorInFunction
-            << "The laser radius should be specified via 'laserRadius' or "
-            << "'HS_a', not both!" << exit(FatalError);
-    }
-    if (found("HS_a"))
-    {
-        HS_a = readScalar(lookup("HS_a"));
-    }
-    else if (found("laserRadius"))
-    {
-        HS_a = readScalar(lookup("laserRadius"));
-    }
-    else
-    {
-        FatalErrorInFunction
-            << "The laser radius should be specified via 'laserRadius' or 'HS_a'"
-            << exit(FatalError);
-    }
-    // HS_bg, HS_lg, HS_velocity and HS_Q have been replaced by the
-    // laserPositionVsTime and laserPowerVsTime time series
-    //const scalar HS_bg(readScalar(lookup("HS_bg")));
-    //const scalar HS_velocity(readScalar(lookup("HS_velocity")));
-    //const scalar HS_lg(readScalar(lookup("HS_lg")));
-    //const scalar HS_Q(readScalar(lookup("HS_Q")));
-    if (found("HS_bg"))
-    {
-        FatalErrorInFunction
-            << "'HS_bg' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
-    }
-    if (found("HS_lg"))
-    {
-        FatalErrorInFunction
-            << "'HS_lg' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
-    }
-    if (found("HS_velocity"))
-    {
-        FatalErrorInFunction
-            << "'HS_velocity' is deprecated: please instead specify the laser "
-            << "position in time via the laserPositionVsTime sub-dict"
-            << exit(FatalError);
-    }
-    if (found("HS_Q"))
-    {
-        FatalErrorInFunction
-            << "'HS_Q' is deprecated: please instead specify the laser "
-            << "power in time via the laserPowereVsTime sub-dict"
-            << exit(FatalError);
-    }
-    const vector V_incident(lookup("V_incident"));
-    const scalar wavelength(readScalar(lookup("wavelength")));
-    const scalar e_num_density(readScalar(lookup("e_num_density")));
-    // elec_resistivity is temperature dependent - will include this in future versions
-    // const scalar elec_resistivity(readScalar(lookup("elec_resistivity")));
-
-    if (found("elec_resistivity"))
-    {
-        FatalErrorInFunction
-            << "'elec_resistivity' is deprecated: resistivity is now passed in from the solver as a field"
-            << exit(FatalError);
-    }
-
     const dimensionedScalar pi = constant::mathematical::pi;
-    const dimensionedScalar a_cond("a_cond", dimensionSet(0, 1, 0, 0, 0), HS_a);
-    // b_g and v_arc have been replaced by the laserPositionVsTime time series
-    // const dimensionedScalar b_g("b_g", dimensionSet(0, 1, 0, 0, 0), HS_bg);
-    //const dimensionedScalar v_arc("v_arc", dimensionSet(0, 1, -1, 0, 0), HS_velocity);
+    const dimensionedScalar a_cond
+    (
+        "a_cond", dimensionSet(0, 1, 0, 0, 0), laserRadius
+    );
     const dimensionedScalar Q_cond
     (
         "Q_cond", dimensionSet(1, 2, -3, 0, 0), currentLaserPower
     );
-    //const dimensionedScalar lg("lg", dimensionSet(0, 1, 0, 0, 0), HS_lg);
-
-    // If defined, add oscillation to laser position
-    if (found("HS_oscAmpX"))
-    {
-        const scalar oscAmpX(readScalar(lookup("HS_oscAmpX")));
-        const scalar oscFreqX(readScalar(lookup("HS_oscFreqX")));
-
-        currentLaserPosition[vector::X] +=
-            oscAmpX*sin(2*pi*oscFreqX*time.value()).value();
-    }
-
-    // If defined, add oscillation to laser position
-    if (found("HS_oscAmpZ"))
-    {
-        const scalar oscAmpZ(readScalar(lookup("HS_oscAmpZ")));
-        const scalar oscFreqZ(readScalar(lookup("HS_oscFreqZ")));
-
-        currentLaserPosition[vector::Z] +=
-            oscAmpZ*cos(2*pi*oscFreqZ*time.value()).value();
-    }
-
-    Info<< "Laser position including any oscillation = "
-        << currentLaserPosition << endl;
-
     const scalar plasma_frequency = Foam::sqrt
     (
         (
@@ -302,59 +452,9 @@ void laserHeatSource::updateDeposition
     const scalar angular_frequency =
         2.0*pi.value()*constant::universal::c.value()/wavelength;
 
-    // const scalar damping_frequency =
-    //     plasma_frequency*plasma_frequency
-    //    *constant::electromagnetic::epsilon0.value()*elec_resistivity;
-    // const scalar e_r =
-    //     1.0
-    //   - (
-    //       sqr(plasma_frequency)/(sqr(angular_frequency)
-    //     + sqr(damping_frequency))
-    //   );
-    // const scalar e_i =
-    //     (damping_frequency/angular_frequency)
-    //    *(
-    //        (plasma_frequency*plasma_frequency)
-    //       /(
-    //           angular_frequency*angular_frequency
-    //         + damping_frequency*damping_frequency
-    //        )
-    //    );
-    // const scalar ref_index =
-    //     Foam::sqrt
-    //     (
-    //         (Foam::sqrt((e_r*e_r) +(e_i*e_i)) + e_r)/2.0
-    //     );
-    // const scalar ext_coefficient =
-    //     Foam::sqrt
-    //     (
-    //         (Foam::sqrt((e_r*e_r) +(e_i*e_i)) - e_r)/2.0
-    //     );
-
-    const scalar dep_cutoff(lookupOrDefault<scalar>("dep_cutoff", 0.5));
-    const scalar Radius_Flavour
-    (
-        lookupOrDefault<scalar>("Radius_Flavour", 2.0)
-    );
-    const Switch useLocalSearch
-    (
-        lookupOrDefault<Switch>("useLocalSearch", true)
-    );
-    const label maxLocalSearch
-    (
-        lookupOrDefault<label>("maxLocalSearch", 100)
-    );
-
     if (debug)
     {
         Info<< "useLocalSearch: " << useLocalSearch << nl << nl
-            // << " plasma_frequency: " << plasma_frequency << nl
-            // << " angular_frequency: " << angular_frequency << nl
-            // << " damping_frequency: " << damping_frequency << nl
-            // << " e_r: " << e_r << nl
-            // << " e_i: " << e_i << nl
-            // << " ref_index: " << ref_index << nl
-            // << " ext_coefficient: " << ext_coefficient << nl
             << nl << endl;
     }
 
@@ -395,10 +495,6 @@ void laserHeatSource::updateDeposition
     // List with size equal to number of processors
     List<pointField> gatheredData1(Pstream::nProcs());
 
-    // bg and lg have been replaced by currentLaserPosition
-    // dimensionedScalar bg_effective = b_g.value() + oscAmpX*sin(2*pi*oscFreqX*time.value());
-    // dimensionedScalar lg_effective = lg.value() + oscAmpZ*cos(2*pi*oscFreqZ*time.value());
-
     // Take a references for efficiency and brevity
     const vectorField& CI = mesh.C();
     const scalarField& yDimI = yDim_;
@@ -431,9 +527,13 @@ void laserHeatSource::updateDeposition
                 {
                     point p_1
                     (
-                        CI[celli].x() - (yDimI[celli]/2.0) + ((yDimI[celli]/(N_sub_divisions+1))*(Ray_j+1)),
+                        CI[celli].x()
+                      - (yDimI[celli]/2.0)
+                      + ((yDimI[celli]/(N_sub_divisions+1))*(Ray_j+1)),
                         CI[celli].y(),
-                        CI[celli].z() - (yDimI[celli]/2.0) + ((yDimI[celli]/(N_sub_divisions+1))*(Ray_k+1))
+                        CI[celli].z()
+                      - (yDimI[celli]/2.0)
+                      + ((yDimI[celli]/(N_sub_divisions+1))*(Ray_k+1))
                     );
                     initial_points.append(p_1);
                 }
@@ -539,7 +639,7 @@ void laserHeatSource::updateDeposition
 
         //   scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
         //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
-        //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time.value())-lg.value())/(beam_radius),2.0)));
+        //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time)-lg.value())/(beam_radius),2.0)));
 
         scalar Q =
             (
@@ -603,7 +703,7 @@ void laserHeatSource::updateDeposition
             if (myCellId != -1)
             {
                 rayNumber_[myCellId] = i+1;//set test field to beam flavour
-                rayQ_[myCellId] = Q;
+                rayQ_[myCellId] += Q;
 
                 if (mag(nFilteredI[myCellId]) > 0.5 && alphaFilteredI[myCellId] >= dep_cutoff)
                 {
@@ -970,7 +1070,7 @@ void laserHeatSource::updateDeposition
          // Create a VTK file
          OFstream rayVtkFile
          (
-             vtkDir/"rays_" //+ runTime.timeName() + "_"
+             vtkDir/laserName + "_rays_"
            + Foam::name(runTime.timeIndex()) + ".vtk"
          );
 
