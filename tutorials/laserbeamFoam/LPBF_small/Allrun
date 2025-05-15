@@ -8,5 +8,5 @@ cp -r initial 0
 
 runApplication blockMesh
 runApplication setSolidFraction
-transformPoints "rotate=((0 1 0) (0 0 1))"
+runApplication transformPoints "rotate=((0 1 0) (0 0 1))"
 runApplication laserbeamFoam
