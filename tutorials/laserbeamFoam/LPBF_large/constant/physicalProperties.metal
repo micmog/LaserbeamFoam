@@ -19,6 +19,7 @@ viscosityModel  constant;
 nu              5e-07;
 
 rho             8000;
+elec_resistivity	1.0e-6;
 
     poly_kappa   (10 0.015 0 0 0 0 0 0);
     //poly_cp   (244.8 9.587e-1 -3.77e-4 6.5e-8 -4.14e-12 0 0 0);
