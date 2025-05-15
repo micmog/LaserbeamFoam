@@ -171,24 +171,36 @@ The main solver loop iterates until program termination. A summary of the
 * `laserbeamFoam` Simulation Algorithm Summary:
 
   * Initialise simulation data and mesh
-  * WHILE $t < t_{\text{end}}$ DO
-  * 1. Update $\Delta t$ for stability
-  * 2. Phase equation sub-cycle
-  * 3. Update interface location for the heat source application
-  * 4. Update fluid properties
-  * 5. Ray-tracing for Heat Source application at the surface
-  * 6. PISO Loop
-    * 1. Form $U$ equation
-    * 2. Energy Transport Loop
-      * 1. Solve $T$ equation
-      * 2. Update fluid fraction field
-      * 3. Re-evaluate source terms due to latent heat
-    * 3. PISO
-        * 1. Obtain and correct face fluxes
-        * 2. Solve $p$ Poisson equation
-        * 3. Correct $U$
-  * 7. Write fields
 
+  * WHILE $t < t_{\text{end}}$ DO
+
+    1. Update $\Delta t$ for stability
+
+    2. Phase equation sub-cycle
+
+    3. Update interface location for the heat source application
+
+    4. Update fluid properties
+
+    5. Ray-tracing for Heat Source application at the surface
+
+    6. PISO Loop
+
+        1. Form $U$ equation
+
+        2. Energy Transport Loop
+
+            1. Solve $T$ equation  
+            2. Update fluid fraction field  
+            3. Re-evaluate source terms due to latent heat
+
+        3. PISO
+
+            1. Obtain and correct face fluxes  
+            2. Solve $p$ Poisson equation  
+            3. Correct $U$
+
+    7. Write fields
 
 There are no constraints on how the computational domain is discretised.
 
@@ -203,8 +215,8 @@ There are no constraints on how the computational domain is discretised.
  filter on the rays object to sync the ray time with the OpenFOAM model time,
  where the OpenFOAM time-step value (e.g. 1e-5) is used as the `Scale`.
 
-
 ## License
+
 OpenFOAM, and by extension, the `laserbeamFoam` application, is licensed free
  and open source only under the [GNU General Public Licence version 3](https://www.gnu.org/licenses/gpl-3.0.en.html).
  One reason for OpenFOAM’s popularity is that its users are granted the freedom
@@ -212,6 +224,7 @@ OpenFOAM, and by extension, the `laserbeamFoam` application, is licensed free
  within the terms of the GPL.
 
 ## Acknowledgements
+
 Tom Flint and Joe Robson thank the EPSRC for financial support through the
  associated programme grant LightFORM (EP/R001715/1). Joe Robson thanks the
  Royal Academy of Engineering/DSTL for funding through the RAEng/DSTL Chair in
@@ -226,15 +239,17 @@ Philip Cardiff and Gowthaman Parivendhan authors gratefully acknowledge financia
  and acknowledges financial support from the Irish Research Council through the
  Laureate programme, grant number IRCLA/2017/45, and Bekaert, through the Bekaert
  University Technology Centre (UTC) at University College Dublin
- (www.ucd.ie/bekaert).
+ [www.ucd.ie/bekaert](www.ucd.ie/bekaert).
 
 ## Citing This Work
+
 If you use `laserbeamFoam` in your work. Please use the following to cite our work:
 
-- laserbeamFoam: Laser ray-tracing and thermally induced state transition
-  simulation toolkit. TF Flint, JD Robson, G Parivendhan, P Cardiff - SoftwareX,
-  2023 - https://doi.org/10.1016/j.softx.2022.101299
-
+```bibtex
+laserbeamFoam: Laser ray-tracing and thermally induced state transition
+simulation toolkit. TF Flint, JD Robson, G Parivendhan, P Cardiff - SoftwareX,
+2023 - https://doi.org/10.1016/j.softx.2022.101299
+```
 
 ## References
 
@@ -265,7 +280,6 @@ Parivendhan, G., Cardiff, P., Flint, T., Tuković, Ž., Obeidi, M., Brabazon, D.
 This offering is not approved or endorsed by OpenCFD Limited, producer and
  distributor of the OpenFOAM software via [www.openfoam.com](https://www.openfoam.com),
  and owner of the OPENFOAM® and OpenCFD® trade marks.
-
 
 ## Acknowledgement
 

@@ -1,3 +1,6 @@
+# Test directories
+tutorialsTest
+
 # VTK files
 **/*.vtk
 **/*.VTK
