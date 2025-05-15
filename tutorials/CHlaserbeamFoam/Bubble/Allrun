@@ -8,4 +8,4 @@ cp -r initial 0
 
 runApplication blockMesh
 runApplication setFields
-runApplication array_laserbeamFoam
+runApplication laserbeamFoam

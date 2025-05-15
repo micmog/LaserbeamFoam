@@ -30,3 +30,10 @@ jobs:
         run: |
           source ${{ matrix.container-image.source }}
           ./Allwmake ${{ matrix.container-image.buildflags }}
+
+      - name: Alltest
+        shell: bash -l {0}
+        run: |
+          source ${{ matrix.container-image.source }}
+          cd tutorials
+          ./Alltest
