@@ -3,20 +3,27 @@ IOdictionary solutionDict
     IOobject
     (
         "fvSolution",
-        runTime.system(), //folder where the fvSolution file is located
+        runTime.system(),
         runTime,
         IOobject::MUST_READ
     )
 );
 
-
-
 dictionary& meltingDict = solutionDict.subDict("MELTING");
 
-int minTCorr(readLabel(meltingDict.lookup("minTempCorrector")));
-int maxTCorr(readLabel(meltingDict.lookup("maxTempCorrector")));
+const label minTCorr(readLabel(meltingDict.lookup("minTempCorrector")));
 
-dimensionedScalar epsilonTol(readScalar(meltingDict.lookup("epsilonTolerance")));
-dimensionedScalar epsilonRel(readScalar(meltingDict.lookup("epsilonRelaxation")));
+const label maxTCorr(readLabel(meltingDict.lookup("maxTempCorrector")));
 
-bool damperSwitch = meltingDict.lookupOrDefault<bool>("damperSwitch", false);
+const dimensionedScalar epsilonTol
+(
+    readScalar(meltingDict.lookup("epsilonTolerance"))
+);
+
+const dimensionedScalar epsilonRel
+(
+    readScalar(meltingDict.lookup("epsilonRelaxation"))
+);
+
+const bool damperSwitch =
+    meltingDict.lookupOrDefault<bool>("damperSwitch", false);
