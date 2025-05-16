@@ -662,6 +662,10 @@ volScalarField alpha_filtered
     dimensionedScalar("alpha_filtered", dimensionSet(0, 0, 0, -0, 0), 0.0)
 );
 
+volVectorField gradepsilon1(fvc::grad(alpha_filtered));
+volScalarField e1temp(fvc::average(epsilon1));
+volScalarField e2temp(fvc::average(epsilon1mask));
+
 dimensionedScalar elec_resistivity_metal
 (
     "elec_resistivity",
