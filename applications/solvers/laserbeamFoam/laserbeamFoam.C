@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
             #include "alphaControls.H"
             #include "alphaEqnSubCycle.H"
 
-            #include "UpdateProps.H"
+            #include "updateProps.H"
 
             // Update the laser deposition field
             laser.updateDeposition
