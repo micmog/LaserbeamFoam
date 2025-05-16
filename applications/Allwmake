@@ -10,5 +10,6 @@ then  . "$WM_PROJECT"/wmake/scripts/AllwmakeParseArguments
 fi
 
 wmake $optAll $targetType solvers
+wmake $optAll $targetType utilities
 
 #------------------------------------------------------------------------------
