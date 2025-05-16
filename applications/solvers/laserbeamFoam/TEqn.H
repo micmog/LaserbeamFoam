@@ -7,8 +7,8 @@
 
     TRHS *= 0.0;
 
-    const volScalarField rhoCp(rho*cp);
-    const surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
+    rhoCp = rho*cp;
+    rhophicp = fvc::interpolate(cp)*rhoPhi;
 
     // const volTensorField gradU(fvc::grad(U));
     // volTensorField tau
@@ -31,13 +31,16 @@
 
         if (damperSwitch)
         {
-            forAll(mesh.C(), celli)
+            scalarField& thermalDamperI = thermalDamper;
+            const scalarField& rhoCpI = rhoCp;
+            const scalarField& TI = T;
+            forAll(thermalDamperI, celli)
             {
-                thermalDamper[celli] =
-                    2.0*rhoCp[celli]
+                thermalDamperI[celli] =
+                    2.0*rhoCpI[celli]
                    /(
-                       (rho1.value()*polycp_m.value(T[celli]))
-                     + (rho2.value()*polycp_g.value(T[celli]))
+                       (rho1.value()*polycp_m.value(TI[celli]))
+                     + (rho2.value()*polycp_g.value(TI[celli]))
                    );
             }
 
@@ -90,11 +93,11 @@
 
         meanResidual = gSum(residual*mesh.V())/gSum(mesh.V().field());
 
+        //ddte1 = fvc::ddt(epsilon1);
+
         Info<< "Correcting epsilon1, mean residual = " << meanResidual
             << ", max residual = " << maxResidual
             << endl;
-
-        ddte1 = fvc::ddt(epsilon1);
     }
     while
     (

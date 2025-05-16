@@ -68,9 +68,8 @@ volScalarField rho
     ),
     mixture.rho()
 );
+
 rho.oldTime();
-
-
 
 
 #include "readGravitationalAcceleration.H"
@@ -95,19 +94,22 @@ pressureReference pressureReference(p, p_rgh, pimple.dict());
 
 if (p_rgh.needReference())
 {
-    p += dimensionedScalar
-         (
-             "p",
-             p.dimensions(),
-             pressureReference.refValue()
-             - getRefCellValue(p, pressureReference.refCell())
-         );
+    p +=
+        dimensionedScalar
+        (
+            "p",
+            p.dimensions(),
+            pressureReference.refValue()
+          - getRefCellValue(p, pressureReference.refCell())
+        );
+
     p_rgh = p - rho*gh;
 }
 
 mesh.schemes().setFluxRequired(p_rgh.name());
 
 volScalarField& alpha1(mixture.alpha1());
+
 mesh.schemes().setFluxRequired(alpha1.name());
 
 
@@ -601,20 +603,20 @@ volScalarField Qv
 );// Evaporation Cooling
 
 
-volScalarField ddte1
-(
-    IOobject
-    (
-        "ddte1",
-        runTime.timeName(),
-        mesh,
-        IOobject::NO_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh,
-    dimensionedScalar("ddte1",dimensionSet(0,0,-1,0,0),0.0),
-    zeroGradientFvPatchScalarField::typeName
-);
+// volScalarField ddte1
+// (
+//     IOobject
+//     (
+//         "ddte1",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::AUTO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("ddte1",dimensionSet(0,0,-1,0,0),0.0),
+//     zeroGradientFvPatchScalarField::typeName
+// );
 
 volScalarField damper
 (
@@ -627,7 +629,7 @@ volScalarField damper
         IOobject::NO_WRITE
     ),
     mesh,
-    dimensionedScalar("damper",dimless,1.0),
+    dimensionedScalar("damper", dimless, 1.0),
     zeroGradientFvPatchScalarField::typeName
 );
 
@@ -654,45 +656,38 @@ volScalarField alpha_filtered
         runTime.timeName(),
         mesh,
         IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("alpha_filtered", dimensionSet(0, 0, 0, -0, 0), 0.0)
+);
+
+dimensionedScalar elec_resistivity_metal
+(
+    "elec_resistivity",
+    dimensionSet(1, 3, -3, 0, 0),
+    transportProperties_metal.lookup("elec_resistivity")
+);
+
+// Electrical resistivity of condensate only
+volScalarField electrical_resistivity
+(
+    IOobject
+    (
+        "electrical_resistivity",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
     mesh,
-    dimensionedScalar("alpha_filtered",dimensionSet(0, 0, 0, -0, 0),0.0)
-);
-
-
-    //    volScalarField eleccond
-    // (
-    //     IOobject
-    //     (
-    //         "eleccond",
-    //         runTime.timeName(),
-    //         mesh,
-    //         IOobject::READ_IF_PRESENT,
-    //         IOobject::AUTO_WRITE
-    //     ),
-    //     mesh,
-    //     dimensionedScalar("eleccond",dimensionSet(-1, -3, 3, 0, 0),0.0),
-    //             zeroGradientFvPatchScalarField::typeName
-    // );
-
-
-dimensionedScalar elec_resistivity_metal("elec_resistivity",dimensionSet(1,3,-3,0,0),transportProperties_metal.lookup("elec_resistivity"));
-
-
-        volScalarField electrical_resistivity//electrical resistivity of condensate only
+    dimensionedScalar
     (
-        IOobject
-        (
-            "electrical_resistivity",
-            runTime.timeName(),
-            mesh,
-            IOobject::NO_READ,
-            IOobject::AUTO_WRITE
-        ),
-        mesh,
-        dimensionedScalar("electrical_resistivity",dimensionSet(1,3,-3,0,0),0.0)
-    );
+        "electrical_resistivity",
+        dimensionSet(1,3,-3,0,0),
+        0.0
+    )
+);
 
 electrical_resistivity = elec_resistivity_metal;
 
@@ -707,7 +702,6 @@ incompressibleInterPhaseTransportModel turbulence
     mixture
 );
 
-
 #include "createMRF.H"
 #include "createFvModels.H"
 #include "createFvConstraints.H"
@@ -715,4 +709,8 @@ incompressibleInterPhaseTransportModel turbulence
 // Create laser heat source
 laserHeatSource laser(mesh);
 
-#include "UpdateProps.H"
+volScalarField rhoCp(rho*cp);
+surfaceScalarField rhoPhi("rhoPhi", fvc::interpolate(rho)*phi);
+surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
+
+#include "updateProps.H"

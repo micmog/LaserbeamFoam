@@ -165,6 +165,9 @@ int main(int argc, char *argv[])
                     if (correctPhi)
                     {
                         #include "correctPhi.H"
+
+                        // Update rhoPhi
+                        rhoPhi = fvc::interpolate(rho)*phi;
                     }
 
                     mixture.correct();
@@ -179,18 +182,6 @@ int main(int argc, char *argv[])
             }
 
             fvModels.correct();
-
-            surfaceScalarField rhoPhi
-            (
-                IOobject
-                (
-                    "rhoPhi",
-                    runTime.timeName(),
-                    mesh
-                ),
-                mesh,
-                dimensionedScalar(dimMass/dimTime, 0)
-            );
 
             #include "alphaControls.H"
             #include "alphaEqnSubCycle.H"
