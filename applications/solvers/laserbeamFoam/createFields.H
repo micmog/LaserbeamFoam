@@ -662,6 +662,10 @@ volScalarField alpha_filtered
     dimensionedScalar("alpha_filtered", dimensionSet(0, 0, 0, -0, 0), 0.0)
 );
 
+volVectorField gradepsilon1(fvc::grad(alpha_filtered));
+volScalarField e1temp(fvc::average(epsilon1));
+volScalarField e2temp(fvc::average(epsilon1mask));
+
 dimensionedScalar elec_resistivity_metal
 (
     "elec_resistivity",
@@ -714,3 +718,17 @@ surfaceScalarField rhoPhi("rhoPhi", fvc::interpolate(rho)*phi);
 surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
 
 #include "updateProps.H"
+
+const dimensionedScalar DarcyConstantlarge
+(
+    "DarcyConstantlarge", dimensionSet(1,-3,-1,0,0), 1.0e6
+);
+
+const dimensionedScalar DarcyConstantsmall
+(
+    "DarcyConstantsmall", dimensionSet(0,0,0,0,0), 1.0e-12
+);
+
+volVectorField gradAlpha(fvc::grad(alpha1));
+
+volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
