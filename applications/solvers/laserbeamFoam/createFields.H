@@ -111,7 +111,6 @@ volScalarField& alpha1(mixture.alpha1());
 mesh.schemes().setFluxRequired(alpha1.name());
 
 
-
 IOdictionary transportProperties_metal
 (
     IOobject
@@ -294,11 +293,8 @@ volScalarField TSolidus
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    mesh,
-    dimensionedScalar("TSolidus",dimensionSet(0, 0, 0, 1, 0), 0.0)
+    alpha1*Tsolidus1 + (1.0 - alpha1)*Tsolidus2
 );
-
-TSolidus = alpha1*Tsolidus1 + (1.0 - alpha1)*Tsolidus2;
 
 volScalarField TLiquidus
 (
@@ -310,11 +306,8 @@ volScalarField TLiquidus
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    mesh,
-    dimensionedScalar("TLiquidus",dimensionSet(0, 0, 0, 1, 0),1.0)
+    alpha1*Tliquidus1 + (1.0 - alpha1)*Tliquidus2
 );
-
-TLiquidus = alpha1*Tliquidus1 + (1.0 - alpha1)*Tliquidus2;
 
 volScalarField DC
 (
@@ -340,12 +333,8 @@ volScalarField metalaverage
         IOobject::READ_IF_PRESENT,
         IOobject::NO_WRITE
     ),
-    mesh,
-    dimensionedScalar("metalaverage", dimless, 0.0)
+    fvc::average(alpha1)
 );
-
-metalaverage = fvc::average(alpha1);
-
 
 volScalarField epsilon1
 (
@@ -357,11 +346,8 @@ volScalarField epsilon1
         IOobject::READ_IF_PRESENT,
         IOobject::AUTO_WRITE
     ),
-    mesh,
-    dimensionedScalar("epsilon1", dimless, 0.0)
+    max(min((T - TSolidus)/(TLiquidus - TSolidus), 1.0), 0.0)
 );
-
-epsilon1 = max(min((T - TSolidus)/(TLiquidus - TSolidus), 1.0), 0.0);
 
 volVectorField n_filtered
 (
@@ -419,7 +405,6 @@ volVectorField gradT
     dimensionedVector("gradT", dimensionSet(0, -1, 0, 1, 0), vector::zero)
 );
 
-
 volScalarField LatentHeat
 (
     IOobject
@@ -430,12 +415,8 @@ volScalarField LatentHeat
         IOobject::NO_READ,
         IOobject::NO_WRITE
     ),
-    mesh,
-    dimensionedScalar("LatentHeat", dimensionSet(0, 2, -2, 0, 0), 0.0)
+    alpha1*LatentHeat1 + (1.0 - alpha1)*LatentHeat2
 );
-
-LatentHeat = alpha1*LatentHeat1 + (1.0 - alpha1)*LatentHeat2;
-
 
 volScalarField TRHS
 (
@@ -632,15 +613,8 @@ volScalarField electrical_resistivity
         IOobject::NO_WRITE
     ),
     mesh,
-    dimensionedScalar
-    (
-        "electrical_resistivity",
-        dimensionSet(1,3,-3,0,0),
-        0.0
-    )
+    elec_resistivity_metal
 );
-
-electrical_resistivity = elec_resistivity_metal;
 
 #include "createAlphaFluxes.H"
 
@@ -661,6 +635,8 @@ incompressibleInterPhaseTransportModel turbulence
 laserHeatSource laser(mesh);
 
 volScalarField rhoCp(rho*cp);
+rhoCp.oldTime();
+
 surfaceScalarField rhoPhi("rhoPhi", fvc::interpolate(rho)*phi);
 surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
 
