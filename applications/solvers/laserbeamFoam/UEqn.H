@@ -1,51 +1,58 @@
 MRF.correctBoundaryVelocity(U);
 
-dimensionedScalar DarcyConstantlarge("DarcyConstantlarge",dimensionSet(1,-3,-1,0,0),scalar(1.0e6));//1e10
-dimensionedScalar DarcyConstantsmall("DarcyConstantsmall",dimensionSet(0,0,0,0,0),scalar(1.0e-12));//1e-6
-
-// dimensionedScalar TSmooth("TSmooth",dimensionSet(0, 0, 0, 1, 0),50.0);
-
-
-
 if (laser.powderSim())
 {
-    DC = (DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)/(Foam::pow(epsilon1mask,3)+DarcyConstantsmall));
+    DC =
+        DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)
+       /(Foam::pow(epsilon1mask, 3) + DarcyConstantsmall);
 }
 else
 {
-    DC = (DarcyConstantlarge*Foam::pow((1.0-epsilon1),2)/(Foam::pow(epsilon1,3)+DarcyConstantsmall));
+    DC =
+        DarcyConstantlarge*Foam::pow((1.0 - epsilon1), 2)
+       /(Foam::pow(epsilon1, 3) + DarcyConstantsmall);
 }
-const volVectorField gradAlpha(fvc::grad(alpha1));
 
-const volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
-Marangoni = epsilon1*Marangoni_Constant*(gradT-nHatM*(nHatM & gradT))*mag(gradAlpha);
+gradAlpha = fvc::grad(alpha1);
 
-forAll( mesh.C(), celli)
+nHatM = gradAlpha/(mag(gradAlpha) + deltaN);
+
+Marangoni =
+    epsilon1*Marangoni_Constant*(gradT - nHatM*(nHatM & gradT))*mag(gradAlpha);
+
+const scalar Tliquidus1Value = Tliquidus1.value();
+const scalarField& TI = T;
+vectorField& MarangoniI = Marangoni;
+forAll(MarangoniI, celli)
 {
-if(T[celli]<Tliquidus1.value()){
-
-    Marangoni[celli]*=0.0;
+    if(TI[celli] < Tliquidus1Value)
+    {
+        MarangoniI[celli] = vector::zero;
+    }
 }
 
-}
-if(damperSwitch)
+Marangoni.correctBoundaryConditions();
+
+if (damperSwitch)
 {
-    damper = 2.0 * rho /(rho1+rho2); //To account for high density difference
+    // To account for high density difference
+    damper = 2.0*rho/(rho1 + rho2);
 }
 
-pVap = /*min(max((T-(Tvap-(TSmooth/2.0)))/TSmooth,0.0),1.0)*/ 0.54 * p0 * Foam::exp(LatentHeatVap*Mm*((T-Tvap)/(R*T*Tvap)));
+pVap = 0.54*p0*Foam::exp(LatentHeatVap*Mm*((T - Tvap)/(R*T*Tvap)));
 
 fvVectorMatrix UEqn
 (
-    fvm::ddt(rho, U) + fvm::div(rhoPhi, U)
-    + MRF.DDt(rho, U)
-    + turbulence.divDevTau(rho, U)
-    + fvm::Sp(DC, U)
-    - Marangoni*damper
-    ==
+    fvm::ddt(rho, U)
+  + fvm::div(rhoPhi, U)
+  + MRF.DDt(rho, U)
+  + turbulence.divDevTau(rho, U)
+  + fvm::Sp(DC, U)
+  - Marangoni*damper
+ ==
     phaseChange.SU(rho, rhoPhi, U)
-    + fvModels.source(rho, U)
-    );
+  + fvModels.source(rho, U)
+);
 
 UEqn.relax();
 
@@ -56,15 +63,17 @@ if (pimple.momentumPredictor())
     solve
     (
         UEqn
-        ==
+     ==
         fvc::reconstruct
         (
             (
                 mixture.surfaceTensionForce()*fvc::interpolate(damper)
-                +fvc::interpolate(pVap)*fvc::snGrad(alpha1)*fvc::interpolate(damper)
-                - ghf*fvc::snGrad(rho*rhok)
-                - fvc::snGrad(p_rgh)
-            ) * mesh.magSf()
+              + fvc::interpolate(pVap)
+               *fvc::snGrad(alpha1)
+               *fvc::interpolate(damper)
+              - ghf*fvc::snGrad(rho*rhok)
+              - fvc::snGrad(p_rgh)
+            )*mesh.magSf()
         )
     );
 
