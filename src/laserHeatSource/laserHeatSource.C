@@ -595,11 +595,8 @@ void laserHeatSource::updateDeposition
     // cell indices
     labelList rayCellIDs(pointslistGlobal1.size(), -1);
 
-    // scalar iterator_distance = (0.5/pi.value())*gMin(yDim_);//gMin(xcoord);
-    // if (debug)
-    // {
-    //     Info<<"iterator_distance    "<< iterator_distance << endl;
-    // }
+    const point DUMMYMAX(-GREAT, -GREAT, -GREAT);
+    const scalar DUMMYSCAL(-GREAT);
 
     // Loop over all starting points
     Info<<"Calculating laser beam rays" << endl;
@@ -634,13 +631,6 @@ void laserHeatSource::updateDeposition
         // This is only used for post-processing to write VTKs of the beams
         label directionChangeOrderI = 0;
 
-        // Info<<"x0:: "<<x0<<endl;
-        // Info<<"dist:: "<<dist<<endl;
-
-        //   scalar Q=((3.0*Q_cond.value())/(a_cond.value()*a_cond.value()*pi.value()))
-        //              *Foam::exp(-3.0*(Foam::pow(((pointslistGlobal1[i].x()-b_g.value())/(beam_radius)),2.0)+
-        //         Foam::pow((pointslistGlobal1[i].z()-(v_arc.value()*time)-lg.value())/(beam_radius),2.0)));
-
         scalar Q =
             (
                 CosTheta_incident/(N_sub_divisions*N_sub_divisions)
@@ -648,14 +638,14 @@ void laserHeatSource::updateDeposition
            *(
                (Radius_Flavour*Q_cond.value())
               /(
-                  Foam::pow(a_cond.value(),2.0)*pi.value()
+                  Foam::pow(a_cond.value(), 2.0)*pi.value()
                )
            )
           *Foam::exp
            (
                -Radius_Flavour
               *(
-                  Foam::pow(dist,2.0)/Foam::pow(a_cond.value(),2.0)
+                  Foam::pow(dist, 2.0)/Foam::pow(a_cond.value(), 2.0)
                )
            );
 
@@ -667,9 +657,6 @@ void laserHeatSource::updateDeposition
             // Track when the tip changes direction for post-processing the rays
             bool beamChangedDirection = false;
 
-            point DUMMYMAX(-GREAT,-GREAT,-GREAT);
-            scalar DUMMYSCAL(-GREAT);
-
             // Search for the cell that contains the local beam tip
             // Only the processor that contained the old tip will perform the
             // search, or all processor will search if the old tip is not on any
@@ -680,7 +667,10 @@ void laserHeatSource::updateDeposition
                 if (useLocalSearch)
                 {
                     myCellId =
-                        findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                        findLocalCell
+                        (
+                            V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug
+                        );
                 }
                 else
                 {
@@ -702,10 +692,15 @@ void laserHeatSource::updateDeposition
 
             if (myCellId != -1)
             {
-                rayNumber_[myCellId] = i+1;//set test field to beam flavour
+                // Set test field to beam flavour
+                rayNumber_[myCellId] = i + 1;
                 rayQ_[myCellId] += Q;
 
-                if (mag(nFilteredI[myCellId]) > 0.5 && alphaFilteredI[myCellId] >= dep_cutoff)
+                if
+                (
+                    mag(nFilteredI[myCellId]) > 0.5
+                 && alphaFilteredI[myCellId] >= dep_cutoff
+                )
                 {
                     const scalar damping_frequency =
                         plasma_frequency*plasma_frequency
@@ -718,6 +713,7 @@ void laserHeatSource::updateDeposition
                             sqr(plasma_frequency)/(sqr(angular_frequency)
                           + sqr(damping_frequency))
                         );
+
                     const scalar e_i =
                         (damping_frequency/angular_frequency)
                         *(
@@ -727,11 +723,13 @@ void laserHeatSource::updateDeposition
                               + damping_frequency*damping_frequency
                             )
                         );
+
                     const scalar ref_index =
                         Foam::sqrt
                         (
                             (Foam::sqrt((e_r*e_r) +(e_i*e_i)) + e_r)/2.0
                         );
+
                     const scalar ext_coefficient =
                         Foam::sqrt
                         (
@@ -747,14 +745,14 @@ void laserHeatSource::updateDeposition
                     {
                         argument = 1.0;
                     }
-                    if (argument <= (-1.0 + SMALL))
+                    else if (argument <= (-1.0 + SMALL))
                     {
                         argument = -1.0;
                     }
 
-                    scalar theta_in = std::acos(argument);
+                    const scalar theta_in = std::acos(argument);
 
-                    scalar alpha_laser =
+                    const scalar alpha_laser =
                         Foam::sqrt
                         (
                             Foam::sqrt
@@ -771,13 +769,66 @@ void laserHeatSource::updateDeposition
                           + sqr(ref_index) -sqr(ext_coefficient)
                           - sqr(Foam::sin(theta_in))/2.0
                         );
-                    scalar beta_laser =
-                        Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
-                    scalar R_s =
-                        ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
-                    scalar R_p =
-                        R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
-                    scalar absorptivity = 1.0 - ((R_s + R_p)/2.0);
+
+                    const scalar beta_laser =
+                        Foam::sqrt
+                        (
+                            (
+                                Foam::sqrt
+                                (
+                                    sqr
+                                    (
+                                        sqr(ref_index)
+                                      - sqr(ext_coefficient)
+                                      - sqr(Foam::sin(theta_in))
+                                    )
+                                  + 4.0*sqr(ref_index)*sqr(ext_coefficient)
+                                )
+                              - sqr(ref_index)
+                              + sqr(ext_coefficient)
+                              + sqr(Foam::sin(theta_in))
+                            )/2.0
+                        );
+
+                    const scalar R_s =
+                        (
+                            (
+                                sqr(alpha_laser)
+                              + sqr(beta_laser)
+                              - (2.0*alpha_laser*Foam::cos(theta_in))
+                              + sqr(Foam::cos(theta_in))
+                            )
+                           /(
+                               sqr(alpha_laser)
+                             + sqr(beta_laser)
+                             + (2.0*alpha_laser*Foam::cos(theta_in))
+                             + sqr(Foam::cos(theta_in))
+                           )
+                        );
+
+                    const scalar R_p =
+                        R_s
+                       *(
+                           (
+                               sqr(alpha_laser)
+                             + sqr(beta_laser)
+                             - (
+                                   2.0*alpha_laser*Foam::sin(theta_in)
+                                  *Foam::tan(theta_in)
+                               )
+                             + (
+                                   sqr(Foam::sin(theta_in))
+                                  *sqr(Foam::tan(theta_in))
+                               )
+                           )
+                          /(
+                              sqr(alpha_laser)
+                            + sqr(beta_laser)
+                            + (2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))
+                            + (sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))
+                           )
+                       );
+                    const scalar absorptivity = 1.0 - ((R_s + R_p)/2.0);
 
                     // Sometimes the ray can be reflected and 'skip' along the
                     // interface cells - this is unphysical and the ray should
@@ -786,7 +837,7 @@ void laserHeatSource::updateDeposition
                     if (theta_in >= pi.value()/2.0)
                     {
                         Q *= 0.0;
-                        deposition_[myCellId] += (absorptivity*Q)/yDimI[myCellId];
+                        deposition_[myCellId] += absorptivity*Q/yDimI[myCellId];
                         if (debug)
                         {
                             errorTrack_[myCellId] -= 1.0;
@@ -796,41 +847,62 @@ void laserHeatSource::updateDeposition
                     // else{}
                     else
                     {
-                        deposition_[myCellId] += (absorptivity*Q)/yDimI[myCellId];
-                        Q *= (1.0 - absorptivity);
-                        V2 = V2 - (((((2.0*V2) & nFilteredI[myCellId])/(mag(nFilteredI[myCellId])*mag(nFilteredI[myCellId]))))*nFilteredI[myCellId]);
+                        deposition_[myCellId] += absorptivity*Q/yDimI[myCellId];
+                        Q *= 1.0 - absorptivity;
+                        V2 -=
+                            (
+                                (
+                                    (
+                                        ((2.0*V2) & nFilteredI[myCellId])
+                                       /(
+                                            mag(nFilteredI[myCellId])
+                                           *mag(nFilteredI[myCellId])
+                                        )
+                                    )
+                                )*nFilteredI[myCellId]
+                            );
+
                         beamChangedDirection = true;
                     }
                 }
                 else
                 {
-                    // if the ray step size happens to be large enough that it skips through the interface send ray back the way it came
-                    if (alphaFilteredI[myCellId] > dep_cutoff && mag(nFilteredI[myCellId]) < 0.5)
+                    // If the ray step size happens to be large enough that it
+                    // skips through the interface send ray back the way it came
+                    if
+                    (
+                        alphaFilteredI[myCellId] > dep_cutoff
+                     && mag(nFilteredI[myCellId]) < 0.5
+                    )
                     {
-
                         const scalar damping_frequency =
                             plasma_frequency*plasma_frequency
-                            *constant::electromagnetic::epsilon0.value()*resistivity_in[myCellId];
+                           *constant::electromagnetic::epsilon0.value()
+                           *resistivity_in[myCellId];
+
                         const scalar e_r =
                             1.0
-                            - (
+                          - (
                                 sqr(plasma_frequency)/(sqr(angular_frequency)
-                                + sqr(damping_frequency))
+                              + sqr(damping_frequency))
                             );
+
                         const scalar e_i =
                             (damping_frequency/angular_frequency)
                             *(
-                                (plasma_frequency*plasma_frequency)
+                                 plasma_frequency*plasma_frequency
                                 /(
-                                    angular_frequency*angular_frequency
-                                    + damping_frequency*damping_frequency
-                                )
+                                     angular_frequency*angular_frequency
+                                   + damping_frequency*damping_frequency
+                                 )
                             );
+
                         const scalar ref_index =
                             Foam::sqrt
                             (
                                 (Foam::sqrt((e_r*e_r) +(e_i*e_i)) + e_r)/2.0
                             );
+
                         const scalar ext_coefficient =
                             Foam::sqrt
                             (
@@ -841,29 +913,97 @@ void laserHeatSource::updateDeposition
                         {
                             errorTrack_[myCellId] += 1.0;
                         }
-                        scalar theta_in = 0.0;//Foam::acos((V2 & nFilteredI[myCellId])/(mag(V2)*mag(nFilteredI[myCellId])));
 
-                        scalar alpha_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))+sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))/(2.0));
-                        scalar beta_laser = Foam::sqrt((Foam::sqrt(sqr(sqr(ref_index)-sqr(ext_coefficient)-sqr(Foam::sin(theta_in)))+(4.0*sqr(ref_index)*sqr(ext_coefficient)))-sqr(ref_index)+sqr(ext_coefficient)+sqr(Foam::sin(theta_in)))/(2.0));
-                        scalar R_s = ((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in)))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::cos(theta_in))+sqr(Foam::cos(theta_in))));
-                        scalar R_p = R_s*((sqr(alpha_laser)+sqr(beta_laser)-(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))))/(sqr(alpha_laser)+sqr(beta_laser)+(2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))+(sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))));
+                        const scalar theta_in = 0.0;
 
+                        const scalar alpha_laser =
+                            Foam::sqrt
+                            (
+                                (
+                                    Foam::sqrt
+                                    (
+                                        sqr
+                                        (
+                                            sqr(ref_index)
+                                          - sqr(ext_coefficient)
+                                          - sqr(Foam::sin(theta_in))
+                                        )
+                                      + 4.0*sqr(ref_index)*sqr(ext_coefficient)
+                                    )
+                                  + sqr(ref_index)
+                                  - sqr(ext_coefficient)
+                                  - sqr(Foam::sin(theta_in))
+                                )/2.0
+                            );
+
+                        const scalar beta_laser =
+                            Foam::sqrt
+                            (
+                                (
+                                    Foam::sqrt
+                                    (
+                                        sqr
+                                        (
+                                            sqr(ref_index)
+                                          - sqr(ext_coefficient)
+                                          - sqr(Foam::sin(theta_in))
+                                        )
+                                      + 4.0*sqr(ref_index)*sqr(ext_coefficient)
+                                    )
+                                  - sqr(ref_index)
+                                  + sqr(ext_coefficient)
+                                  + sqr(Foam::sin(theta_in))
+                                )/2.0
+                            );
+
+                        const scalar R_s =
+                            (
+                                (
+                                    sqr(alpha_laser)
+                                  + sqr(beta_laser)
+                                  - (2.0*alpha_laser*Foam::cos(theta_in))
+                                  + sqr(Foam::cos(theta_in))
+                                )
+                               /(
+                                   sqr(alpha_laser)
+                                 + sqr(beta_laser)
+                                 + (2.0*alpha_laser*Foam::cos(theta_in))
+                                 + sqr(Foam::cos(theta_in))
+                                )
+                            );
+
+                        const scalar R_p =
+                            R_s
+                           *(
+                               (
+                                   sqr(alpha_laser)
+                                 + sqr(beta_laser)
+                                 - 2.0*alpha_laser*Foam::sin(theta_in)
+                                  *Foam::tan(theta_in)
+                                 + sqr(Foam::sin(theta_in))
+                                  *sqr(Foam::tan(theta_in))
+                               )
+                              /(
+                                  sqr(alpha_laser)
+                                + sqr(beta_laser)
+                                + 2.0*alpha_laser*Foam::sin(theta_in)
+                                 *Foam::tan(theta_in)
+                                + sqr(Foam::sin(theta_in))
+                                 *sqr(Foam::tan(theta_in))
+                               )
+                           );
 
                         scalar absorptivity = 1.0 - ((R_s + R_p)/2.0);
-                        // scalar absorptivity = 1.0;
 
-                        V2=-V2;// if the ray slips through the interface (unlikely) send it back the way it came because it must have been at 0 degrees anyway
-                        //Q = DUMMYSCAL;
+                        // If the ray slips through the interface (unlikely)
+                        // send it back the way it came because it must have been at 0 degrees anyway
+                        V2 = -V2;
+
                         beamChangedDirection = true;
-                        deposition_[myCellId] += (absorptivity*Q)/yDimI[myCellId];
+                        deposition_[myCellId] += absorptivity*Q/yDimI[myCellId];
                         Q *= (1.0 - absorptivity);
                     }
-                    else
-                    {} // Catch rays that get through
-
                 }
-
-                // Catch rays that get through--maybe gump all their energy here
              }
              else
              {
@@ -885,7 +1025,10 @@ void laserHeatSource::updateDeposition
              if (tipProcID == Pstream::myProcNo())
              {
                  label myCellIdnext =
-                     findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                     findLocalCell
+                     (
+                         V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug
+                     );
 
                  if (myCellIdnext != -1)
                  {
@@ -895,27 +1038,38 @@ void laserHeatSource::updateDeposition
                          {
                              // Write current tip position to array
                              beamDirectionChangePoints[i].append(V1_tip);
-                             beamDirectionChangeOrder[i].append(directionChangeOrderI);
+                             beamDirectionChangeOrder[i].append
+                             (
+                                 directionChangeOrderI
+                             );
                              beamChangedDirection = false;
                          }
 
-                        //  V1_tip += (iterator_distance*V2);//OLD
 
-                            scalar iterator_distance = (0.5/pi.value())*yDimI[myCellId];//gMin(xcoord);
-                            if (debug)
-                            {
-                                Info<<"iterator_distance    "<< iterator_distance << endl;
-                           }
+                         const scalar iterator_distance =
+                             (0.5/pi.value())*yDimI[myCellId];
 
-                         V1_tip += (iterator_distance*V2);
-                         //myCellIdnext = mesh.findCell(V1_tip);
+                         if (debug)
+                         {
+                             Info<<"iterator_distance = "
+                                 << iterator_distance << endl;
+                         }
+
+                         V1_tip += iterator_distance*V2;
                          myCellIdnext =
-                             findLocalCell(V1_tip, rayCellIDs[i], mesh, maxLocalSearch, debug);
+                             findLocalCell
+                             (
+                                 V1_tip,
+                                 rayCellIDs[i],
+                                 mesh,
+                                 maxLocalSearch,
+                                 debug
+                             );
                      }
                  }
                  else
                  {
-                     V1_tip=DUMMYMAX;
+                     V1_tip = DUMMYMAX;
                  }
 
                  // Update direction-change ordered index
@@ -926,10 +1080,9 @@ void laserHeatSource::updateDeposition
              }
              else
              {
-                 V1_tip=DUMMYMAX;
+                 V1_tip = DUMMYMAX;
              }
-             reduce(V1_tip, maxOp<vector>());//reduce vector //
-             //  Q-=0.1;
+             reduce(V1_tip, maxOp<vector>());
 
              if (rayCellIDs[i] == -1)
              {
@@ -939,20 +1092,12 @@ void laserHeatSource::updateDeposition
 
              // Sync direction-change ordered index
              reduce(directionChangeOrderI, maxOp<int>());
-
-             // // Update seed cells for local search
-             // rayCellIDs[i] = myCellIdnext;
          };
-
-         // countbeams++;
-         // if (countbeams>=1){break;}
      }
 
 
-     //  gSum(mesh.V()*deposition_);
-     // const scalar TotalQ = gSum(deposition_*mesh.V().value());
      const scalar TotalQ = fvc::domainIntegrate(deposition_).value();
-     Info<< "Total Q deposited this timestep:: " << TotalQ <<endl;
+     Info<< "Total Q deposited this timestep: " << TotalQ <<endl;
 
      // Combine rays across procs
      if (runTime.outputTime() && Pstream::parRun())
@@ -993,7 +1138,8 @@ void laserHeatSource::updateDeposition
          {
              {
                  List<List<vector>> gatheredField(Pstream::nProcs());
-                 gatheredField[Pstream::myProcNo()] = beamDirectionChangePoints[rayI];
+                 gatheredField[Pstream::myProcNo()] =
+                     beamDirectionChangePoints[rayI];
                  Pstream::gatherList(gatheredField);
 
                  beamDirectionChangePoints[rayI] =
@@ -1006,7 +1152,8 @@ void laserHeatSource::updateDeposition
 
              {
                  List<List<int>> gatheredField(Pstream::nProcs());
-                 gatheredField[Pstream::myProcNo()] = beamDirectionChangeOrder[rayI];
+                 gatheredField[Pstream::myProcNo()] =
+                     beamDirectionChangeOrder[rayI];
                  Pstream::gatherList(gatheredField);
 
                  beamDirectionChangeOrder[rayI] =
@@ -1045,7 +1192,8 @@ void laserHeatSource::updateDeposition
                  Info<< "ray " << rayI << endl;
                  forAll(beamDirectionChangePoints[rayI], i)
                  {
-                     Info<< "    " << beamDirectionChangePoints[rayI][i] << endl;
+                     Info<< "    " << beamDirectionChangePoints[rayI][i]
+                         << endl;
                  }
              }
          }

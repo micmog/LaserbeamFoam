@@ -50,7 +50,20 @@ namespace Foam
         }
 
         // Trivial case: check if the point is in the seed cell
-        if (mesh.pointInCell(p, seedCellID))
+        // The default pointInCell decomposes the cell into tets; this is more
+        // robust on general polyhedral meshes but is expensive. As we almost
+        // exclusively use structured grids, we will use the primitiveMesh
+        // implementation based on the face planes, which is similar to
+        // polyMesh::cellDecomposition::FACE_PLANES
+        // if (mesh.pointInCell(p, seedCellID))
+        // if
+        // (
+        //     mesh.pointInCell
+        //     (
+        //         p, seedCellID, polyMesh::cellDecomposition::FACE_PLANES
+        //     )
+        // )
+        if (mesh.primitiveMesh::pointInCell(p, seedCellID))
         {
             if (debug)
             {
