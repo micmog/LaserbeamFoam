@@ -14,7 +14,7 @@
     (
         "phiHbyA",
         fvc::flux(HbyA)
-        + MRF.zeroFilter(fvc::interpolate(rho*rAU())*fvc::ddtCorr(U, phi, Uf))
+      + MRF.zeroFilter(fvc::interpolate(rho*rAU())*fvc::ddtCorr(U, phi, Uf))
     );
     MRF.makeRelative(phiHbyA);
 
@@ -40,14 +40,18 @@
     constrainPressure(p_rgh, U, phiHbyA, rAUf, MRF);
 
     // Cache the phase change pressure source
-    fvScalarMatrix Sp_rgh(phaseChange.Sp_rgh(rho, gh, p_rgh));
+    fvScalarMatrix Sp_rgh
+    (
+        phaseChange.Sp_rgh(rho, gh, p_rgh)
+    );
 
     while (pimple.correctNonOrthogonal())
     {
         fvScalarMatrix p_rghEqn
         (
-            fvc::div(phiHbyA) - fvm::laplacian(rAUf, p_rgh)
-            == Sp_rgh
+            fvc::div(phiHbyA)
+          - fvm::laplacian(rAUf, p_rgh)
+         == Sp_rgh
         );
 
         p_rghEqn.setReference
@@ -70,7 +74,7 @@
         }
     }
 
-#include "continuityErrs.H"
+    #include "continuityErrs.H"
 
     // Correct Uf if the mesh is moving
     fvc::correctUf(Uf, U, phi, MRF);
@@ -97,5 +101,5 @@
         rAU.clear();
     }
 
-    Num_divU=fvc::div(phi);
+    Num_divU = fvc::div(phi);
 }

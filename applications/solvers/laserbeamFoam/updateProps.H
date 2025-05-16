@@ -21,35 +21,7 @@
     TSolidus.correctBoundaryConditions();
     TLiquidus.correctBoundaryConditions();
 
-    scalarField& kappaI = kappa;
-    scalarField& cpI = cp;
-    const scalarField& TI = T;
-    forAll(kappaI, celli)
-    {
-        kappaI[celli] =
-            (
-                max(min(alpha1I[celli], 1.0), 0.0)
-               *(polykappa_m.value(TI[celli]))
-            )
-          + (
-                (1.0 - max(min(alpha1I[celli], 1.0), 0.0))
-               *polykappa_g.value(TI[celli])
-            );
-
-        cpI[celli] =
-            (
-                max(min(alpha1I[celli], 1.0), 0.0)
-               *polycp_m.value(TI[celli])
-            )
-          + (
-                (1.0 - max(min(alpha1I[celli], 1.0), 0.0))
-               *polycp_g.value(TI[celli])
-            );
-    }
-
-    kappa.correctBoundaryConditions();
-    cp.correctBoundaryConditions();
-
+    #include "updateKappaCp.H"
 
     // Update the cell size fields
     const faceList & ff = mesh.faces();
