@@ -615,8 +615,8 @@ void laserHeatSource::updateDeposition
             pointslistGlobal1[i].y(),
             currentLaserPosition.z()
         );
-        const vector x1 = mid - (10.0*V2);
-        const vector x2 = mid + (10.0*V2);
+        const vector x1 = mid - 10.0*V2;
+        const vector x2 = mid + 10.0*V2;
         const vector x0
         (
             pointslistGlobal1[i].x(),
@@ -643,7 +643,7 @@ void laserHeatSource::updateDeposition
            )
           *Foam::exp
            (
-               -Radius_Flavour
+             - Radius_Flavour
               *(
                   Foam::pow(dist, 2.0)/Foam::pow(a_cond.value(), 2.0)
                )
@@ -717,7 +717,7 @@ void laserHeatSource::updateDeposition
                     const scalar e_i =
                         (damping_frequency/angular_frequency)
                         *(
-                            (plasma_frequency*plasma_frequency)
+                            plasma_frequency*plasma_frequency
                            /(
                                 angular_frequency*angular_frequency
                               + damping_frequency*damping_frequency
@@ -759,14 +759,16 @@ void laserHeatSource::updateDeposition
                             (
                                 sqr
                                 (
-                                    sqr(ref_index) - sqr(ext_coefficient)
+                                    sqr(ref_index)
+                                  - sqr(ext_coefficient)
                                   - sqr(Foam::sin(theta_in))
                                 )
                               + (
                                     4.0*sqr(ref_index)*sqr(ext_coefficient)
                                 )
                             )
-                          + sqr(ref_index) -sqr(ext_coefficient)
+                          + sqr(ref_index)
+                          - sqr(ext_coefficient)
                           - sqr(Foam::sin(theta_in))/2.0
                         );
 
@@ -795,13 +797,13 @@ void laserHeatSource::updateDeposition
                             (
                                 sqr(alpha_laser)
                               + sqr(beta_laser)
-                              - (2.0*alpha_laser*Foam::cos(theta_in))
+                              - 2.0*alpha_laser*Foam::cos(theta_in)
                               + sqr(Foam::cos(theta_in))
                             )
                            /(
                                sqr(alpha_laser)
                              + sqr(beta_laser)
-                             + (2.0*alpha_laser*Foam::cos(theta_in))
+                             + 2.0*alpha_laser*Foam::cos(theta_in)
                              + sqr(Foam::cos(theta_in))
                            )
                         );
@@ -824,8 +826,11 @@ void laserHeatSource::updateDeposition
                           /(
                               sqr(alpha_laser)
                             + sqr(beta_laser)
-                            + (2.0*alpha_laser*Foam::sin(theta_in)*Foam::tan(theta_in))
-                            + (sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in)))
+                            + (
+                                  2.0*alpha_laser*Foam::sin(theta_in)
+                                 *Foam::tan(theta_in)
+                              )
+                            + sqr(Foam::sin(theta_in))*sqr(Foam::tan(theta_in))
                            )
                        );
                     const scalar absorptivity = 1.0 - ((R_s + R_p)/2.0);
@@ -993,10 +998,11 @@ void laserHeatSource::updateDeposition
                                )
                            );
 
-                        scalar absorptivity = 1.0 - ((R_s + R_p)/2.0);
+                        const scalar absorptivity = 1.0 - ((R_s + R_p)/2.0);
 
                         // If the ray slips through the interface (unlikely)
-                        // send it back the way it came because it must have been at 0 degrees anyway
+                        // send it back the way it came because it must have
+                        // been at 0 degrees anyway
                         V2 = -V2;
 
                         beamChangedDirection = true;
@@ -1021,7 +1027,6 @@ void laserHeatSource::updateDeposition
              // Update seed cells for local search
              rayCellIDs[i] = myCellId;
 
-
              if (tipProcID == Pstream::myProcNo())
              {
                  label myCellIdnext =
@@ -1044,7 +1049,6 @@ void laserHeatSource::updateDeposition
                              );
                              beamChangedDirection = false;
                          }
-
 
                          const scalar iterator_distance =
                              (0.5/pi.value())*yDimI[myCellId];
@@ -1273,7 +1277,7 @@ void laserHeatSource::updateDeposition
          // Write lines
          rayVtkFile
              << "LINES " << beamDirectionChangePoints.size() << " " << nRayLines
-                 << endl;
+             << endl;
 
          forAll(beamDirectionChangePoints, rayI)
          {
