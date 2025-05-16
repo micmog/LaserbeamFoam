@@ -15,9 +15,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-application     Flint_multiphaseEulerFoamD;
+application     laserbeamFoam;
 
-startFrom       latestTime;
+startFrom       startTime;
 
 startTime       0;
 
@@ -29,7 +29,7 @@ deltaT          1.0e-5;
 
 writeControl    adjustableRunTime;
 
-writeInterval   1e-04;
+writeInterval   1e-3;
 
 purgeWrite      0;
 
