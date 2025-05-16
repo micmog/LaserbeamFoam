@@ -15,50 +15,61 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-timeVsLaserPosition
-{
-    file    "$FOAM_CASE/constant/timeVsLaserPosition";
-    outOfBounds clamp;
-}
+lasers
+(
+    laser0
+    {
+        timeVsLaserPosition
+        {
+            file    "$FOAM_CASE/constant/timeVsLaserPosition0";
+            outOfBounds clamp;
+        }
 
-timeVsLaserPower
-{
-    file    "$FOAM_CASE/constant/timeVsLaserPower";
-    outOfBounds clamp;
-}
+        timeVsLaserPower
+        {
+            file    "$FOAM_CASE/constant/timeVsLaserPower0";
+            outOfBounds clamp;
+        }
 
-// Laser angle
-V_incident (0 1 1);//(0 1 0);//NORMALISED IN CODE
+        // Laser angle (normalised in the code)
+        V_incident (0 1 1);
 
-// Laser radius
-laserRadius 0.0005;
-//HS_bg 0.0;//20
-//HS_velocity 0.0;//6.0;
-//HS_lg 1e-3;
-//HS_Q 2000;//2000.0;//
+        // Laser radius
+        laserRadius 0.0005;
 
-// Laser discretisation
-N_sub_divisions	1;
+        // Laser physical properties
+        wavelength      1.064e-6;
+        e_num_density   5.83e29;
 
-// Laser oscillations about the mean path
-//For linear path set oscAmpX=oscAmpz=0
-//For sine path set oscAmpz=0
-//For circular path set amplitude and frequency in both X and Z
-//HS_oscAmpX 0.0;
-//HS_oscAmpZ 0.0;
+        // Laser profile type (defaults to 2)
+        //Radius_Flavour 2.0;
+    }
 
-//HS_oscFreqX 0;
-//HS_oscFreqZ 0;
+    laser1
+    {
+        timeVsLaserPosition
+        {
+            file    "$FOAM_CASE/constant/timeVsLaserPosition1";
+            outOfBounds clamp;
+        }
 
-wavelength	1.064e-6;
-e_num_density	5.83e29;
-//elec_resistivity	1.0e-6; depricated
+        timeVsLaserPower
+        {
+            file    "$FOAM_CASE/constant/timeVsLaserPower1";
+            outOfBounds clamp;
+        }
 
+        // Laser angle (normalised in the code)
+        V_incident (0 1 0);
 
-// Use local search: defaults to yes
-//useLocalSearch yes;
+        // Laser radius
+        laserRadius 0.0005;
 
-// Print extra debug information: defaults to no
-debug no;
+        // Laser physical properties
+        wavelength      1.064e-6;
+        e_num_density   5.83e29;
 
-Radius_Flavour	2.0;
+        // Laser profile type (defaults to 2)
+        //Radius_Flavour 2.0;
+    }
+);

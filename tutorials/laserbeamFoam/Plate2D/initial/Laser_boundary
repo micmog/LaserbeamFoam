@@ -20,7 +20,8 @@ internalField   uniform 0;
 
 boundaryField
 {
-    frontAndBack{
+    frontAndBack
+    {
         type fixedValue;
         value uniform -1.0;
     }

@@ -85,11 +85,17 @@ class laserHeatSource
         //  smear out the particle interface un-physically
         const Switch powderSim_;
 
-        //- Time vs laser position interpolation series
-        interpolationTable<vector> timeVsLaserPosition_;
+        //- List of the laser names
+        wordList laserNames_;
 
-        //- Time vs laser power interpolation series
-        interpolationTable<scalar> timeVsLaserPower_;
+        //- Copy of the laser dicts
+        PtrList<dictionary> laserDicts_;
+
+        //- List of the time vs laser position interpolation series
+        PtrList<interpolationTable<vector>> timeVsLaserPosition_;
+
+        //- List of the time vs laser power interpolation series
+        PtrList<interpolationTable<scalar>> timeVsLaserPower_;
 
 
     // Private Member Functions
@@ -145,18 +151,42 @@ public:
             return powderSim_;
         }
 
-        //- Update the deposition field
+        //- Update the deposition field for all lasers
         //  The filtered volume frame field (alphaFiltered) and the filtered
         //  interface normal field are required to define the interface
         //  The electrical resistivity field is passed as an argument, allowing
         //  a general laser heat source for multi-component and temperature
         //  dependent resistivity solvers
+        //  This resets the deposition field to zero before updating it
         void updateDeposition
         (
             const volScalarField& alphaFiltered,
             const volVectorField& nFiltered,
             const volScalarField& resistivity_in
         );
+
+        //- Update the deposition for the given laser parameters
+        //  This adds to the existing deposition field and does not reset it to
+        //  zero first
+        void updateDeposition
+        (
+            const volScalarField& alphaFiltered,
+            const volVectorField& nFiltered,
+            const volScalarField& resistivity_in,
+            const word& laserName,
+            const vector& currentLaserPosition,
+            const scalar currentLaserPower,
+            const scalar laserRadius,
+            const label N_sub_divisions,
+            const vector& V_incident,
+            const scalar wavelength,
+            const scalar e_num_density,
+            const scalar dep_cutoff,
+            const scalar Radius_Flavour,
+            const Switch useLocalSearch,
+            const label maxLocalSearch
+        );
+
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
