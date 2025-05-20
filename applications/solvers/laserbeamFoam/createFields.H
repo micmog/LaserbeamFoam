@@ -655,3 +655,33 @@ const dimensionedScalar DarcyConstantsmall
 volVectorField gradAlpha(fvc::grad(alpha1));
 
 volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
+
+// This variable is >=0 if the cell has been liquid
+volScalarField meltHistory
+(
+    IOobject
+    (
+        "meltHistory",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("meltHistory", dimensionSet(0, 0, 0, -0, 0), 0.0)
+);
+
+// This variable is 1 if (alpha.metal >= 0.5 and epsilon1 >=0.5), 0 otherwise
+volScalarField condition
+(
+    IOobject
+    (
+        "condition",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("condition", dimensionSet(0, 0, 0, -0, 0), 0.0)
+);
