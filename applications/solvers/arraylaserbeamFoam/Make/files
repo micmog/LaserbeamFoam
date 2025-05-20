@@ -1,3 +1,0 @@
-array_laserbeamFoam.C
-
-EXE = $(FOAM_USER_APPBIN)/array_laserbeamFoam
