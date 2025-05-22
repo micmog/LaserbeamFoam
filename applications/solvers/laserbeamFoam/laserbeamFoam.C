@@ -213,6 +213,12 @@ int main(int argc, char *argv[])
             }
         }
 
+        // Check the cells that have melted
+        volScalarField alphaMetal = 
+            mesh.lookupObject<volScalarField>("alpha.metal");
+        condition = pos(alphaMetal - 0.5) * pos(epsilon1 - 0.5);
+        meltHistory += condition;
+
         runTime.write();
 
         Info<< "ExecutionTime = " << runTime.elapsedCpuTime() << " s"
