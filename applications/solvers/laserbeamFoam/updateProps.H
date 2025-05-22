@@ -120,6 +120,13 @@
 
     epsilon1mask2.correctBoundaryConditions();
 
-    gh = epsilon1mask*(g & mesh.C());
-    ghf = fvc::interpolate(epsilon1mask)*(g & mesh.Cf());
+    if (laser.powderSim())
+    {
+        gh = epsilon1mask*(g & mesh.C());
+        ghf = fvc::interpolate(epsilon1mask)*(g & mesh.Cf());
+    }
+    else{
+        gh = (g & mesh.C());
+        ghf = (g & mesh.Cf());  
+    }
 }
