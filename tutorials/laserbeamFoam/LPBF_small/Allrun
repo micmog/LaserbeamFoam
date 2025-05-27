@@ -10,3 +10,5 @@ runApplication blockMesh
 runApplication setSolidFraction
 runApplication transformPoints "rotate=((0 1 0) (0 0 1))"
 runApplication laserbeamFoam
+
+# run DEM manually before the simulation if needed
