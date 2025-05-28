@@ -1,5 +1,5 @@
 
-# laserBeamFoam Tutorial Case: LPBF Simulation
+# laserBeamFoam-based LPBF Simulation
 
 This tutorial (`LPBF_small/`) demonstrates the use of `laserBeamFoam` for simulating a Laser Powder Bed Fusion (LPBF) process. It replicates the setup presented by Parivendhan et al. (2023) [1].
 
@@ -7,7 +7,7 @@ This tutorial (`LPBF_small/`) demonstrates the use of `laserBeamFoam` for simula
 
 ## 📚 Overview of LPBF
 
-Laser Powder Bed Fusion (LPBF) is an additive manufacturing process in which a laser selectively melts and fuses metal powder in a layer-by-layer manner. Compared to conventional manufacturing techniques, LPBF offers advantages such as rapid prototyping, the production of geometrically complex components, and reduced lead times. However, the melt pool dynamics occur over extremely short temporal and spatial scales, making experimental observation difficult. Validated numerical models provide a means to analyse these phenomena and aid in the development of process–structure–property relationships for ...
+Laser Powder Bed Fusion (LPBF) is an additive manufacturing process in which a laser selectively melts and fuses metal powder in a layer-by-layer manner. Compared to conventional manufacturing techniques, LPBF offers advantages such as rapid prototyping, the production of geometrically complex components, and reduced lead times. However, the melt pool dynamics occur over extremely short temporal and spatial scales, making experimental observation difficult. Validated numerical models provide a means to analyse these phenomena and aid in the development of process–structure–property relationships for consistent, high-quality manufacturing.
 
 ---
 
@@ -24,17 +24,17 @@ A one-way coupled CFD–DEM framework is employed, in which `laserBeamFoam` uses
 
 ## 🔹 Powder Deposition Using DEM
 
-The powder deposition process in LPBF involves random and stochastic particle packing. To represent the powder bed accurately, it is modelled as a collection of discrete particles rather than a continuous medium. Particle motion due to interactions with the recoating mechanism and neighbouring particles is resolved using **LIGGGHTS®** [2], an open-source Discrete Element Method (DEM) solver.
+The powder deposition process in LPBF involves random and stochastic particle packing. To represent the powder bed accurately, it is modelled as a collection of discrete particles rather than a continuous medium. Particle motion due to interactions with the recoating mechanism and neighbouring particles is resolved using **LIGGGHTS®** [2], an open-source Discrete Element Method solver.
 
 In this tutorial, a rain deposition method is used to generate the powder bed. Particles are introduced at the top of a domain with rigid boundaries and allowed to settle under gravity onto the build plate. A monodisperse particle size distribution is used, selected to reflect the experimentally measured distribution for SS316L powder.
 
-The particle size distribution is shown below:
+The particle size distribution is shown below [1]:
 
 ![Particle Size Distribution](media/PSD.PNG)
 
-The contact model properties used in the coating simulation are provided in the table below:
+The contact model properties used in the coating simulation are provided in the table below [1]:
 
-![Contact Model Parameters](ContactParameters.PNG)
+![Contact Model Parameters](media/ContactParameters.PNG)
 
 
 ---
