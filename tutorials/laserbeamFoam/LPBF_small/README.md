@@ -102,7 +102,7 @@ make auto
 
 The characteristics of the particles in the powder bed are defined in the file:
 
-```
+```bash
 DEM_small/input.liggghts
 ```
 
@@ -115,7 +115,7 @@ cd DEM_small
 
 This will execute the DEM simulation using LIGGGHTS® and produce the file:
 
-```
+```bash
 DEM_small/post/location
 ```
 
