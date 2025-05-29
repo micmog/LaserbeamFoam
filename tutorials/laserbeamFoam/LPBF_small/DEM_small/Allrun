@@ -2,4 +2,4 @@
 
 liggghts < input.liggghts
 
-#cp post/location ../constant
+cp post/location ../constant
