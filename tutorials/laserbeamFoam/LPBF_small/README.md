@@ -61,7 +61,6 @@ the table below [1]:
 
 ![Contact Model Parameters](media/ContactParameters.PNG)
 
-
 ---
 
 ## 🧱 Powder Bed Generation with LIGGGHTS®
@@ -78,8 +77,7 @@ We provide here a brief overview to help users get started, but **this is not
 a complete installation or usage guide**. For full instructions and advanced
 configuration options, please refer to the official LIGGGHTS® documentation:
 
-[LIGGGHTS® Manual and Installation Guide]
-(https://www.cfdem.com/media/DEM/docu/Manual.html)
+[LIGGGHTS® Manual and Installation Guide](https://www.cfdem.com/media/DEM/docu/Manual.html)
 
 ### 🔧 Installing LIGGGHTS® (Basic Setup)
 
@@ -135,11 +133,9 @@ cp DEM_small/post/location LPBF_small/constant/
 [1] G. Parivendhan, J. Paul, and A. J. King, “A numerical study of processing
 parameters and their effect on the melt-track profile in Laser Powder Bed
 Fusion processes,” *Additive Manufacturing*, vol. 67, p. 103482, Apr. 2023.
-[https://doi.org/10.1016/j.addma.2023.103482]
-(https://doi.org/10.1016/j.addma.2023.103482)
+[https://doi.org/10.1016/j.addma.2023.103482](https://doi.org/10.1016/j.addma.2023.103482)
 
 [2] C. Kloss, C. Goniva, A. Hager, S. Amberger, and S. Pirker, “Models,
 algorithms and validation for opensource DEM and CFD–DEM,” *Progress in
 Computational Fluid Dynamics*, vol. 12, no. 2/3, pp. 140–152, 2012.
- [https://doi.org/10.1504/PCFD.2012.047457]
- (https://doi.org/10.1504/PCFD.2012.047457)
+ [https://doi.org/10.1504/PCFD.2012.047457](https://doi.org/10.1504/PCFD.2012.047457)
