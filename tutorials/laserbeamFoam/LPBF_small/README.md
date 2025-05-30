@@ -128,6 +128,27 @@ cp DEM_small/post/location LPBF_small/constant/
 
 ---
 
+### ▶️ Running the LPBF Simulation
+
+Once the `LPBF_small/constant/location` file exists, the LPBF simulation can be
+ run by executing the `Allrun` script in the main `LPBF_small` directory:
+The characteristics of the particles in the powder bed are defined in the file:
+
+```bash
+./Allrun
+```
+
+This `Allrun` script performs five tasks:
+
+- Copies the `initial` directory to `0`
+- Creates the mesh by running `blockMesh`
+- Sets the initial metal volume fraction field using `setSolidFraction`, which
+  reads the particle locations from `constant/location`
+- Rotates the mesh using `transformPoints`
+- Run the `laserbeamFoam` solver
+
+---
+
 ## 📖 References
 
 [1] G. Parivendhan, J. Paul, and A. J. King, “A numerical study of processing
