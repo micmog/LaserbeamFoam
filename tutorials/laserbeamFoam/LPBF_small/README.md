@@ -81,20 +81,7 @@ configuration options, please refer to the official LIGGGHTS® documentation:
 
 ### 🔧 Installing LIGGGHTS® (Basic Setup)
 
-```bash
-# Install required dependencies
-sudo apt update
-sudo apt install -y build-essential cmake gfortran git \
-  libfftw3-dev libjpeg-dev libpng-dev libvtk6-dev \
-  libopenmpi-dev openmpi-bin
-  
-# Clone the LIGGGHTS repository
-git clone https://github.com/CFDEMproject/LIGGGHTS-PUBLIC.git
-cd LIGGGHTS-PUBLIC/src
-
-# Compile the solver
-make auto
-```
+See the instructions given in the main [`README.md`](../../../README.md) file.
 
 ---
 

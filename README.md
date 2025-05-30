@@ -8,7 +8,7 @@ Presented here is a growing suite of solvers that describe laser-substrate
  interaction. This repository begins with the `laserbeamFoam` solver. Additional
  solvers are being added incrementally.
 
-Currently, this repository contains several solvers:
+Currently, this repository contains two solvers:
 
 ### `laserbeamFoam`
 
@@ -33,19 +33,6 @@ ray determined through the Fresnel equations. The solver approach is extended
 from the adiabatic two-phase interFoam code developed by
 [OpenCFD Ltd.](http://openfoam.com/) to include non-isothermal state transition
 physics and ray-tracing heat source application.
-
-### `arraylaserbeamFoam`
-
-An extension of laserbeamFoam to N-laser sources that can each have their parameters
- set independently.
-
-Target applications for the solvers included in this repository include:
-
-* Laser Welding
-* Laser Drilling
-* Laser Powder Bed Fusion
-* Selective Laser Melting
-* Diode Array Additive Manufacturing
 
 ### `multiComponentlaserbeamFoam`
 
@@ -84,7 +71,63 @@ where the `-j` option uses all CPU cores available for building.
 
 The installation can be tested using the tutorial cases described below.
 
-## Tutorial cases
+### Optional: Installation of the LIGGGHTS® Discrete Element Model Solver
+
+Some of the tutorial cases use a discrete element method (DEM) solver called
+ LIGGGHTS to simulate the creation of a powder bed, e.g. see [this powder bed
+ fusion tutorial](tutorials/laserbeamFoam/LPBF_small/README.md).
+ For these cases, if available, the `liggghts` executable will be used in the
+ case pre-processing process.
+
+On Linux, LIGGGHTS® can be installed with
+
+```bash
+# Install required dependencies
+sudo apt update
+sudo apt install -y build-essential cmake gfortran git \
+  libfftw3-dev libjpeg-dev libpng-dev libvtk6-dev \
+  libopenmpi-dev openmpi-bin
+  
+# Clone the LIGGGHTS repository
+git clone https://github.com/CFDEMproject/LIGGGHTS-PUBLIC.git
+cd LIGGGHTS-PUBLIC/src
+
+# Compile
+make auto
+
+# The `liggghts` executable should now be available in this directory
+```
+
+While on macOS, LIGGGHTS® can be installed with
+
+```bash
+# Install required dependencies using Homebrew
+brew install cmake gcc openmpi vtk
+  
+# Clone the LIGGGHTS repository
+git clone https://github.com/CFDEMproject/LIGGGHTS-PUBLIC.git
+
+# Compile
+# You may need to update the vtk version in the cmake command to the version
+# installed on your system (i.e., replace 9.4.2_1 with another version)
+cd LIGGGHTS-PUBLIC
+mkdir build
+cd build
+cmake ../src -DCMAKE_C_COMPILER=mpicc -DCMAKE_CXX_COMPILER=mpicxx -DVTK_DIR=/opt/homebrew/Cellar/vtk/9.4.2_1/lib/cmake/vtk-9.4
+make
+
+# The `liggghts` executable should now be available in this directory
+```
+
+For convenience, you can add add `liggghts` to your PATH (e.g. in `~/.bashrc`):
+
+```bash
+export PATH="~/LIGGGHTS-PUBLIC/build:$PATH"
+```
+
+where the location should be updated to match the location on your system.
+
+## Tutorial Cases
 
 The tutorial cases can be run with the included `Allrun` scripts, i.e.
 
@@ -119,24 +162,24 @@ Cases can be cleaned and reset using the included `Allclean` scripts, i.e.
 ./Allclean
 ```
 
-### 2D Plate Examples
+### 2D Plate
 
 In these cases, the penetration rate of an incident laser source is investigated
  based on the angle of incidence of the laser beam. Two cases are presented
  where the beam is perpendicular to the substrate or 45 degrees to the initial
  plate normal.
 
-### 3D Plate Example
+### 3D Plate
 
 In this case, the two-dimensional 45-degree example is extended to three dimensions.
 
-### 2D circular particles Example
+### 2D Circular Particles
 
 In this example, a series of circular metallic regions are seeded on top of a
  planar substrate. The laser heat source traverses the domain and melts these
  regions, and their topology evolves accordingly.
 
-### 2D Laser-Powder Bed Fusion Example
+### 2D Laser-Powder Bed Fusion
 
 In this example, a two-dimensional domain is seeded with many small powder
  particles with a complex size distribution, representative of that observed in
