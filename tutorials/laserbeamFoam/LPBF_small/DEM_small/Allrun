@@ -1,5 +1,13 @@
 #!/bin/sh
 
-liggghts < input.liggghts
+echo "Running liggghts"
+liggghts < input.liggghts &> log.liggghts
 
-cp post/location ../constant
+if [ -f post/location ]
+then
+    echo "Copying  post/location to ../constant"
+    cp post/location ../constant
+else
+    echo "post/location not found: liggghts must have failed!"
+    exit 1
+fi
