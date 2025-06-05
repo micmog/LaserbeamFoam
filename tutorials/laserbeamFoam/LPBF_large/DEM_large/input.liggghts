@@ -9,7 +9,7 @@ communicate		single vel yes
 
 units 			cgs
 
-region			domain block 0.0 0.024 0.0 0.075 0.0 0.05 units box
+region			domain block 0.0 0.02 0.0 0.08 0.0 0.05 units box
 
 create_box		1 domain
 
@@ -80,7 +80,7 @@ fix 				pdd all particledistribution/discrete 78593 18 pts1 1.97883E-06 pts2 0.0
 				pts12 0.120736947 pts13 0.095077524 pts14 0.065101351 pts15 0.037187843 pts16 0.015932988 pts17 0.001336914 pts18 5.1597E-06
 
 
-region 				factory block 0.0 0.024 0.0 0.075 0.02 0.05 units box
+region 				factory block 0.0 0.02 0.0 0.08 0.02 0.05 units box
 fix 				ins all insert/rate/region seed 51869 distributiontemplate pdd &
 				nparticles 2000 particlerate 200000 insert_every 5 &
 				overlapcheck yes vel constant 0. 0. 0.0 region factory ntry_mc 10000
