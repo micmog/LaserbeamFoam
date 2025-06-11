@@ -1,0 +1,33 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Set up initial conditions
+application="$(getApplication)"
+
+cp -r initial 0
+
+runApplication blockMesh
+
+runApplication setFields
+ 
+runApplication decomposePar
+
+# if is much more convenient to make file for ParaView before running simulations
+touch case.foam
+
+runParallel $application
+
+#if AMR is used do reconstructParMesh first, it take a while to do 
+runApplication reconstructParMesh
+
+#hereafter run reconstructPar
+runApplication reconstructPar
+
+# make clean disk after is run, highly advisable since it double your disk space
+rm -r processor*
+
+                                                                                                                                       
+#------------------------------------------------------------------------------
