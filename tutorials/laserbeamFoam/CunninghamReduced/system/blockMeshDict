@@ -1,0 +1,131 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  3.10                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+convertToMeters 0.001;
+
+/*
+x_dir   	0.2;
+x_dir_neg	-0.2;
+y_dir  	 	0.3;
+z_dir		0.4;	
+
+// mesh refinement options, equal to all directions so we have cubic mesh
+refine_factor  60; 
+xcells #calc "$x_dir * $refine_factor * 2"; // multiplied by 2, since it is mirror
+ycells #calc "$y_dir * $refine_factor";
+zcells #calc "$z_dir * $refine_factor";
+*/
+
+/*
+vertices
+(
+    ($x_dir_neg 	0   		0)			//0
+    ($x_dir    		0   		0)			//1
+    ($x_dir    		$y_dir  	0)			//2
+    ($x_dir_neg  	$y_dir   	0)			//3
+    ($x_dir_neg   	0  			$z_dir)		//4
+    ($x_dir    		0  			$z_dir)		//5
+    ($x_dir    		$y_dir   	$z_dir)		//6
+    ($x_dir_neg  	$y_dir   	$z_dir)		//7
+);
+*/
+
+vertices
+(
+    (-0.2		 	0			0)			//0
+    (0.2    		0			0)			//1
+    (0.2    		0.3  		0)			//2
+    (-0.2		  	0.3   		0)			//3
+    (-0.2		   	0			0.4)		//4
+    (0.2    		0			0.4)		//5
+    (0.2    		0.3   		0.4)		//6
+    (-0.2		  	0.3   		0.4)		//7
+);
+
+
+/*
+blocks
+(
+	hex (0 1 2 3 4 5 6 7) ($xcells $ycells $zcells) simpleGrading (1 1 1)
+);
+*/
+
+blocks
+(
+	hex (0 1 2 3 4 5 6 7) (64 48 64) simpleGrading (1 1 1)
+);
+
+edges
+(
+);
+
+boundary
+(
+    lowerWall
+    {
+        type wall;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+
+    atmosphere
+    {
+        type patch;
+        faces
+        (
+            (1 5 4 0)
+        );
+    }
+
+    rightWall
+    {
+        type patch;
+        faces
+        (
+            (1 2 6 5)
+        );
+    }
+
+    leftWall
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+
+    frontAndBack
+    {
+        type patch;
+        faces
+        (
+            (0 3 2 1)
+	        (5 6 7 4)
+        );
+    }
+  
+);
+
+mergePatchPairs
+(
+
+);
+
+
+// ************************************************************************* //

@@ -1,0 +1,56 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v10                                   |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application		laserbeamFoam; // or the name of your solver
+
+startFrom       latestTime; // or startTime
+
+startTime       0.0;
+
+stopAt          endTime;
+
+endTime         0.00017; // time to weld fully 2.0 mm length of foil thickness
+
+deltaT          1.0e-9;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.00000020; // 0.000020;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression uncompressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+
+maxCo           0.8;
+maxAlphaCo      0.8;
+
+maxDeltaT       5e-5;
+
+
+// ************************************************************************* //
