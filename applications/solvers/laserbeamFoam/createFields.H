@@ -634,7 +634,25 @@ incompressibleInterPhaseTransportModel turbulence
 // Create laser heat source
 laserHeatSource laser(mesh);
 
-volScalarField rhoCp(rho*cp);
+
+volScalarField rhoCp
+(
+    IOobject
+    (
+        "rhoCp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("rhoCp", dimensionSet(1, -1, -2, -1, 0), 0.0)
+);
+
+rhoCp = (rho*cp);
+
+
+// volScalarField rhoCp(rho*cp);
 rhoCp.oldTime();
 
 surfaceScalarField rhoPhi("rhoPhi", fvc::interpolate(rho)*phi);
