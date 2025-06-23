@@ -145,6 +145,7 @@ laserHeatSource::laserHeatSource
         dimensionedScalar("refineflag", dimensionSet(0,0,0,0,0), 0.0)
     ),
     powderSim_(lookupOrDefault<Switch>("PowderSim", false)),
+    Radial_Polar_HS_(lookupOrDefault<Switch>("Radial_Polar_HS", false)),
     laserNames_(0),
     laserDicts_(0),
     timeVsLaserPosition_(0),
@@ -462,17 +463,18 @@ void laserHeatSource::updateDeposition
     const vector normal_interface(0, 1, 0);
 
     const scalar beam_radius =
-        a_cond.value()
-       /Foam::cos
-        (
-            Foam::acos
-            (
-                (normal_interface & (V_incident/mag(V_incident)))
-               /(mag(normal_interface)*mag(V_incident/mag(V_incident)))
-            )
-        );
+        a_cond.value();
+    //    /Foam::cos
+    //     (
+    //         Foam::acos
+    //         (
+    //             (normal_interface & (V_incident/mag(V_incident)))
+    //            /(mag(normal_interface)*mag(V_incident/mag(V_incident)))
+    //         )
+    //     );
 
     // Adjust sample radius for if beam is not normal too top boundary
+    
     const scalar CosTheta_incident =
         Foam::cos
         (
@@ -483,10 +485,10 @@ void laserHeatSource::updateDeposition
             )
         );
 
-    if (debug)
-    {
-        Info<< "cos(theta): " << CosTheta_incident << endl;
-    }
+    // if (debug)
+    // {
+    //     Info<< "cos(theta): " << CosTheta_incident << endl;
+    // }
 
     scalar listLength(0);
     DynamicList<vector> initial_points(listLength, vector::zero);
@@ -501,7 +503,65 @@ void laserHeatSource::updateDeposition
     const vectorField& nFilteredI = nFiltered;
     const scalarField& alphaFilteredI = alphaFiltered;
 
-    forAll(CI, celli)
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+    
+    if(Radial_Polar_HS()==true){
+
+        label nRings = 10;
+        label nAngles = 20;
+        scalar rMax = 1.2*beam_radius;
+        point P0 (currentLaserPosition.x(),currentLaserPosition.y(),currentLaserPosition.z());
+        // Info<<" \n \n TESTTTTTTTT \n \n"<<endl;
+        vector V_i(V_incident/mag(V_incident)); //normalise vector in-case user hasnt
+
+        // Generate two orthonormal vectors in the plane
+        vector a = (mag(V_i.z()) < 0.9) ? vector(0, 0, 1) : vector(0, 1, 0);
+        vector u = (V_i ^ a);
+        u = u/mag(u);
+        vector v = (V_i ^ u);
+
+        initial_points.append(P0);
+
+        for (label i = 1; i < nRings; ++i)
+        {
+        scalar r = rMax * scalar(i) / scalar(nRings);  // linear spacing
+        for (label j = 0; j < nAngles; ++j)
+
+            {
+
+            scalar theta = 2.0 * pi.value() * scalar(j) / scalar(nAngles);
+
+            vector offset = r * (cos(theta) * u + sin(theta) * v);
+
+            initial_points.append(P0 + offset);
+            // Info<<"i disc: "<<i<<", j disc: "<<j<<endl;
+            // Info<<P0 + offset<<endl;
+            }
+
+        }
+
+        // Info<<initial_points<<endl;
+        // Info<<initial_points[270]<<endl;
+
+
+    
+    }
+    else{
+
+           forAll(CI, celli)
     {
         const scalar x_coord = CI[celli].x();
         // const scalar y_coord = CI[celli].y();
@@ -541,6 +601,16 @@ void laserHeatSource::updateDeposition
 
         }
     }
+    }
+
+
+
+
+
+
+
+
+
 
     // Populate and gather the list onto the master processor.
     gatheredData1[Pstream::myProcNo()] = initial_points;
@@ -623,7 +693,7 @@ void laserHeatSource::updateDeposition
             pointslistGlobal1[i].y(),
             pointslistGlobal1[i].z()
         );
-
+        // Info<<"HERE"<<endl;
         // Cross product to find distance to beam central axis
         const scalar dist = mag(((x0 - x1)^(x0 - x2)))/mag(x2 - x1);
 
@@ -631,11 +701,14 @@ void laserHeatSource::updateDeposition
         // This is only used for post-processing to write VTKs of the beams
         label directionChangeOrderI = 0;
 
+        // Info<<"HERE2"<<endl;
+
         scalar Q =
             (
                 CosTheta_incident/(N_sub_divisions*N_sub_divisions)
             )
-           *(
+           *
+           (
                (Radius_Flavour*Q_cond.value())
               /(
                   Foam::pow(a_cond.value(), 2.0)*pi.value()
@@ -649,11 +722,15 @@ void laserHeatSource::updateDeposition
                )
            );
 
+           
+
+
         // ID of the processor that contains the beam tip
         label tipProcID = -1;
 
-        while (Q > 1.0e-9)
+        while (Q > 1.0e-9)//getting stuck in this loop - newHS
         {
+            // Info<<"HERE4"<<Q<<endl;
             // Track when the tip changes direction for post-processing the rays
             bool beamChangedDirection = false;
 
@@ -1020,13 +1097,13 @@ void laserHeatSource::updateDeposition
                  Q = DUMMYSCAL;
                  beamChangedDirection = true;
              }
-
+// Info<<"HERE5"<<endl;
              reduce(V2, maxOp<vector>());
              reduce(Q, maxOp<scalar>());
 
              // Update seed cells for local search
              rayCellIDs[i] = myCellId;
-
+// Info<<"HERE56"<<endl;
              if (tipProcID == Pstream::myProcNo())
              {
                  label myCellIdnext =
@@ -1075,7 +1152,7 @@ void laserHeatSource::updateDeposition
                  {
                      V1_tip = DUMMYMAX;
                  }
-
+                // Info<<"HERE567"<<endl;
                  // Update direction-change ordered index
                  directionChangeOrderI++;
 
@@ -1093,10 +1170,11 @@ void laserHeatSource::updateDeposition
                  tipProcID = -1;
              }
              reduce(tipProcID, maxOp<label>());
-
+// Info<<"HERE5678: "<<Q<<endl;
              // Sync direction-change ordered index
              reduce(directionChangeOrderI, maxOp<int>());
          };
+        //  Info<<"HERE56789"<<endl;
      }
 
 

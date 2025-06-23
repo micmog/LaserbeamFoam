@@ -85,6 +85,10 @@ class laserHeatSource
         //  smear out the particle interface un-physically
         const Switch powderSim_;
 
+        //- new laser discretisation flag
+        //  Tell the heat source if you want to discreetise the traditional laserbeamfoam way or in radial and polar coordinates
+        const Switch Radial_Polar_HS_;
+
         //- List of the laser names
         wordList laserNames_;
 
@@ -149,6 +153,12 @@ public:
         const Switch& powderSim() const
         {
             return powderSim_;
+        }
+
+        //- Const access to the HS discretisation flag
+        const Switch& Radial_Polar_HS() const
+        {
+            return Radial_Polar_HS_;
         }
 
         //- Update the deposition field for all lasers
