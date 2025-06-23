@@ -474,7 +474,7 @@ void laserHeatSource::updateDeposition
     //     );
 
     // Adjust sample radius for if beam is not normal too top boundary
-    
+
     const scalar CosTheta_incident =
         Foam::cos
         (
@@ -520,8 +520,8 @@ void laserHeatSource::updateDeposition
     
     if(Radial_Polar_HS()==true){
 
-        label nRings = 10;
-        label nAngles = 20;
+        label nRings = 5;
+        label nAngles = 30;
         scalar rMax = 1.2*beam_radius;
         point P0 (currentLaserPosition.x(),currentLaserPosition.y(),currentLaserPosition.z());
         // Info<<" \n \n TESTTTTTTTT \n \n"<<endl;
@@ -533,7 +533,9 @@ void laserHeatSource::updateDeposition
         u = u/mag(u);
         vector v = (V_i ^ u);
 
-        initial_points.append(P0);
+        // if(mesh.findCell(P0)!=-1){
+        // initial_points.append(P0);
+        // }
 
         for (label i = 1; i < nRings; ++i)
         {
@@ -546,7 +548,11 @@ void laserHeatSource::updateDeposition
 
             vector offset = r * (cos(theta) * u + sin(theta) * v);
 
-            initial_points.append(P0 + offset);
+            
+            // Info<<"test"<<mesh.findCell(P0 + offset)<<endl;
+            // if(mesh.findCell(P0 + offset)!=-1){
+                initial_points.append(P0 + offset);
+            // }
             // Info<<"i disc: "<<i<<", j disc: "<<j<<endl;
             // Info<<P0 + offset<<endl;
             }
@@ -628,6 +634,7 @@ void laserHeatSource::updateDeposition
             accessOp<Field<vector> >()
         )
     );
+    // Info<<"synched points: "<<pointslistGlobal1<<endl;
 
     // For each beam, store the starting point and locations at which the rays
     // change direction. Also, store the global ordered index of the ray
