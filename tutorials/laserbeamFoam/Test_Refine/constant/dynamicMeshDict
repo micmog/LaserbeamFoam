@@ -36,7 +36,7 @@ topoChanger
     nBufferLayers   2;
 
     // Refine cells only up to maxRefinement levels
-    maxRefinement   3;
+    maxRefinement   2;
 
     // Stop refinement if maxCells reached
     maxCells        1000000;
@@ -54,6 +54,7 @@ topoChanger
         (alphaPhi.metal none)
         (FluxSum none)
         (N_Flux none)
+        (rhophicp none)
     );
 
     // Write the refinement level as a volScalarField

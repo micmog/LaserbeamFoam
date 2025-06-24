@@ -54,6 +54,7 @@ topoChanger
         (alphaPhi.metal none)
         (FluxSum none)
         (N_Flux none)
+        (rhophicp none)
     );
 
     // Write the refinement level as a volScalarField
@@ -62,7 +63,7 @@ topoChanger
 
 
 }
-/*
+
 distributor
 {
     type            distributor;
@@ -70,5 +71,5 @@ distributor
     libs            ("libfvMeshDistributors.so");
 
     redistributionInterval  10;
-}*/
+}
 // ************************************************************************* //

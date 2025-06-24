@@ -541,9 +541,9 @@ void laserHeatSource::updateDeposition
     
     if(Radial_Polar_HS()==true){
 
-        label nRings = 100;
-        label nAngles = 90;
-        scalar rMax = beam_radius;
+        label nRings = 200;
+        label nAngles = 120;
+        scalar rMax = 1.5*beam_radius;
         point P0 (currentLaserPosition.x(),currentLaserPosition.y(),currentLaserPosition.z());
         // Info<<" \n \n TESTTTTTTTT \n \n"<<endl;
         vector V_i(V_incident/mag(V_incident)); //normalise vector in-case user hasnt
@@ -832,7 +832,7 @@ if(Radial_Polar_HS()==true){
            (
                (Radius_Flavour*Q_cond.value())
               /(
-                  Foam::pow(a_cond.value(), 2.0)*pi.value()
+                  pointslistGlobal1.size()*Foam::pow(a_cond.value(), 2.0)*pi.value()
                )
            )
           *Foam::exp
@@ -842,6 +842,7 @@ if(Radial_Polar_HS()==true){
                   Foam::pow(dist, 2.0)/Foam::pow(a_cond.value(), 2.0)
                )
            );
+       
 }
 
             // Info<<"dist: "<<dist<<", Q: "<<Q<<endl;
@@ -878,7 +879,7 @@ if(Radial_Polar_HS()==true){
                 }
             }
             // Info<<myCellId<<"\t"<<Q<<endl;
-
+            // Q/=mesh.V()[myCellId];
             // Proc ID where the tip is located
             // If the tip in not on any processor, then this is set to -1
             if (myCellId != -1)
