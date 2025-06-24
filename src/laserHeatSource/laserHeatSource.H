@@ -197,6 +197,8 @@ public:
             const label maxLocalSearch
         );
 
+        bool pointOnFace(const face& f, const point& p, const pointField& meshPoints);
+
 };
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //

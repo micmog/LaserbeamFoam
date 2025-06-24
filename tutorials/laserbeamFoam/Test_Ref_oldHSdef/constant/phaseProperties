@@ -9,48 +9,19 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    location    "constant";
+    object      phaseProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains  8;
+phases          (metal gas);
 
-//method              scotch;
+sigma           0.07;
 
-decomposer      hierarchical;//hierarchical;
-distributor     hierarchical;
+dsigmadT	-0.5e-4;
 
-simpleCoeffs
-{
-    n               (2 2 2);
-}
-
-hierarchicalCoeffs
-{
-    n               (2 2 2);
-    order           xyz;
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
-
-
-constraints
-{
-   refinementHistory
-   {
-       //- Decompose cells such that all cell originating from single cell
-       //  end up on same processor
-       type    refinementHistory;
-   }
-}
-
-
+p0		100000.0;
+Tvap 3068.0;
+Mm 5.58e-2;
+LatentHeatVap 7.45e6;
 // ************************************************************************* //

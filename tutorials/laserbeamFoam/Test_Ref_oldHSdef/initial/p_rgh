@@ -14,9 +14,9 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 0 0 1 0 0 0];
+dimensions      [1 -1 -2 0 0 0 0];
 
-internalField   uniform 300.0;
+internalField   uniform 0;
 
 boundaryField
 {
@@ -25,25 +25,32 @@ boundaryField
     
     
 	frontAndBack{
-type zeroGradient;
+        type            fixedFluxPressure;
+        value           uniform 0;
 	}
 
     lowerWall
     {
-type zeroGradient;
+        type            fixedFluxPressure;
+        value           uniform 0;
     }
 
     atmosphere
     {
-type zeroGradient;
+        type            totalPressure;
+        p0              uniform 0;
+        U               U;
+        phi             phi;
     }
 rightWall
     {
-type zeroGradient;
+        type            fixedFluxPressure;
+        value           uniform 0;
     }
     leftWall
     {
-type zeroGradient;
+        type            fixedFluxPressure;
+        value           uniform 0;
     }
 
     defaultFaces

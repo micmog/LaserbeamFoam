@@ -10,46 +10,42 @@ FoamFile
     format      ascii;
     class       dictionary;
     location    "system";
-    object      decomposeParDict;
+    object      fvSchemes;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains  8;
-
-//method              scotch;
-
-decomposer      hierarchical;//hierarchical;
-distributor     hierarchical;
-
-simpleCoeffs
+ddtSchemes
 {
-    n               (2 2 2);
+    default         Euler;
 }
 
-hierarchicalCoeffs
+gradSchemes
 {
-    n               (2 2 2);
-    order           xyz;
+    default         Gauss linear;
 }
 
-manualCoeffs
+divSchemes
 {
-    dataFile        "";
+    div(rhoPhi,U)  Gauss linearUpwind grad(U);
+    div(phi,alpha)  Gauss interfaceCompression vanLeer 1;
+    div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+    div(rhoPhi,epsilon1)	Gauss linear;//Gauss vanLeer01;
+    div((interpolate(cp)*rhoPhi),T)   Gauss upwind;
 }
 
-distributed     no;
-
-roots           ( );
-
-
-constraints
+laplacianSchemes
 {
-   refinementHistory
-   {
-       //- Decompose cells such that all cell originating from single cell
-       //  end up on same processor
-       type    refinementHistory;
-   }
+    default         Gauss linear corrected;
+}
+
+interpolationSchemes
+{
+    default         linear;
+}
+
+snGradSchemes
+{
+    default         corrected;
 }
 
 

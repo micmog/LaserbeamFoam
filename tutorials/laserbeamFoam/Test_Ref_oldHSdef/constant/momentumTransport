@@ -9,48 +9,12 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    location    "system";
-    object      decomposeParDict;
+    location    "constant";
+    object      momentumTransport;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-numberOfSubdomains  8;
-
-//method              scotch;
-
-decomposer      hierarchical;//hierarchical;
-distributor     hierarchical;
-
-simpleCoeffs
-{
-    n               (2 2 2);
-}
-
-hierarchicalCoeffs
-{
-    n               (2 2 2);
-    order           xyz;
-}
-
-manualCoeffs
-{
-    dataFile        "";
-}
-
-distributed     no;
-
-roots           ( );
-
-
-constraints
-{
-   refinementHistory
-   {
-       //- Decompose cells such that all cell originating from single cell
-       //  end up on same processor
-       type    refinementHistory;
-   }
-}
+simulationType  laminar;
 
 
 // ************************************************************************* //

@@ -31,8 +31,7 @@ V_incident	(0 1 0);//(0 1 0);//NORMALISED IN CODE
 laserRadius 0.0005;
 
 
-N_sub_divisions	1
-;
+N_sub_divisions	1;
 
 
 wavelength	1.064e-6;
@@ -44,7 +43,7 @@ Radius_Flavour	2.0;
 
 useLocalSearch    true;//false;
 
-Radial_Polar_HS true;//false;//
+Radial_Polar_HS false;//
 
 //debug true;
 //N_sub_divisions    6;
