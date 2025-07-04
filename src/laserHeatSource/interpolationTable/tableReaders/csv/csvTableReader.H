@@ -1,19 +1,28 @@
 /*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | www.openfoam.com
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+    Copyright (C) 2011-2016 OpenFOAM Foundation
+    Copyright (C) 2020-2023 OpenCFD Ltd.
+-------------------------------------------------------------------------------
 License
-    This file is part of solids4foam.
+    This file is part of OpenFOAM.
 
-    solids4foam is free software: you can redistribute it and/or modify it
-    under the terms of the GNU General Public License as published by the
-    Free Software Foundation, either version 3 of the License, or (at your
-    option) any later version.
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-    solids4foam is distributed in the hope that it will be useful, but
-    WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    General Public License for more details.
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
 
     You should have received a copy of the GNU General Public License
-    along with solids4foam.  If not, see <http://www.gnu.org/licenses/>.
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Class
     Foam::csvTableReader
@@ -26,8 +35,8 @@ SourceFiles
 
 \*---------------------------------------------------------------------------*/
 
-#ifndef csvTableReader_H
-#define csvTableReader_H
+#ifndef Foam_csvTableReader_H
+#define Foam_csvTableReader_H
 
 #include "tableReader.H"
 #include "labelList.H"
@@ -51,22 +60,33 @@ class csvTableReader
         //- Does the file have a header line?
         const bool headerLine_;
 
-        //- Column of the time
-        const label timeColumn_;
+        //- Column for reference (lookup) value
+        const label refColumn_;
 
         //- Labels of the components
         const labelList componentColumns_;
-
-        //- Read the next value from the split string
-        Type readValue(const List<string>&);
 
         //- Separator character
         const char separator_;
 
 
+    // Private Member Functions
+
+        //- Get component columns entry
+        static labelList getComponentColumns
+        (
+            const word& name,
+            std::initializer_list<std::pair<const char*,int>> compat,
+            const dictionary& dict
+        );
+
+        //- Read component values from the split string
+        Type readValue(const UList<string>& strings) const;
+
+
 public:
 
-    //- Runtime type information
+    //- Declare type-name, virtual type (with debug switch)
     TypeName("csv");
 
 
@@ -89,19 +109,23 @@ public:
 
 
     //- Destructor
-    virtual ~csvTableReader();
+    virtual ~csvTableReader() = default;
 
 
     // Member Functions
 
-        //- Read the table
-        virtual void operator()(const fileName&, List<Tuple2<scalar, Type>>&);
-
-        //- Read 2D table
+        //- Read 1D table
         virtual void operator()
         (
-            const fileName&,
-            List<Tuple2<scalar, List<Tuple2<scalar, Type>>>>&
+            const fileName& fName,
+            List<Tuple2<scalar, Type>>& data
+        );
+
+        //- Read 2D table - NotImplemented
+        virtual void operator()
+        (
+            const fileName& fName,
+            List<Tuple2<scalar, List<Tuple2<scalar, Type>>>>& data
         );
 
         //- Write the remaining parameters

@@ -1,19 +1,28 @@
 /*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | www.openfoam.com
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+    Copyright (C) 2011-2016 OpenFOAM Foundation
+    Copyright (C) 2019-2021 OpenCFD Ltd.
+-------------------------------------------------------------------------------
 License
-    This file is part of solids4foam.
+    This file is part of OpenFOAM.
 
-    solids4foam is free software: you can redistribute it and/or modify it
-    under the terms of the GNU General Public License as published by the
-    Free Software Foundation, either version 3 of the License, or (at your
-    option) any later version.
+    OpenFOAM is free software: you can redistribute it and/or modify it
+    under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-    solids4foam is distributed in the hope that it will be useful, but
-    WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    General Public License for more details.
+    OpenFOAM is distributed in the hope that it will be useful, but WITHOUT
+    ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+    FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+    for more details.
 
     You should have received a copy of the GNU General Public License
-    along with solids4foam.  If not, see <http://www.gnu.org/licenses/>.
+    along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 \*---------------------------------------------------------------------------*/
 
@@ -27,27 +36,26 @@ Foam::autoPtr<Foam::tableReader<Type>> Foam::tableReader<Type>::New
     const dictionary& spec
 )
 {
-    const word readerType = spec.lookupOrDefault<word>
+    const word readerType = spec.getOrDefault<word>
     (
         "readerType",
         "openFoam"
     );
 
-    typename dictionaryConstructorTable::iterator cstrIter =
-        dictionaryConstructorTablePtr_
-            ->find(readerType);
+    auto* ctorPtr = dictionaryConstructorTable(readerType);
 
-    if (cstrIter == dictionaryConstructorTablePtr_->end())
+    if (!ctorPtr)
     {
-        FatalErrorInFunction
-            << "Unknown reader type " << readerType
-            << nl << nl
-            << "Valid reader types : " << nl
-            << dictionaryConstructorTablePtr_->sortedToc()
-            << exit(FatalError);
+        FatalIOErrorInLookup
+        (
+            spec,
+            "reader",
+            readerType,
+            *dictionaryConstructorTablePtr_
+        ) << exit(FatalIOError);
     }
 
-    return autoPtr<tableReader<Type>>(cstrIter()(spec));
+    return autoPtr<tableReader<Type>>(ctorPtr(spec));
 }
 
 
@@ -58,27 +66,12 @@ Foam::tableReader<Type>::tableReader(const dictionary&)
 {}
 
 
-// * * * * * * * * * * * * * * * * Destructor  * * * * * * * * * * * * * * * //
-
-template<class Type>
-Foam::tableReader<Type>::~tableReader()
-{}
-
-
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class Type>
 void Foam::tableReader<Type>::write(Ostream& os) const
 {
-    if (this->type() != "openFoam")
-    {
-#ifdef OPENFOAMFOUNDATION
-        writeEntry(os, "readerType", this->type());
-#else
-        os.writeKeyword("readerType")
-            << this->type() << token::END_STATEMENT << nl;
-#endif
-    }
+    os.writeEntryIfDifferent<word>("readerType", "openFoam", this->type());
 }
 
 

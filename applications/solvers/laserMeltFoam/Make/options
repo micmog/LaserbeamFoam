@@ -1,6 +1,6 @@
 EXE_INC = \
+    -I../../../src/laserHeatSource/lnInclude \
 		-ILibraries/geometricVoF/lnInclude \
-		-ILibraries/rayTracingLaserSource/laserHeatSource/lnInclude \
     -ILibraries/transportModels/incompressible/transportModel/lnInclude\
     -ILibraries/transportModels/incompressible/lnInclude\
     -ILibraries/turbulenceModels/incompressible/turbulenceModel/lnInclude \
