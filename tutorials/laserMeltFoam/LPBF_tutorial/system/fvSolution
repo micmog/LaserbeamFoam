@@ -1,0 +1,247 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.0                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+
+    pd
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-8;
+        relTol          0;
+        
+	/*solver          GAMG;
+        tolerance       1e-9;
+        relTol          0.0;//0.05;
+        smoother        GaussSeidel;//GaussSeidel;//
+        nPreSweeps      2;
+        nPostSweeps     3;
+        nFinestSweeps   2;
+        cacheAgglomeration on;
+        nCellsInCoarsestLevel 10;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;*/
+    }
+   pdFinal
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-08;
+        relTol          0;
+
+        /*solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            tolerance       1e-9;
+            relTol          0;
+            nVcycles        5;
+            smoother        GaussSeidel;//GaussSeidel;//DICGaussSeidel;//
+            nPreSweeps      2;
+            nPostSweeps     3;
+            nFinestSweeps   2;
+            cacheAgglomeration on;
+            nCellsInCoarsestLevel 10;
+            agglomerator    faceAreaPair;
+            mergeLevels     1;
+        }
+        tolerance       1e-9;
+        relTol          0;
+        maxIter         25;//20;*/
+    }
+
+
+solvers
+{
+    "alpha.material.*"
+    {
+        isoFaceTol      1e-6;
+        surfCellTol     1e-6;
+        nAlphaBounds    3;
+        snapTol         1e-12;
+        clip            true;
+        reconstructionScheme isoAlpha;
+        writeFields     true;
+
+        nAlphaSubCycles 1;
+        cAlpha          1; // Note: cAlpha is not used by isoAdvector but must
+                           // be specified because interfacePropertes object
+                           // reads it during construction.
+    }
+
+    "pcorr.*"
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-10;
+        relTol          0;
+    }
+
+
+    T
+    {
+        solver          PBiCG;
+        preconditioner  DILU;
+        minIter         1;
+        tolerance       1e-12;
+        reTol           0.0;
+    }
+      TFinal
+        {
+            $T;
+        }
+
+    pdFinal
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-08;
+        relTol          0;
+
+        /*solver          PCG;
+        preconditioner
+        {
+            preconditioner  GAMG;
+            tolerance       1e-9;
+            relTol          0;
+            nVcycles        5;
+            smoother        GaussSeidel;//GaussSeidel;//DICGaussSeidel;//
+            nPreSweeps      2;
+            nPostSweeps     3;
+            nFinestSweeps   2;
+            cacheAgglomeration on;
+            nCellsInCoarsestLevel 10;
+            agglomerator    faceAreaPair;
+            mergeLevels     1;
+        }
+        tolerance       1e-9;
+        relTol          0;
+        maxIter         25;//20;*/
+    }
+
+    U
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-08; // this could be -6
+        relTol          0;
+    }
+
+}
+
+
+
+Controls
+{
+    relaxCorr    1.0; //added
+}
+
+
+isoAdvector
+{
+    // Note: use full Crank-Nicolson when topo changes are not occuring,
+    // otherwise the code resorts to Euler implicit
+    CrankNicolsonCoeff 0.5;
+
+    // Euler implicit
+    //CrankNicolsonCoeff 1;
+
+    gradAlphaNormal true;
+
+    alphaFluxTolerance 1e-6; // 10*SMALL by default
+
+    // Determines which cells are classified as surface cells
+    vof2IsoTol         1e-6; // 1e-8 by default
+
+    clipAlphaTol 1e-6;
+    nAlphaBounds 1;
+    snapAlpha   false; // true
+}
+
+
+
+
+
+PIMPLE
+{
+    nTCorrectors    250; //added
+
+    momentumPredictor no;
+    nCorrectors     3; // TODO 5?
+    nOuterCorrectors 1;
+    nNonOrthogonalCorrectors 0;
+    pRefCell        0;
+    pRefValue       0;
+
+
+
+    residualControl
+        {
+            "U"
+            {
+                tolerance    1e-8;
+                relTol        0;
+            }
+            "pd"
+            {
+                tolerance    1e-8;
+                relTol        0;
+            }
+
+	    "temperatureTol"
+	    {
+		tolerance    1e-8;
+		relTol       0;
+	    }
+
+	    "alternativeTol"
+	    {
+		tolerance	1e-8;
+		relTol		0;
+	    }
+
+            "absTol"
+            {
+                tolerance       1e-8;
+                relTol          0;
+            }
+	    "gTTol"
+            {   
+                tolerance       1e-7;
+                relTol          0;
+            }
+        }
+
+
+}
+
+
+
+relaxationFactors
+  {
+	fields
+	{
+		pd	1.0;
+	}
+	equations
+	{
+		U	0.99;
+	} 
+  }
+
+
+
+// ************************************************************************* //

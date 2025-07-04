@@ -1,0 +1,17 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # run from this directory
+
+targetType=""
+
+# Parse arguments for library compilation
+. $WM_PROJECT_DIR/wmake/scripts/AllwmakeParseArguments
+
+# Libraries
+(echo "Cleaning rayTracingLaserSource"  && cd Libraries/rayTracingLaserSource && ./Allwclean $targetType $* 2>&1 && cd ../)
+(echo "Cleaning geometricVoF" && cd Libraries/geometricVoF && ./Allwmake $targetType $* 2>&1 && cd ../)
+(echo "Cleaning transportModels" && cd Libraries/transportModels/incompressible && ./Allwmake $targetType $* 2>&1 && cd ../)
+(echo "Cleaning turbulenceModels" && cd Libraries/turbulenceModels/incompressible && ./Allwmake $targetType $* 2>&1 && cd ../)
+
+# laserMeltFoam Solver
+(echo "Compiling laserMeltFoam" && ./AllwcleanLaserMeltFoam $targetType $* 2>&1 && cd ../)
+

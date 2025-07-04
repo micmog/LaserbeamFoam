@@ -1,0 +1,46 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.0                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      thermalProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+metalProperties
+{
+	C		       C	        [1 -3 -1 0 0 0 0]   1e6; 
+  kSCoeff		 kSCoeff    [1 1 -3 -1 0 0 0]	  (6.31 27.2e-3 -7e-6); //(9.248 1.571e-2 0); 
+  kLCoeff		 kLCoeff    [1 1 -3 -1 0 0 0]	  (6.6 121.4e-4 0.0); //(12.41 3.279e-3 0);
+  cpSCoeff	 cpSCoeff   [0 2 -2 -1 0 0 0]	  (412.0 2e-1 -2e-5);
+  cpL		     cpL        [0 2 -2 -1 0 0 0]   775;
+  rhoLCoeff  rhoLCoeff  [1 -3 0 0 0 0 0]    (7432.7 3.9338e-2 -1.8007e-4);
+  Tl		     Tl         [0 0 0 1 0 0 0]     1723.0;
+  Ts         Ts         [0 0 0 1 0 0 0]     1658.0;
+  Hf         Hf         [0 2 -2 0 0 0 0]    2.6e5;
+  p0	       p0         [1 -1 -2 0 0 0 0]   101000;
+  TVap		   TVap       [0 0 0 1 0 0 0]     3090;
+  Hv		     Hv         [0 2 -2 0 0 0 0]		7.45e6;
+  R		       R          [1 2 -2 -1 -1 0 0]	8.3144;
+  Mm		     Mm         [1 0 0 0 -1 0 0]		0.05593;
+  elec_resistivity	[ 1 3 -3 0 0 ] 1.0e-6;
+
+}
+
+gasProperties
+{
+	kG		    kG   [1 1 -3 -1 0 0 0] 0.0177;
+	cpG		    cpG  [0 2 -2 -1 0 0 0] 520;
+}
+
+TRef          	TRef [0 0 0 1 0 0 0]   298.0;	
+hC       	      hC   [1 0 -3 -1 0 0 0]    40; 
+// ************************************************************************* //
