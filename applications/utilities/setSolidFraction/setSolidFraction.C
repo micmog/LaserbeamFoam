@@ -22,169 +22,196 @@ License
     along with foam-extend.  If not, see <http://www.gnu.org/licenses/>.
 
 Description
-    Selects a cell set through a dictionary.
+    Initialise the alpha.metal field for a powder bed multiphase simulation
+    based on a "locations" file which contains a list of particle locations
+    and radii, e.g. as created by the LIGGGHTS DEM code.
+
+Authors
+    Gowthaman Parivendhan
+    Petar Cosic
+    Philip Cardiff
 
 \*---------------------------------------------------------------------------*/
 
 #include "argList.H"
 #include "timeSelector.H"
 #include "objectRegistry.H"
-// #include "foamTime.H"
 #include "fvMesh.H"
 #include "topoSetSource.H"
 #include "cellSet.H"
 #include "volFields.H"
-#include "fvCFD.H"
 #include <fstream>
-#include "OFstream.H"
-// #include "pisoControl.H"
 
 using namespace Foam;
-using namespace std;
 
 int main(int argc, char *argv[])
 {
-  #include "setRootCase.H"
-  #include "createTime.H"
-  #include "createMesh.H"
+#   include "setRootCase.H"
+#   include "createTime.H"
+#   include "createMesh.H"
 
-  Info << "Time = " << runTime.timeName() << endl;  
+    Info<< "Time = " << runTime.timeName() << endl;
 
-  int count = 0, number;
-  float *r, *x, *y, *z; // Dynamic arrays to store location and radius of the particles
-  std::string line;
-  ifstream loc;
-  Info << "\nReading coordinates of Particles" << endl;
+    label count = 0;
+    label number = 0;
+    scalarField particleR(0);
+    scalarField particleX(0);
+    scalarField particleY(0);
+    scalarField particleZ(0);
+    std::string line;
+    std::ifstream loc;
 
-  // Open file and store coordinates in dynamic arrays
-  loc.open((runTime.path() / "constant" / "location").c_str());
-  if (!loc)
-  {
-    Info << "\nUnable to open file 'location'\n";
-    exit(1);
-  }
+    Info<< nl << "Reading the particle coordinates" << endl;
 
-  while (std::getline(loc, line))
-  {
-    if (count == 3)
+    // Open file and store coordinates in dynamic arrays
+    loc.open(runTime.path()/"constant"/"location");
+    if (!loc)
     {
-      std::stringstream stream(line);
-      stream >> number;
-      r = new float[number];
-      x = new float[number];
-      y = new float[number];
-      z = new float[number];
+        FatalError
+            << nl << "Unable to open file 'location'" << nl
+            << exit(FatalError);
     }
 
-    if (count > 8)
+    while (std::getline(loc, line))
     {
-      std::stringstream stream(line);
-      stream >> x[count - 9] >> y[count - 9] >> z[count - 9] >> r[count - 9];
+        if (count == 3)
+        {
+            std::stringstream stream(line);
+            stream >> number;
+            particleR.setSize(number, 0.0);
+            particleX.setSize(number, 0.0);
+            particleY.setSize(number, 0.0);
+            particleZ.setSize(number, 0.0);
+        }
+        else if (count > 8)
+        {
+            std::stringstream stream(line);
+            stream
+                >> particleX[count - 9]
+                >> particleY[count - 9]
+                >> particleZ[count - 9]
+                >> particleR[count - 9];
+        }
+
+        count = count + 1;
     }
-    count = count + 1;
-  }
 
-  loc.close();
+    loc.close();
 
-  IOdictionary bedPlateDict(
-      IOobject(
-          "bedPlateDict",
-          runTime.system(),
-          mesh,
-          IOobject::MUST_READ,
-          IOobject::NO_WRITE));
+    const IOdictionary bedPlateDict
+    (
+        IOobject
+        (
+            "bedPlateDict",
+            runTime.system(),
+            mesh,
+            IOobject::MUST_READ,
+            IOobject::NO_WRITE
+        )
+    );
 
-  scalar xmin = 0;
-  scalar xmax = 0;
-  scalar ymin = 0;
-  scalar ymax = 0;
-  scalar zmin = 0;
-  scalar zmax = 0;
+    scalar xmin = 0;
+    scalar xmax = 0;
+    scalar ymin = 0;
+    scalar ymax = 0;
+    scalar zmin = 0;
+    scalar zmax = 0;
+  
+    const bool bedStatus(bedPlateDict.lookupOrDefault<bool>("Bed", false));
 
-  const bool bedStatus(bedPlateDict.lookupOrDefault<bool>("Bed", false));
-
-  if (bedStatus)
-  {
-    Info << "Reading Bed Plate properties" << endl;
-    bedPlateDict.lookup("xmin") >> xmin;
-    bedPlateDict.lookup("xmax") >> xmax;
-    bedPlateDict.lookup("ymin") >> ymin;
-    bedPlateDict.lookup("ymax") >> ymax;
-    bedPlateDict.lookup("zmin") >> zmin;
-    bedPlateDict.lookup("zmax") >> zmax;
-  }
-  else
-  {
-    Info << "Bed plate is switched off" << endl;
-  }
-
-  Info << "Setting field region values" << endl;
-  Info << "\nNumber of Particles in domain :" << number << endl;
-
-  // Declare Scalar fields alpha for solid,liquid and gas fractions
-  volScalarField alphaM(
-      IOobject(
-          "alpha.material",
-          runTime.timeName(),
-          mesh,
-          IOobject::MUST_READ,
-          IOobject::AUTO_WRITE),
-      mesh);
-
-  // Initialise field values to 0.0
-  forAll(alphaM, cellI)
-  {
-    alphaM[cellI] = 0.0; // this had to be changed? 
-  }
-
-  // Declare scalarFields to get x,y and z coords of Mesh cell centres
-  volScalarField px(mesh.C().component(0)); // this had to be changed
-  volScalarField py(mesh.C().component(1)); // this had to be changed
-  volScalarField pz(mesh.C().component(2)); // this had to be changed
-
-  // Loop to calculate Soild fraction of each mesh cell
-  forAll(alphaM.internalField(), cellI)
-  {
-    for (int j = 0; j < number; j++)
+    if (bedStatus)
     {
-      scalar distance = Foam::sqrt(Foam::pow(px[cellI] - (x[j]), 2) + Foam::pow(py[cellI] - (y[j]), 2) + Foam::pow(pz[cellI] - (z[j]), 2));
+        Info<< "Reading Bed Plate properties" << endl;
+        xmin = readScalar(bedPlateDict.lookup("xmin"));
+        xmax = readScalar(bedPlateDict.lookup("xmax"));
+        ymin = readScalar(bedPlateDict.lookup("ymin"));
+        ymax = readScalar(bedPlateDict.lookup("ymax"));
+        zmin = readScalar(bedPlateDict.lookup("zmin"));
+        zmax = readScalar(bedPlateDict.lookup("zmax"));
+    }
+    else
+    {
+        Info<< "Bed plate is switched off" << endl;
+    }
 
-      if (distance <= (r[j]))
-      {
-              alphaM[cellI] = 1.0;
-        break;
-      }
-          if (bedStatus)
-          {
-            if (px[cellI] >= xmin && px[cellI] <= xmax)
+    Info<< "Setting field region values" << nl
+        << "Number of particles in domain = " << number << endl;
+
+    // Declare Scalar fields alpha for solid,liquid and gas fractions
+    Info<< nl << "Reading the alpha.metal field" << endl;
+    volScalarField alphaM
+    (
+        IOobject
+        (
+            "alpha.metal",
+            runTime.timeName(),
+            mesh,
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("0", dimless, 0.0),
+        "zeroGradient"
+    );
+
+    // Loop to calculate soild fraction of each mesh cell
+    // This currently uses an O(N^2) approach, which is still fine for
+    // relatively large cases; if needed, we can change this approach to use
+    // a local search
+    // Also, the current approach is based purely binary: the cell centre is
+    // either inside or outside the particle; we can do better and calculate a
+    // volume fraction: TODO!
+    const vectorField& CI = mesh.C();
+    scalarField& alphaMI = alphaM;
+    forAll(CI, cellI)
+    {
+        const vector& curC = CI[cellI];
+
+        forAll(particleR, particleI)
+        {
+            const scalar distance =
+                Foam::sqrt
+                (
+                    Foam::pow(curC[vector::X] - particleX[particleI], 2)
+                  + Foam::pow(curC[vector::Y] - particleY[particleI], 2)
+                  + Foam::pow(curC[vector::Z] - particleZ[particleI], 2)
+                );
+
+            if (distance <= particleR[particleI])
             {
-              if (py[cellI] >= ymin && py[cellI] <= ymax)
-              {
-                if (pz[cellI] + SMALL >= zmin && pz[cellI] - SMALL <= zmax)
-                {
-                  alphaM[cellI] = 1.0;
-                }
-              }
+                alphaMI[cellI] = 1.0;
+                break;
             }
-          }
+
+            if (bedStatus)
+            {
+                if (curC[vector::X] >= xmin && curC[vector::X] <= xmax)
+                {
+                    if (curC[vector::Y] >= ymin && curC[vector::Y] <= ymax)
+                    {
+                        if
+                        (
+                            curC[vector::Z] + SMALL >= zmin
+                         && curC[vector::Z] - SMALL <= zmax
+                        )
+                        {
+                            alphaMI[cellI] = 1.0;
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 
-  // forAll(alphaM.boundaryField(), patchi)
-  // {
-  //   // Forced patch assignment.  HJ, 1/Aug/2010.
-  //     // alphaM.patchInternalField()[patchi] == alphaM[patchi].patchInternalField();
-  // }
+    alphaM.correctBoundaryConditions();
 
-  alphaM.write();
+    Info<< "Writing " << alphaM.name() << " to time = " << runTime.timeName()
+        << endl;
+    alphaM.write();
 
-  // Always clean up when you are finished
-  delete[] x;
-  delete[] y;
-  delete[] z;
-  delete[] r;
-  return 0;
-  Info << "\nEnd" << endl;
+    Info<< "\nEnd" << endl;
+
+    return 0;
 }
 
 // ************************************************************************* //
