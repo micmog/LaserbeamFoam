@@ -61,6 +61,8 @@ Authors
 #include "CorrectPhi.H"
 #include "fvcSmooth.H"
 
+#include "Polynomial.H"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 int main(int argc, char *argv[])
