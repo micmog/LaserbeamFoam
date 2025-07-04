@@ -1,3 +1,0 @@
-overInterDyMFoam.C
-
-EXE = $(FOAM_APPBIN)/overInterDyMFoam
