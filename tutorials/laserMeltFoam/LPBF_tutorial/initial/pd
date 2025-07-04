@@ -1,0 +1,99 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.0                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      pd;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform 101000; //1e5;
+
+boundaryField
+{
+    leftWall
+    {
+        type            zeroGradient;
+        //type            totalPressure;
+        //p0              uniform 0; //1e5;
+        //U               U;
+        //phi             phi;
+        //rho             rho;
+        //psi             none;
+        //gamma           1;
+        //value           uniform 0; //1e5;
+    }
+
+    rightWall
+    {
+        type            zeroGradient;
+        //type            totalPressure;
+        //p0              uniform 0; //1e5;
+        //U               U;
+        //phi             phi;
+        //rho             rho;
+        //psi             none;
+        //gamma           1;
+        //value           uniform 0; //1e5;
+    }
+
+    bottomWall
+    {
+        type            zeroGradient;
+    }
+
+    topWall
+    {
+	//type 		zeroGradient;
+        type            totalPressure;
+        p0              uniform 101000; //1e5;
+        U               U;
+        phi             phi;
+        rho             rho;
+        psi             none;
+        gamma           1;
+        value           uniform 0; //1e5;
+    }
+
+    front
+    {
+        type            zeroGradient;
+        //type            totalPressure;
+        //p0              uniform 0; //1e5;
+        //U               U;
+        //phi             phi;
+        //rho             rho;
+        //psi             none;
+        //gamma           1;
+        //value           uniform 0; //1e5;
+    }
+
+    back
+    {
+        type            zeroGradient;
+        //type            totalPressure;
+        //p0              uniform 0; //1e5;
+        //U               U;
+        //phi             phi;
+        //rho             rho;
+        //psi             none;
+        //gamma           1;
+        //value           uniform 0; //1e5;
+    }
+    solidInterface
+    {
+        type            zeroGradient;
+    }
+}
+
+
+// ************************************************************************* //

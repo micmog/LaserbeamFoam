@@ -1,0 +1,74 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.0                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      laserProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+laserRadius 25e-6; // The radius of the laser
+
+ray_tracing_on false;
+
+timeVsLaserPosition
+{
+    file    "$FOAM_CASE/constant/timeVsLaserPosition";
+    outOfBounds clamp;
+}
+
+timeVsLaserPower
+{
+    file    "$FOAM_CASE/constant/timeVsLaserPower";
+    outOfBounds clamp; 
+}
+
+// ----------------------------------------------------------------------
+// Standard laser model parameters 
+kappaM		  0.3;
+emS	        0.4;
+emL	        0.1;
+laserPatchName	  topWall;
+
+// ----------------------------------------------------------------------
+// Ray-tracing model parameters
+N_sub_divisions	1;
+V_incident (0 1 0);//(0 1 0);// Laser angle - NORMALISED IN CODE
+wavelength	1.064e-6;
+e_num_density	5.83e29;
+debug no;
+Radius_Flavour	2.0;
+
+// Laser radius
+//HS_bg 0.0;//20
+//HS_velocity 0.0;//6.0;
+//HS_lg 1e-3;
+//HS_Q 2000;//2000.0;//
+
+// Laser discretisation
+// Laser oscillations about the mean path
+//For linear path set oscAmpX=oscAmpz=0
+//For sine path set oscAmpz=0
+//For circular path set amplitude and frequency in both X and Z
+//HS_oscAmpX 0.0;
+//HS_oscAmpZ 0.0;
+
+//HS_oscFreqX 0;
+//HS_oscFreqZ 0;
+
+//elec_resistivity	1.0e-6; depricated
+
+// Use local search: defaults to yes
+//useLocalSearch yes;
+
+// Print extra debug information: defaults to no
+
+// ************************************************************************* //

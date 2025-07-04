@@ -1,0 +1,143 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.0                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    rho
+    {}
+    pcorr
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-10;
+        relTol          0;
+    }
+
+    pd
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-8;
+        relTol          0.05;
+    }
+
+    pdFinal
+    {
+        solver          PCG;
+        preconditioner  DIC;
+        tolerance       1e-8;
+        relTol          0;
+    }
+
+    U
+    {
+        solver          BiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-10;
+        relTol          0;
+    }
+    
+    T
+    {
+	solver		BiCGStab;
+	preconditioner	DILU;
+	tolerance	1e-8;
+	reTol		0.0;
+    }
+}
+
+PISO
+{
+    cAlpha          1;
+}
+
+PIMPLE
+{
+    momentumPredictor no;
+    nOuterCorrectors    10;
+    nCorrectors    	20;
+    nNonOrthogonalCorrectors 0;
+    nAlphaCorr      2;
+    nAlphaSubCycles 10;
+    nTCorrectors    500;
+    pdRefCell        0;
+    pdRefValue       0;
+    pRefValue       0;
+
+    correctPhi      on;
+    velocityPressureInit on;
+
+    residualControl
+        {
+            "U"
+            {
+                tolerance    1e-10;
+                relTol        0;
+            }
+            "pd"
+            {
+                tolerance    1e-7;
+                relTol        0;
+            }
+
+	    "T"
+	    {
+		tolerance    1e-8;
+		relTol       0;
+	    }
+
+	    "temperatureTol"
+	    {
+		tolerance	1e-8;
+		relTol		0;
+	    }
+        }
+}
+
+Controls
+{
+    relaxCorr    0.4;
+}
+
+relaxationFactors
+  {
+      fields
+      {
+          pd               0.3;
+      }
+      equations
+      {
+          U               0.7;
+          T               0.8;
+	  "ILambda.*"     1.0;
+      }
+  }
+
+/*isoAdvector
+{
+    // Note: use full Crank-Nicolson when topo changes are not occuring,
+    // otherwise the code resorts to Euler implicit
+    CrankNicolsonCoeff 0.5;
+
+    gradAlphaNormal true;
+
+    clipAlphaTol 1e-6;
+    nAlphaBounds 3;
+    snapAlpha   true; // true
+    writeToLog  true;
+}*/
+// ************************************************************************* //
