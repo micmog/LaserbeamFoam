@@ -28,8 +28,9 @@
     surfaceScalarField phig
     (
         (
-            mixture.surfaceTensionForce()
-          - ghf*fvc::snGrad(rho)
+            mixture.surfaceTensionForce()*fvc::interpolate(damper)
+          +(fvc::interpolate(pVap)*fvc::snGrad(alpha1)*fvc::interpolate(damper))
+          - ghf*fvc::snGrad(rho*rhok)
         )*rAUf*mesh.magSf()
     );
 
@@ -69,7 +70,7 @@
     // Make the fluxes relative to the mesh motion
     fvc::makeRelative(phi, U);
 
-    p == p_rgh + rho*gh;
+    p == p_rgh + rho*gh*rhok;
 
     if (p_rgh.needReference())
     {
@@ -79,11 +80,14 @@
             p.dimensions(),
             pRefValue - getRefCellValue(p, pRefCell)
         );
-        p_rgh = p - rho*gh;
+        p_rgh = p - rho*gh*rhok;
     }
 
     if (!correctPhi)
     {
         rAU.clear();
     }
+
+    Num_divU = fvc::div(phi);
+
 }

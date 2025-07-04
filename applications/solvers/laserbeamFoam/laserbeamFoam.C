@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
 
     while (runTime.run())
     {
+        #include "readControls.H"
         #include "readDyMControls.H"
 
         if (LTS)
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
             }
 
             #include "UEqn.H"
+            #include "TEqn.H"
 
             // --- Pressure corrector loop
             while (pimple.correct())

@@ -1,5 +1,8 @@
 #include "createRDeltaT.H"
 
+const dimensionedScalar deltaN = 1e-8/pow(average(mesh.V()), 1.0/3.0);
+
+
 Info<< "Reading field p_rgh\n" << endl;
 volScalarField p_rgh
 (
@@ -540,7 +543,7 @@ volScalarField alpha_filtered
     dimensionedScalar("alpha_filtered", dimensionSet(0, 0, 0, -0, 0), 0.0)
 );
 
-volVectorField gradepsilon1(fvc::grad(alpha_filtered));
+volVectorField gradepsilon1(fvc::grad(epsilon1));
 volScalarField e1temp(fvc::average(epsilon1));
 volScalarField e2temp(fvc::average(epsilon1mask));
 
@@ -552,12 +555,136 @@ dimensionedScalar elec_resistivity_metal
 );
 
 
+// Electrical resistivity of condensate only
+volScalarField electrical_resistivity
+(
+    IOobject
+    (
+        "electrical_resistivity",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    elec_resistivity_metal
+);
+
+volScalarField rhoCp
+(
+    IOobject
+    (
+        "rhoCp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("rhoCp", dimensionSet(1, -1, -2, -1, 0), 0.0)
+);
+rhoCp = (rho*cp);
+// volScalarField rhoCp(rho*cp);
+rhoCp.oldTime();
+
+
+// surfaceScalarField rhophicp(fvc::interpolate(cp)*rhoPhi);
+
+surfaceScalarField rhophicp
+(
+    IOobject
+    (
+        "rhophicp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("rhophicp", dimensionSet(1, 2, -3, -1, 0), 0.0)
+);
+rhophicp = fvc::interpolate(cp)*rhoPhi;
+
+
+#include "updateProps.H"
+
+const dimensionedScalar DarcyConstantlarge
+(
+    "DarcyConstantlarge", dimensionSet(1,-3,-1,0,0), 1.0e6
+);
+
+const dimensionedScalar DarcyConstantsmall
+(
+    "DarcyConstantsmall", dimless, 1.0e-12
+);
 
 
 
+// volVectorField gradAlpha(fvc::grad(alpha1));
+
+volVectorField gradAlpha
+(
+    IOobject
+    (
+        "gradAlpha",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedVector("gradAlpha", dimensionSet(0, -1, 0, -0, 0), vector::zero)
+);
+gradAlpha = fvc::grad(alpha1);
+
+// volVectorField nHatM(gradAlpha/(mag(gradAlpha) + deltaN));
 
 
+volVectorField nHatM
+(
+    IOobject
+    (
+        "nHatM",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedVector("nHatM", dimensionSet(0, 0, 0, -0, 0), vector::zero)
+);
+nHatM = gradAlpha/(mag(gradAlpha) + deltaN);
 
+
+// This variable is >=0 if the cell has been liquid
+volScalarField meltHistory
+(
+    IOobject
+    (
+        "meltHistory",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("meltHistory", dimensionSet(0, 0, 0, -0, 0), 0.0)
+);
+
+// This variable is 1 if (alpha.metal >= 0.5 and epsilon1 >=0.5), 0 otherwise
+volScalarField condition
+(
+    IOobject
+    (
+        "condition",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("condition", dimensionSet(0, 0, 0, -0, 0), 0.0)
+);
 
 
 
