@@ -25,16 +25,24 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    interFoam
+    laserbeamFoam
 
 Group
     grpMultiphaseSolvers
 
 Description
-    Solver for two incompressible, isothermal immiscible fluids using a VOF
-    (volume of fluid) phase-fraction based interface capturing approach,
+    Ray-Tracing heat source implementation with two phase incompressible VoF
+    description of the metallic substrate and shielding gas phase,
     with optional mesh motion and mesh topology changes including adaptive
     re-meshing.
+Authors
+    
+    Tom Flint, UoM.
+    Philip Cardiff, UCD.
+    Gowthaman Parivendhan, UCD.
+    Joe Robson, UoM.
+    Petar Cosic, UCD
+    Simon Rodriguez, UCD
 
 \*---------------------------------------------------------------------------*/
 
