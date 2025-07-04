@@ -30,6 +30,36 @@ volVectorField U
 
 #include "createPhi.H"
 
+//- Overset specific
+
+// Add solver-specific interpolations
+{
+    wordHashSet& nonInt =
+        const_cast<wordHashSet&>(Stencil::New(mesh).nonInterpolatedFields());
+
+    nonInt.insert("HbyA");
+    nonInt.insert("grad(p_rgh)");
+    nonInt.insert("nHat");
+    nonInt.insert("surfaceIntegrate(nHatf)");
+    nonInt.insert("surfaceIntegrate(phi+meshPhi)");
+    nonInt.insert("surfaceIntegrate(phi)");
+    nonInt.insert("surfaceIntegrate(phiHbyA)");
+    nonInt.insert("surfaceSum(((S|magSf)*S)");
+    nonInt.insert("surfaceIntegrate(((rAUf*magSf)*snGradCorr(p_rgh)))");
+    nonInt.insert("cellMask");
+    nonInt.insert("cellDisplacement");
+    nonInt.insert("interpolatedCells");
+    nonInt.insert("cellInterpolationWeight");
+    nonInt.insert("pcorr");
+}
+
+
+// Mask field for zeroing out contributions on hole cells
+#include "createCellMask.H"
+
+// Create bool field with interpolated cells
+#include "createInterpolatedCells.H"
+
 
 Info<< "Reading transportProperties\n" << endl;
 immiscibleIncompressibleTwoPhaseMixture mixture(U, phi);
@@ -70,18 +100,13 @@ surfaceScalarField rhoPhi
     fvc::interpolate(rho)*phi
 );
 
-typedef incompressibleInterPhaseTransportModel
-    <
-        immiscibleIncompressibleTwoPhaseMixture
-    > transportModelType;
 
-autoPtr<transportModelType> turbulence
+// Construct incompressible turbulence model
+autoPtr<incompressible::turbulenceModel> turbulence
 (
-    new transportModelType
-    (
-        rho, U, phi, rhoPhi, mixture
-    )
+    incompressible::turbulenceModel::New(U, phi, mixture)
 );
+
 
 #include "readGravitationalAcceleration.H"
 #include "readhRef.H"
@@ -127,4 +152,3 @@ mesh.setFluxRequired(p_rgh.name());
 mesh.setFluxRequired(alpha1.name());
 
 #include "createMRF.H"
-#include "createFvOptions.H"

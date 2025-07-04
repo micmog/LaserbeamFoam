@@ -3,6 +3,7 @@
     fvVectorMatrix UEqn
     (
         fvm::ddt(rho, U) + fvm::div(rhoPhi, U)
+      - fvm::Sp(fvc::ddt(rho) + fvc::div(rhoPhi), U)
       + MRF.DDt(rho, U)
       + turbulence->divDevRhoReff(rho, U)
      ==
@@ -19,7 +20,7 @@
         (
             UEqn
          ==
-            fvc::reconstruct
+            cellMask*fvc::reconstruct
             (
                 (
                     mixture.surfaceTensionForce()

@@ -6,7 +6,6 @@
      \\/     M anipulation  |
 -------------------------------------------------------------------------------
     Copyright (C) 2011-2017 OpenFOAM Foundation
-    Copyright (C) 2020 OpenCFD Ltd.
 -------------------------------------------------------------------------------
 License
     This file is part of OpenFOAM.
@@ -25,28 +24,24 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    interFoam
+    interMixingFoam
 
 Group
     grpMultiphaseSolvers
 
 Description
-    Solver for two incompressible, isothermal immiscible fluids using a VOF
-    (volume of fluid) phase-fraction based interface capturing approach,
-    with optional mesh motion and mesh topology changes including adaptive
-    re-meshing.
+    Solver for 3 incompressible fluids, two of which are miscible, using a VOF
+    method to capture the interface, with optional mesh motion and mesh topology
+    changes including adaptive re-meshing.
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
 #include "dynamicFvMesh.H"
 #include "CMULES.H"
-#include "EulerDdtScheme.H"
 #include "localEulerDdtScheme.H"
-#include "CrankNicolsonDdtScheme.H"
 #include "subCycle.H"
-#include "immiscibleIncompressibleTwoPhaseMixture.H"
-#include "incompressibleInterPhaseTransportModel.H"
+#include "immiscibleIncompressibleThreePhaseMixture.H"
 #include "turbulentTransportModel.H"
 #include "pimpleControl.H"
 #include "fvOptions.H"
@@ -59,7 +54,7 @@ int main(int argc, char *argv[])
 {
     argList::addNote
     (
-        "Solver for two incompressible, isothermal immiscible fluids"
+        "Solver for three incompressible fluids (two of which are immiscible)"
         " using VOF phase-fraction based interface capturing.\n"
         "With optional mesh motion and mesh topology changes including"
         " adaptive re-meshing."
@@ -74,17 +69,20 @@ int main(int argc, char *argv[])
     #include "initContinuityErrs.H"
     #include "createDyMControls.H"
     #include "createFields.H"
-    #include "createAlphaFluxes.H"
     #include "initCorrectPhi.H"
     #include "createUfIfPresent.H"
 
+    turbulence->validate();
+
     if (!LTS)
     {
+        #include "readTimeControls.H"
         #include "CourantNo.H"
         #include "setInitialDeltaT.H"
     }
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
     Info<< "\nStarting time loop\n" << endl;
 
     while (runTime.run())
@@ -115,13 +113,6 @@ int main(int argc, char *argv[])
 
                 if (mesh.changing())
                 {
-                    // Do not apply previous time-step mesh compression flux
-                    // if the mesh topology changed
-                    if (mesh.topoChanging())
-                    {
-                        talphaPhi1Corr0.clear();
-                    }
-
                     gh = (g & mesh.C()) - ghRef;
                     ghf = (g & mesh.Cf()) - ghRef;
 
@@ -153,11 +144,6 @@ int main(int argc, char *argv[])
 
             mixture.correct();
 
-            if (pimple.frozenFlow())
-            {
-                continue;
-            }
-
             #include "UEqn.H"
 
             // --- Pressure corrector loop
@@ -171,6 +157,8 @@ int main(int argc, char *argv[])
                 turbulence->correct();
             }
         }
+
+        #include "continuityErrs.H"
 
         runTime.write();
 

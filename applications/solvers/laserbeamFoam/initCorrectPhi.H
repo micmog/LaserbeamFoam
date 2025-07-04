@@ -1,53 +1,34 @@
-if
-(
-    !runTime.restart()
-    || isType<twoPhaseChangeModels::noPhaseChange>(phaseChange)
-)
+tmp<volScalarField> rAU;
+
+if (correctPhi)
 {
-    if (correctPhi)
-    {
-        rAU = new volScalarField
+    rAU = new volScalarField
+    (
+        IOobject
         (
-            IOobject
-            (
-                "rAU",
-                runTime.timeName(),
-                mesh,
-                IOobject::READ_IF_PRESENT,
-                IOobject::AUTO_WRITE
-            ),
+            "rAU",
+            runTime.timeName(),
             mesh,
-            dimensionedScalar(dimTime/dimDensity, 1)
-        );
+            IOobject::READ_IF_PRESENT,
+            IOobject::AUTO_WRITE
+        ),
+        mesh,
+        dimensionedScalar("rAU", dimTime/dimDensity, 1)
+    );
 
-        correctUphiBCs(U, phi, true);
-
-        CorrectPhi
-        (
-            phi,
-            U,
-            p_rgh,
-            surfaceScalarField("rAUf", fvc::interpolate(rAU())),
-            geometricZeroField(),
-            pressureReference,
-            pimple
-        );
-    }
-    else
-    {
-        correctUphiBCs(U, phi, true);
-
-        CorrectPhi
-        (
-            phi,
-            U,
-            p_rgh,
-            dimensionedScalar(dimTime/rho.dimensions(), 1),
-            geometricZeroField(),
-            pressureReference,
-            pimple
-        );
-    }
+    #include "correctPhi.H"
 }
+else
+{
+    CorrectPhi
+    (
+        U,
+        phi,
+        p_rgh,
+        dimensionedScalar("rAUf", dimTime/rho.dimensions(), 1),
+        geometricZeroField(),
+        pimple
+    );
 
-#include "continuityErrs.H"
+    #include "continuityErrs.H"
+}

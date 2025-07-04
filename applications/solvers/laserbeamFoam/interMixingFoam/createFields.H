@@ -30,16 +30,17 @@ volVectorField U
 
 #include "createPhi.H"
 
-
-Info<< "Reading transportProperties\n" << endl;
-immiscibleIncompressibleTwoPhaseMixture mixture(U, phi);
+immiscibleIncompressibleThreePhaseMixture mixture(U, phi);
 
 volScalarField& alpha1(mixture.alpha1());
 volScalarField& alpha2(mixture.alpha2());
+volScalarField& alpha3(mixture.alpha3());
 
 const dimensionedScalar& rho1 = mixture.rho1();
 const dimensionedScalar& rho2 = mixture.rho2();
+const dimensionedScalar& rho3 = mixture.rho3();
 
+dimensionedScalar D23("D23", dimViscosity, mixture);
 
 // Need to store rho for ddt(rho, U)
 volScalarField rho
@@ -51,12 +52,14 @@ volScalarField rho
         mesh,
         IOobject::READ_IF_PRESENT
     ),
-    alpha1*rho1 + alpha2*rho2
+    alpha1*rho1 + alpha2*rho2 + alpha3*rho3
 );
 rho.oldTime();
 
 
 // Mass flux
+// Initialisation does not matter because rhoPhi is reset after the
+// alpha solution before it is used in the U equation.
 surfaceScalarField rhoPhi
 (
     IOobject
@@ -67,21 +70,16 @@ surfaceScalarField rhoPhi
         IOobject::NO_READ,
         IOobject::NO_WRITE
     ),
-    fvc::interpolate(rho)*phi
+    rho1*phi
 );
 
-typedef incompressibleInterPhaseTransportModel
-    <
-        immiscibleIncompressibleTwoPhaseMixture
-    > transportModelType;
 
-autoPtr<transportModelType> turbulence
+// Construct incompressible turbulence model
+autoPtr<incompressible::turbulenceModel> turbulence
 (
-    new transportModelType
-    (
-        rho, U, phi, rhoPhi, mixture
-    )
+    incompressible::turbulenceModel::New(U, phi, mixture)
 );
+
 
 #include "readGravitationalAcceleration.H"
 #include "readhRef.H"
@@ -124,7 +122,7 @@ if (p_rgh.needReference())
 }
 
 mesh.setFluxRequired(p_rgh.name());
-mesh.setFluxRequired(alpha1.name());
+mesh.setFluxRequired(alpha2.name());
 
 #include "createMRF.H"
 #include "createFvOptions.H"
