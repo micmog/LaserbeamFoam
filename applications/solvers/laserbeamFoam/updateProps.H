@@ -24,32 +24,32 @@
     #include "updateKappaCp.H"
 
     // Update the cell size fields
-    // const faceList & ff = mesh.faces();
-    // const pointField & pp = mesh.points();
+    const faceList & ff = mesh.faces();
+    const pointField & pp = mesh.points();
     const vectorField& CI = mesh.C();
-    // scalarField& yDimI = laser.yDim();
-    // forAll(CI, celli)
-    // {
-    //     const cell& cc = mesh.cells()[celli];
-    //     labelList pLabels(cc.labels(ff));
-    //     pointField pLocal(pLabels.size(), vector::zero);
+    scalarField& yDimI = laser.yDim();
+    forAll(CI, celli)
+    {
+        const cell& cc = mesh.cells()[celli];
+        labelList pLabels(cc.labels(ff));
+        pointField pLocal(pLabels.size(), vector::zero);
 
-    //     forAll(pLabels, pointi)
-    //     {
-    //         pLocal[pointi] = pp[pLabels[pointi]];
-    //     }
+        forAll(pLabels, pointi)
+        {
+            pLocal[pointi] = pp[pLabels[pointi]];
+        }
 
-    //     yDimI[celli] =
-    //         Foam::max(pLocal & vector(0, 1, 0))
-    //       - Foam::min(pLocal & vector(0, 1, 0));
-    // }
+        yDimI[celli] =
+            Foam::max(pLocal & vector(0, 1, 0))
+          - Foam::min(pLocal & vector(0, 1, 0));
+    }
 
-    // laser.yDim().correctBoundaryConditions();
+    laser.yDim().correctBoundaryConditions();
 
     metalaverage = fvc::average(alpha1);
-    // laser.refineFlag() *= 0.0;
-    // laser.refineFlag() += metalaverage;
-    // laser.refineFlag().correctBoundaryConditions();
+    laser.refineFlag() *= 0.0;
+    laser.refineFlag() += metalaverage;
+    laser.refineFlag().correctBoundaryConditions();
 
     alpha_filtered = volScalarField("alpha_filtered", alpha1);
 alpha_filtered.correctBoundaryConditions();
@@ -124,13 +124,13 @@ alpha_filtered.correctBoundaryConditions();
 
     // epsilon1mask2.correctBoundaryConditions();
 
-    // if (laser.powderSim())
-    // {
-    //     gh = epsilon1mask*(g & mesh.C());
-    //     ghf = fvc::interpolate(epsilon1mask)*(g & mesh.Cf());
-    // }
-    // else{
-    //     gh = (g & mesh.C());
-    //     ghf = (g & mesh.Cf());  
-    // }
+    if (laser.powderSim())
+    {
+        gh = epsilon1mask*(g & mesh.C());
+        ghf = fvc::interpolate(epsilon1mask)*(g & mesh.Cf());
+    }
+    else{
+        gh = (g & mesh.C());
+        ghf = (g & mesh.Cf());  
+    }
 }

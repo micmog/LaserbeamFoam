@@ -1,18 +1,18 @@
     MRF.correctBoundaryVelocity(U);
 
 
-// if (laser.powderSim())
-// {
-//     DC =
-//         DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)
-//        /(Foam::pow(epsilon1mask, 3) + DarcyConstantsmall);
-// }
-// else
-// {
-//     DC =
-//         DarcyConstantlarge*Foam::pow((1.0 - epsilon1), 2)
-//        /(Foam::pow(epsilon1, 3) + DarcyConstantsmall);
-// }
+if (laser.powderSim())
+{
+    DC =
+        DarcyConstantlarge*Foam::pow((1.0-epsilon1mask),2)
+       /(Foam::pow(epsilon1mask, 3) + DarcyConstantsmall);
+}
+else
+{
+    DC =
+        DarcyConstantlarge*Foam::pow((1.0 - epsilon1), 2)
+       /(Foam::pow(epsilon1, 3) + DarcyConstantsmall);
+}
 
 gradAlpha = fvc::grad(alpha1);
 

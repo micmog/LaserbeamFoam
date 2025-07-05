@@ -543,9 +543,26 @@ volScalarField alpha_filtered
     dimensionedScalar("alpha_filtered", dimensionSet(0, 0, 0, -0, 0), 0.0)
 );
 
-volVectorField gradepsilon1(fvc::grad(epsilon1));
-volScalarField e1temp(fvc::average(epsilon1));
-volScalarField e2temp(fvc::average(epsilon1mask));
+// volVectorField gradepsilon1(fvc::grad(epsilon1));
+// volScalarField e1temp(fvc::average(epsilon1));
+// volScalarField e2temp(fvc::average(epsilon1mask));
+
+
+volScalarField e1temp
+(
+    IOobject
+    (
+        "e1temp",
+        runTime.timeName(),
+        mesh,
+        IOobject::NO_READ,
+        IOobject::NO_WRITE
+    ),
+    mesh,
+    dimensionedScalar("e1temp", dimensionSet(0, 0, 0, -0, 0), 0.0)
+);
+e1temp = fvc::average(epsilon1);
+
 
 dimensionedScalar elec_resistivity_metal
 (
@@ -606,7 +623,14 @@ surfaceScalarField rhophicp
 rhophicp = fvc::interpolate(cp)*rhoPhi;
 
 
-#include "updateProps.H"
+
+
+
+
+
+
+
+
 
 const dimensionedScalar DarcyConstantlarge
 (
@@ -717,6 +741,12 @@ autoPtr<transportModelType> turbulence
 #include "readhRef.H"
 #include "gh.H"
 
+// Create laser heat source
+laserHeatSource laser(mesh);
+
+
+#include "updateProps.H"
+
 
 volScalarField p
 (
@@ -728,7 +758,7 @@ volScalarField p
         IOobject::NO_READ,
         IOobject::AUTO_WRITE
     ),
-    p_rgh + rho*gh
+    p_rgh + rho*gh*rhok
 );
 
 label pRefCell = 0;
@@ -750,7 +780,7 @@ if (p_rgh.needReference())
         p.dimensions(),
         pRefValue - getRefCellValue(p, pRefCell)
     );
-    p_rgh = p - rho*gh;
+    p_rgh = p - rho*gh*rhok;
 }
 
 mesh.setFluxRequired(p_rgh.name());
@@ -758,3 +788,4 @@ mesh.setFluxRequired(alpha1.name());
 
 #include "createMRF.H"
 #include "createFvOptions.H"
+

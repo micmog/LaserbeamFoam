@@ -62,6 +62,7 @@ Authors
 #include "fvcSmooth.H"
 
 #include "Polynomial.H"
+#include "laserHeatSource.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -162,6 +163,17 @@ int main(int argc, char *argv[])
             #include "alphaControls.H"
             #include "alphaEqnSubCycle.H"
 
+
+            #include "updateProps.H"
+
+            // Update the laser deposition field
+            laser.updateDeposition
+            (
+                alpha_filtered, n_filtered, electrical_resistivity
+            );
+
+
+
             mixture.correct();
 
             if (pimple.frozenFlow())
@@ -182,6 +194,14 @@ int main(int argc, char *argv[])
             {
                 turbulence->correct();
             }
+        }
+
+
+        {// Check the cells that have melted
+        volScalarField alphaMetal = 
+        mesh.lookupObject<volScalarField>("alpha.metal");
+        condition = pos(alphaMetal - 0.5) * pos(epsilon1 - 0.5);
+        meltHistory += condition;
         }
 
         runTime.write();
