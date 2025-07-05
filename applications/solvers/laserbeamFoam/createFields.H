@@ -745,7 +745,31 @@ autoPtr<transportModelType> turbulence
 laserHeatSource laser(mesh);
 
 
+
+
 #include "updateProps.H"
+
+
+
+// volScalarField depositionTemp
+// (
+//     IOobject
+//     (
+//         "depositionTemp",
+//         runTime.timeName(),
+//         mesh,
+//         IOobject::NO_READ,
+//         IOobject::NO_WRITE
+//     ),
+//     mesh,
+//     dimensionedScalar("depositionTemp", dimensionSet(1, -1, -2, -1, 0), 0.0),
+//     zeroGradientFvPatchScalarField::typeName
+// );
+
+
+// depositionTemp=laser.deposition();
+// depositionTemp.correctBoundaryConditions();
+
 
 
 volScalarField p

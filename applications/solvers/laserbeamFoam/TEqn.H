@@ -47,6 +47,10 @@
             thermalDamper.correctBoundaryConditions();
         }
 
+
+
+        
+
         fvScalarMatrix TEqn
         (
             fvm::ddt(rhoCp,T)
@@ -56,7 +60,8 @@
           //- (tau && gradU) // Viscous dissipation
          ==
             
-          + laser.deposition()
+        laser.deposition()
+        
           - Qv*mag(gradAlpha)*thermalDamper
           - TRHS
         );
